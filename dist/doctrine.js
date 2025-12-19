@@ -1,0 +1,28 @@
+export var DOCTRINE_VERSION = "1.0";
+export var DoctrineSection;
+(function (DoctrineSection) {
+    // Core Doctrine Sections (0-13)
+    DoctrineSection["DS_00_SCOPE_AND_AUTHORITY"] = "DS_00_SCOPE_AND_AUTHORITY";
+    DoctrineSection["DS_01_SELF_IS_CONTROL_LAYER"] = "DS_01_SELF_IS_CONTROL_LAYER";
+    DoctrineSection["DS_02_STATE_IS_INFERENCE"] = "DS_02_STATE_IS_INFERENCE";
+    DoctrineSection["DS_03_COLD_START_CONTAINMENT"] = "DS_03_COLD_START_CONTAINMENT";
+    DoctrineSection["DS_04_RECOVERY_AFFIRMATIVE"] = "DS_04_RECOVERY_AFFIRMATIVE";
+    DoctrineSection["DS_05_EXIT_GOVERNED"] = "DS_05_EXIT_GOVERNED";
+    DoctrineSection["DS_06_AUTONOMY_RESPECTED"] = "DS_06_AUTONOMY_RESPECTED";
+    DoctrineSection["DS_07_RESTRAINT_EXPLAINABLE"] = "DS_07_RESTRAINT_EXPLAINABLE";
+    DoctrineSection["DS_08_METRICS_OBSERVE_SAFETY"] = "DS_08_METRICS_OBSERVE_SAFETY";
+    DoctrineSection["DS_09_ATTRITION_ACCEPTED"] = "DS_09_ATTRITION_ACCEPTED";
+    DoctrineSection["DS_10_FAILURE_COST_SYSTEM"] = "DS_10_FAILURE_COST_SYSTEM";
+    DoctrineSection["DS_11_SEPARATE_ENVIRONMENTS"] = "DS_11_SEPARATE_ENVIRONMENTS";
+    DoctrineSection["DS_12_UNSAFE_OUTCOMES_NAMED"] = "DS_12_UNSAFE_OUTCOMES_NAMED";
+    DoctrineSection["DS_13_VIOLATION_IS_DECISION"] = "DS_13_VIOLATION_IS_DECISION";
+    // Foundation Principle Mappings (for hard invariants reference)
+    DoctrineSection["DS_FOUNDATION_SAFETY_CRITERION"] = "DS_00_SCOPE_AND_AUTHORITY";
+    DoctrineSection["DS_FOUNDATION_CONSERVATIVE_FAILURE"] = "DS_01_SELF_IS_CONTROL_LAYER";
+    DoctrineSection["DS_FOUNDATION_EXPLICIT_IMPLICIT"] = "DS_02_STATE_IS_INFERENCE";
+    DoctrineSection["DS_FOUNDATION_HUMAN_AUTHORITY"] = "DS_06_AUTONOMY_RESPECTED";
+    DoctrineSection["DS_FOUNDATION_TRANSPARENCY"] = "DS_07_RESTRAINT_EXPLAINABLE";
+    DoctrineSection["DS_FOUNDATION_BOUNDED_RISK"] = "DS_12_UNSAFE_OUTCOMES_NAMED";
+    DoctrineSection["DS_FOUNDATION_ETHICS_ECONOMICS"] = "DS_13_VIOLATION_IS_DECISION"; // Maps to Foundation 6
+})(DoctrineSection || (DoctrineSection = {}));
+//# sourceMappingURL=doctrine.js.map
