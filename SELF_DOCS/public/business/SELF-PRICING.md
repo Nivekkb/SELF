@@ -124,6 +124,9 @@ We structure costs to:
 
 ## 🔍 What You're Actually Paying For
 
+If you want the deeper rationale for why this governance layer has ongoing costs, see:
+- **WHY_GOVERNANCE_COSTS_MONEY.md**
+
 ### Safety Infrastructure (60% of revenue)
 - Doctrine development and maintenance
 - Safety protocol evolution

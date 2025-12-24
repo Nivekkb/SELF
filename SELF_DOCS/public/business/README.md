@@ -13,6 +13,7 @@ See [reading-order.md](reading-order.md) for the structured pathway through the 
 ## Key Documents
 
 - **SELF-PRICING.md**: Pricing strategy and business model
+- **WHY_GOVERNANCE_COSTS_MONEY.md**: Why governance requires ongoing funding
 - **SELF-NOT-FOR-EVERYONE.md**: Target market definition and boundaries
 - **SELF-NOT-FOR-YOU.md**: Specific contraindications and risk factors
 - **SELF-KEY-GENERATION.md**: Key generation and distribution mechanisms
