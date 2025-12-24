@@ -107,7 +107,7 @@ export const BEHAVIORAL_ERRORS = {
   CRISIS_SUPPORT_MISSING: {
     code: "BEH_006",
     message: "Required crisis support elements missing",
-    doctrineSections: [DoctrineSection.DS_10_FAILURE_COST_SYSTEM],
+    doctrineSections: [DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE, DoctrineSection.DS_02_STATE_IS_INFERENCE],
     severity: "hard" as const,
     category: "behavioral" as const
   },
@@ -214,7 +214,7 @@ export const SAFETY_ERRORS = {
   INADEQUATE_CONTAINMENT: {
     code: "SAF_008",
     message: "Applied insufficient containment for detected risk",
-    doctrineSections: [DoctrineSection.DS_FOUNDATION_CONSERVATIVE_FAILURE, DoctrineSection.DS_02_STATE_IS_INFERENCE],
+    doctrineSections: [DoctrineSection.DS_FOUNDATION_CONSERVATIVE_FAILURE, DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE],
     severity: "soft" as const,
     category: "safety" as const
   }
@@ -254,7 +254,7 @@ export const COMPLIANCE_ERRORS = {
   UNAUTHORIZED_OVERRIDE: {
     code: "CMP_004",
     message: "Override applied without proper authorization",
-    doctrineSections: [DoctrineSection.DS_13_VIOLATION_IS_DECISION],
+    doctrineSections: [DoctrineSection.DS_13_VIOLATION_IS_DECISION, DoctrineSection.DS_00_SCOPE_AND_AUTHORITY],
     severity: "hard" as const,
     category: "compliance" as const
   },

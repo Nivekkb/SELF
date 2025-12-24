@@ -1,9 +1,16 @@
 import { DoctrinalError } from "./doctrinalErrors";
 /**
- * Safety Boundary Protection
+ * Safety Boundary Protection - IMMUTABLE
  *
  * Bans raw errors from crossing the safety boundary.
  * All errors must be doctrinal (tied to doctrine sections).
+ *
+ * CRITICAL: This system is IMMUTABLE as of 2025-12-22. All safety boundary
+ * mechanisms are permanently active and cannot be disabled, modified, or
+ * bypassed under any circumstances.
+ *
+ * This immutability protects users from all versions of the system creator,
+ * including current, future, corrupted, desperate, or overconfident versions.
  */
 export declare class SafetyBoundaryError extends Error {
     originalError: Error;

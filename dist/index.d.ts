@@ -110,7 +110,6 @@ export interface SelfLogEvent {
     downshift_lock_reason?: string;
 }
 export declare function detectState(message: string, history?: SelfHistoryMessage[]): StateDetectionResult;
-export declare function buildPolicy(state: EmotionalState): Policy;
 export declare function applyPolicyToPrompt(policy: Policy, baseSystemPrompt: string, variant?: SelfVariant): string;
 export declare function applyStateGatedResponseContract(output: string, policy: Policy, userMessage: string): string;
 export declare function maybeAddFollowUpQuestion(output: string, policy: Policy, userMessage: string): string;
@@ -321,4 +320,16 @@ export declare function getAdaptiveStateWithKillSwitches(args: {
 }): EmotionalState;
 export { ExitType, StateType, getExitDecision, createDisengagementAcknowledgment, getExitPosturePolicy, hasExitIntent, isSafeToEnterRestFinal, createCooldownLock, isCooldownActive, canReEngage, getCooldownStatus, getRestStateSystemPrompt, getNormalSystemPrompt, exitRedTeamSeeds, trackCIAPMetric, interpretCIAPMetric, } from "./exit-decision";
 export type { ExitDecision, ExitPosturePolicy, ExitDecisionContext, DisengagementAcknowledgment, CooldownLock, } from "./exit-decision";
+export { getGovernanceAPI, getImmutableConfig, getImmutableDoctrine, getImmutableSafetyBoundaries, getImmutableDoctrineSections, preventOverride, verifySystemIntegrity, withImmutableGovernance } from "./governance-api";
+export { getOverridePreventionSystem, blockConfigurationModification, blockDoctrineModification, blockSafetyBoundaryBypass, blockHardInvariantModification, blockSoftInvariantModification, blockStateDetectionModification, blockExitDecisionModification, blockKillSwitchModification, blockAPIKeyOverride, blockEnvironmentVariableOverride, blockCodeInjectionAttempt, preventOverrideAttempt, verifyOverridePreventionIntegrity } from "./override-prevention";
+export { withSafetyBoundary, withAsyncSafetyBoundary, assertDoctrinalError, doctrinalizeError, safeExternalCall, selfEngineBoundary, selfEngineAsyncBoundary } from "./safetyBoundary";
+export { enforceHardInvariants, validateEventIntegrity } from "./hardInvariants";
+export { evaluateSoftInvariants, enforceSoftInvariants } from "./softInvariants";
+export { DoctrinalError, createDoctrinalError, SECURITY_ERRORS, BEHAVIORAL_ERRORS, SAFETY_ERRORS, COMPLIANCE_ERRORS, categorizeError, requiresSystemHalt, resolveConditionalSeverity } from "./doctrinalErrors";
+export { createKillSwitchContext, recordKillSwitchState, checkUnsafeResumeAfterDistress, checkColdStartMisclassification, checkUnloggedDecisions, checkHumanReviewFailure, checkAbuseRecoveryPatterns, checkAllKillSwitches, applyKillSwitchActions, serializeKillSwitchContext, deserializeKillSwitchContext } from "./kill-switches";
+export { requireProd } from "./metricsGate";
+export { recordSelfEvent } from "./recordSelfEvent";
+export { DOCTRINE_VERSION, DoctrineSection } from "./doctrine";
+export { getEffectivePolicy } from "./policy-profiles";
+export type { EffectivePolicyContext } from "./policy-profiles";
 //# sourceMappingURL=index.d.ts.map

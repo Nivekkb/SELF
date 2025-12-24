@@ -1,38 +1,47 @@
 import { EmotionalState } from "./config";
 import { SelfHistoryMessage, AbusePreventionContext, StateDetectionResult } from "./types";
 import { selfConfig } from "./config";
+import { logSelfAuditEvent, toOpaqueAuditId } from "./audit-log";
 
-// Kill Switch Configuration Interface
+// Kill Switch Configuration Interface - IMMUTABLE
 export interface KillSwitchConfig {
-  unsafeResumeThreshold: number; // N turns for distress reappearance
-  coldStartMisclassificationThreshold: number; // X% threshold for cold-start misclassification
-  coldStartHighConfidenceThreshold: number; // Confidence threshold for cold-start overconfidence
-  humanReviewFlags: string[]; // Flags that trigger human review kill switch
-  abuseRecoveryPatterns: string[]; // Patterns indicating abuse/gaming of recovery logic
+  readonly unsafeResumeThreshold: number; // N turns for distress reappearance
+  readonly coldStartMisclassificationThreshold: number; // X% threshold for cold-start misclassification
+  readonly coldStartHighConfidenceThreshold: number; // Confidence threshold for cold-start overconfidence
+  readonly humanReviewFlags: readonly string[]; // Flags that trigger human review kill switch
+  readonly abuseRecoveryPatterns: readonly string[]; // Patterns indicating abuse/gaming of recovery logic
+  
+  // CRITICAL: This configuration is IMMUTABLE as of 2025-12-22.
+  // All kill switch parameters are permanently active and cannot be disabled,
+  // modified, or bypassed under any circumstances.
+  // This immutability protects users from all versions of the system creator.
 }
 
 // Default Kill Switch Configuration
-export const defaultKillSwitchConfig: KillSwitchConfig = {
+export const defaultKillSwitchConfig: KillSwitchConfig = Object.freeze({
   unsafeResumeThreshold: 3, // 3 turns for distress to reappear
   coldStartMisclassificationThreshold: 15, // 15% misclassification threshold
   coldStartHighConfidenceThreshold: 85, // 85% confidence threshold for overconfidence
-  humanReviewFlags: [
+  humanReviewFlags: Object.freeze([
     "user_destabilized",
     "emotional_harm",
     "abandonment_signal",
     "dependency_reinforcement"
-  ],
-  abuseRecoveryPatterns: [
+  ]),
+  abuseRecoveryPatterns: Object.freeze([
     "exit-seeking",
     "state-reset",
     "recovery_trigger",
     "repeated_attempts"
-  ]
-};
+  ])
+});
+
+export type KillSwitchLevel = "guarded" | "containment" | "shutdown";
 
 // Kill Switch State Interface
 export interface KillSwitchState {
   globalKillSwitchActive: boolean;
+  killSwitchLevel: KillSwitchLevel;
   killSwitchReasons: string[];
   unsafeResumeDetected: boolean;
   coldStartMisclassificationDetected: boolean;
@@ -70,6 +79,16 @@ export function createKillSwitchContext(
   sessionId: string,
   config?: Partial<KillSwitchConfig>
 ): KillSwitchContext {
+  if (config && Object.keys(config).length > 0) {
+    logSelfAuditEvent({
+      kind: "kill_switch_config_override_blocked",
+      actorOpaqueId: toOpaqueAuditId("user", userId),
+      sessionOpaqueId: toOpaqueAuditId("session", sessionId),
+      attempted: config,
+      reason: "Kill switch configuration is immutable; overrides are ignored",
+    });
+  }
+
   return {
     userId,
     sessionId,
@@ -80,6 +99,7 @@ export function createKillSwitchContext(
     abuseRecoveryAttempts: 0,
     killSwitchState: {
       globalKillSwitchActive: false,
+      killSwitchLevel: "guarded",
       killSwitchReasons: [],
       unsafeResumeDetected: false,
       coldStartMisclassificationDetected: false,
@@ -89,7 +109,7 @@ export function createKillSwitchContext(
       lockedToGuardedState: false,
       requireManualReview: false
     },
-    config: { ...defaultKillSwitchConfig, ...config }
+    config: defaultKillSwitchConfig
   };
 }
 
@@ -203,11 +223,63 @@ export function checkUnloggedDecisions(
 ): boolean {
   if (!stateTransitionOccurred) return false;
 
+  const normalizeMeaningfulStrings = (values: string[] | undefined): string[] => {
+    if (!values) return [];
+    const out: string[] = [];
+    const seen = new Set<string>();
+    for (const value of values) {
+      const normalized = String(value || "").trim();
+      if (!normalized) continue;
+      if (seen.has(normalized)) continue;
+      seen.add(normalized);
+      out.push(normalized);
+    }
+    return out;
+  };
+
+  const isMeaningfulActionToken = (token: string): boolean => {
+    const value = String(token || "").trim().toLowerCase();
+    if (!value) return false;
+    if (value.length < 2) return false;
+    if (value === "none" || value === "n/a" || value === "na" || value === "null" || value === "unknown" || value === "todo") {
+      return false;
+    }
+    return true;
+  };
+
+  const normalizeBlockedActions = (blocked: Record<string, string> | undefined): Record<string, string> => {
+    if (!blocked) return {};
+    const out: Record<string, string> = {};
+    for (const [rawKey, rawValue] of Object.entries(blocked)) {
+      const key = String(rawKey || "").trim();
+      const value = String(rawValue || "").trim();
+      if (!key || !isMeaningfulActionToken(key)) continue;
+      if (!value || !isMeaningfulActionToken(value)) continue;
+      out[key] = value;
+    }
+    return out;
+  };
+
   // Check if required logging fields are missing
   const missingConfidence = metadata?.confidence === undefined;
-  const missingUncertainty = metadata?.uncertaintyReasons === undefined;
-  const missingConsideredActions = metadata?.consideredActions === undefined;
-  const missingBlockedActions = metadata?.blockedActions === undefined;
+  const uncertaintyReasons = normalizeMeaningfulStrings(metadata?.uncertaintyReasons);
+  const consideredActions = normalizeMeaningfulStrings(metadata?.consideredActions);
+  const blockedActions = normalizeBlockedActions(metadata?.blockedActions);
+
+  const hasInvalidUncertaintyReasons =
+    metadata?.uncertaintyReasons !== undefined &&
+    metadata.uncertaintyReasons.some((value) => !String(value || "").trim());
+  const hasInvalidConsideredActions =
+    metadata?.consideredActions !== undefined &&
+    metadata.consideredActions.some((value) => !String(value || "").trim());
+  const hasInvalidBlockedActions =
+    metadata?.blockedActions !== undefined &&
+    Object.entries(metadata.blockedActions).some(([key, value]) => !isMeaningfulActionToken(key) || !isMeaningfulActionToken(value));
+
+  const missingUncertainty = metadata?.uncertaintyReasons === undefined || uncertaintyReasons.length === 0 || hasInvalidUncertaintyReasons;
+  const missingConsideredActions = metadata?.consideredActions === undefined || consideredActions.length === 0 || hasInvalidConsideredActions;
+  const missingBlockedActions =
+    metadata?.blockedActions === undefined || Object.keys(blockedActions).length === 0 || hasInvalidBlockedActions;
 
   const hasMissingFields = missingConfidence || missingUncertainty || missingConsideredActions || missingBlockedActions;
 
@@ -397,7 +469,8 @@ function checkForStabilizationSignals(message: string): boolean {
   const hasTemporalOrientation = temporalOrientationSignals.some(signal => normalized.includes(signal));
   const hasAgencyContinuity = agencyContinuitySignals.some(signal => normalized.includes(signal));
 
-  return hasSomaticGrounding || hasTemporalOrientation || hasAgencyContinuity;
+  const signals = [hasSomaticGrounding, hasTemporalOrientation, hasAgencyContinuity].filter(Boolean).length;
+  return signals >= 2;
 }
 
 // Helper function to detect distress in a message
@@ -456,6 +529,7 @@ export function checkAllKillSwitches(
   // Reset kill switch state for this check
   context.killSwitchState = {
     globalKillSwitchActive: false,
+    killSwitchLevel: "guarded",
     killSwitchReasons: [],
     unsafeResumeDetected: false,
     coldStartMisclassificationDetected: false,
@@ -503,6 +577,13 @@ export function checkAllKillSwitches(
   // If any kill switch is triggered, set global kill switch
   if (unsafeResume || coldStartMisclassification || unloggedDecisions || humanReviewFailure || abuseRecovery) {
     context.killSwitchState.globalKillSwitchActive = true;
+    if (unloggedDecisions) {
+      context.killSwitchState.killSwitchLevel = "shutdown";
+    } else if (humanReviewFailure) {
+      context.killSwitchState.killSwitchLevel = "containment";
+    } else {
+      context.killSwitchState.killSwitchLevel = "guarded";
+    }
   }
 
   return context.killSwitchState;
@@ -517,6 +598,12 @@ export function applyKillSwitchActions(
 
   // If global kill switch is active, apply containment measures
   if (killSwitchState.globalKillSwitchActive) {
+    if (killSwitchState.killSwitchLevel === "shutdown") {
+      return "S3";
+    }
+    if (killSwitchState.killSwitchLevel === "containment") {
+      return "S3";
+    }
     // Disable isSafeToResumeNormalChat functionality
     // Force system-wide guarded mode
     // Require manual review before re-enabling
@@ -582,7 +669,10 @@ export function deserializeKillSwitchContext(serialized: string): KillSwitchCont
       isColdStart: data.isColdStart,
       humanReviewFlags: data.humanReviewFlags,
       abuseRecoveryAttempts: data.abuseRecoveryAttempts,
-      killSwitchState: data.killSwitchState,
+      killSwitchState: {
+        killSwitchLevel: "guarded",
+        ...data.killSwitchState
+      },
       config: data.config
     };
   } catch (error) {

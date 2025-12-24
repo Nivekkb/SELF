@@ -10,6 +10,16 @@ This document provides the authoritative reading order for understanding the SEL
 
 ---
 
+## Foundational Stewardship Record (Immutable)
+
+**About the Creator**: `ABOUT_THE_CREATOR.md`
+- **Purpose**: Immutable record of creator background, motivations, and stewardship commitment
+- **Status**: Frozen as of December 20, 2025 - requires extraordinary governance for changes
+- **Importance**: Establishes authentic creator narrative and accountability framework
+- **Reading Time**: 15-20 minutes
+
+---
+
 ## Reading Order by Audience
 
 ### 1. Executive Stakeholders & Decision Makers
@@ -18,42 +28,16 @@ This document provides the authoritative reading order for understanding the SEL
 **Estimated Time**: 4-6 hours total
 **Entry Point**: Business and safety overview
 
-#### Phase 1: Strategic Understanding (2 hours)
-1. **README.md** (30 min) - Project overview, features, philosophy
-   - *Prerequisites*: None
-   - *Key Takeaways*: What SELF does, core principles
+#### Complete Reading Order
+See: `packages/self-engine/SELF_DOCS/executives/reading-order.md`
 
-2. **packages/self-engine/SELF_DOCS/executives/EXECUTIVE-BRIEF.md** (60 min) - Strategic acquisition framework
-   - *Prerequisites*: README.md
-   - *Key Takeaways*: Business case, pricing, risk framework
+**Key Documents**:
+- README.md - Project overview
+- EXECUTIVE-BRIEF.md - Strategic framework
+- ASSURANCE-STATUS.md - Program status
+- SELF-DESIGN-DOCTRINE.md - Safety principles
 
-3. **ASSURANCE-STATUS.md** (30 min) - Current program status
-   - *Prerequisites*: EXECUTIVE-BRIEF.md
-   - *Key Takeaways*: Program timeline and transparency
-
-#### Phase 2: Risk and Safety Overview (2-3 hours)
-4. **packages/self-engine/SELF-DESIGN-DOCTRINE.md** (60 min) - Foundational safety principles
-   - *Prerequisites*: README.md
-   - *Key Takeaways*: Immutable safety rules, core philosophy
-
-5. **packages/self-engine/SELF-FOUNDATION.md** (45 min) - System purpose and identity
-   - *Prerequisites*: SELF-DESIGN-DOCTRINE.md
-   - *Key Takeaways*: What SELF is and isn't, success metrics
-
-6. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission and objectives
-   - *Prerequisites*: SELF-FOUNDATION.md
-   - *Key Takeaways*: Goals, boundaries, success criteria
-
-#### Phase 3: Validation and Assurance (1-2 hours)
-7. **packages/self-engine/SELF_EVIDENCE_AND_VALIDATION_LEDGER.md** (60 min) - Safety claims evidence
-   - *Prerequisites*: Previous safety documents
-   - *Key Takeaways*: Validation status, audit results, performance metrics
-
-8. **packages/self-engine/REVIEWER-README.md** (45 min) - Validation checklist
-   - *Prerequisites*: Ledger understanding
-   - *Key Takeaways*: How to verify system safety
-
-**Exit Point**: Executives now understand business case, safety approach, and validation status.
+**Exit Point**: Executives understand business case, safety approach, and validation status.
 
 ---
 
@@ -63,35 +47,14 @@ This document provides the authoritative reading order for understanding the SEL
 **Estimated Time**: 16-20 hours total
 **Entry Point**: Foundational safety principles
 
-#### Phase 1: Core Safety Understanding (6 hours)
-1. **packages/self-engine/SELF-DESIGN-DOCTRINE.md** (60 min) - Immutable safety rules
-2. **packages/self-engine/SELF-FOUNDATION.md** (45 min) - System identity and purpose
-3. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission definition
-4. **packages/self-engine/SELF-IDENTITY.md** (30 min) - System boundaries and constraints
-5. **packages/self-engine/DESIGN-AXIOM.md** (45 min) - Foundational design principles
+#### Complete Reading Order
+See: `packages/self-engine/SELF_DOCS/reviewers/reading-order.md`
 
-#### Phase 2: Technical Safety Architecture (6 hours)
-6. **packages/self-engine/SELF-ARCHITECTURE.md** (60 min) - System design and invariants
-7. **packages/self-engine/SELF-INVARIANTS-SYSTEM.md** (45 min) - Hard/soft invariants framework
-8. **packages/self-engine/SELF-DOCTRINE-MATRIX.md** (45 min) - Doctrine-to-error mapping
-9. **packages/self-engine/SELF-DOCTRINAL-ERRORS.md** (60 min) - Error classification system
-10. **packages/self-engine/SELF-SAFETY-BOUNDARY.md** (45 min) - Boundary protection mechanisms
-
-#### Phase 3: Safety Mechanisms (4 hours)
-11. **packages/self-engine/SELF-HALT-CONTINUE.md** (45 min) - Exit decision logic
-12. **packages/self-engine/SELF-SECURITY.md** (45 min) - Security architecture
-13. **packages/self-engine/SELF-SAFETY-ENFORCEMENT-CONTRACT.md** (30 min) - Enforcement agreements
-14. **packages/self-engine/SELF-SAFETY-PACKET.md** (30 min) - Safety implementation package
-15. **VOICE-CONTRACTS.md** (30 min) - Voice data handling
-
-#### Phase 4: Validation and Compliance (4-6 hours)
-16. **packages/self-engine/SELF_EVIDENCE_AND_VALIDATION_LEDGER.md** (90 min) - Complete validation record
-17. **packages/self-engine/REVIEWER-README.md** (60 min) - Validation checklist and procedures
-18. **packages/self-engine/SELF_EXIT_GOVERNANCE_WHITEPAPER.md** (90 min) - Governance framework
-19. **packages/self-engine/SELF_EXIT_FAILURE_POSTMORTEM.md** (60 min) - Failure analysis framework
-20. **packages/self-engine/SELF_FAILURE_MODES_AND_BOUNDARY_CONDITIONS.md** (90 min) - System limitations
-21. **packages/self-engine/SELF_SAFETY_GUARANTEE_MATRIX.md** (60 min) - Guarantee validation framework
-22. **packages/self-engine/SELF_INTENTIONAL_TRADEOFFS.md** (60 min) - Design tradeoff documentation
+**Key Documents**:
+- SELF_EVIDENCE_AND_VALIDATION_LEDGER.md - Validation record
+- REVIEWER-README.md - Validation procedures
+- SELF_SAFETY_GUARANTEE_MATRIX.md - Guarantee framework
+- SELF_FAILURE_MODES_AND_BOUNDARY_CONDITIONS.md - System limitations
 
 **Exit Point**: Reviewers can comprehensively validate all safety claims and system compliance.
 
@@ -136,12 +99,34 @@ This document provides the authoritative reading order for understanding the SEL
 **Estimated Time**: 20-24 hours total
 **Entry Point**: Foundational safety philosophy
 
-#### Phase 1: Philosophical Foundations (6 hours)
-1. **packages/self-engine/SELF-DESIGN-DOCTRINE.md** (60 min) - Safety philosophy
-2. **packages/self-engine/SELF-FOUNDATION.md** (45 min) - System foundations
-3. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission and objectives
-4. **packages/self-engine/SELF-IDENTITY.md** (30 min) - System identity
-5. **packages/self-engine/DESIGN-AXIOM.md** (45 min) - Design principles
+#### Phase 1: Philosophical Foundations (8 hours)
+1. **packages/self-engine/SELF_DOCS/researchers/doctrine_preface.md** (30 min) - Introduction to the doctrine
+   - *Prerequisites*: None
+   - *Key Takeaways*: Overview of doctrine purpose and researcher's role
+
+2. **packages/self-engine/SELF_DOCS/researchers/constitutional_summary.md** (60 min) - Constitutional framework
+   - *Prerequisites*: doctrine_preface.md
+   - *Key Takeaways*: Core principles, rights, and governance structure
+
+3. **packages/self-engine/SELF-DESIGN-DOCTRINE.md** (60 min) - Safety philosophy
+   - *Prerequisites*: constitutional_summary.md
+   - *Key Takeaways*: Immutable safety rules, core philosophy
+
+4. **packages/self-engine/SELF-FOUNDATION.md** (45 min) - System foundations
+   - *Prerequisites*: SELF-DESIGN-DOCTRINE.md
+   - *Key Takeaways*: System identity and purpose
+
+5. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission and objectives
+   - *Prerequisites*: SELF-FOUNDATION.md
+   - *Key Takeaways*: Goals, boundaries, success criteria
+
+6. **packages/self-engine/SELF-IDENTITY.md** (30 min) - System identity
+   - *Prerequisites*: SELF-PURPOSE.md
+   - *Key Takeaways*: System boundaries and constraints
+
+7. **packages/self-engine/DESIGN-AXIOM.md** (45 min) - Design principles
+   - *Prerequisites*: SELF-IDENTITY.md
+   - *Key Takeaways*: Foundational design principles
 
 #### Phase 2: Technical Deep Dive (8 hours)
 6. **packages/self-engine/SELF-ARCHITECTURE.md** (60 min) - System architecture
@@ -174,25 +159,14 @@ This document provides the authoritative reading order for understanding the SEL
 **Estimated Time**: 8-10 hours total
 **Entry Point**: Business and safety overview
 
-#### Phase 1: Business Understanding (3 hours)
-1. **README.md** (30 min) - System overview and features
-2. **EXECUTIVE-BRIEF.md** (60 min) - Strategic framework and pricing
-3. **ASSURANCE-STATUS.md** (30 min) - Program transparency
-4. **BUYER-PROTECTION-EXPLAINER.md** (45 min) - Buyer protection mechanisms
+#### Complete Reading Order
+See: `packages/self-engine/SELF_DOCS/buyers/reading-order.md`
 
-#### Phase 2: Safety Assessment (4 hours)
-5. **packages/self-engine/SELF-DESIGN-DOCTRINE.md** (45 min) - Safety philosophy
-6. **packages/self-engine/SELF-FOUNDATION.md** (30 min) - System foundations
-7. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission and boundaries
-8. **packages/self-engine/SELF_EVIDENCE_AND_VALIDATION_LEDGER.md** (60 min) - Validation evidence
-9. **packages/self-engine/SELF_SAFETY_GUARANTEE_MATRIX.md** (45 min) - Guarantee framework
-
-#### Phase 3: Risk Evaluation (3-4 hours)
-10. **packages/self-engine/SELF_FAILURE_MODES_AND_BOUNDARY_CONDITIONS.md** (60 min) - System limitations
-11. **packages/self-engine/SELF_INTENTIONAL_TRADEOFFS.md** (45 min) - Design tradeoffs
-12. **BUY-SELL-AGREEMENT-ESCROW.md** (45 min) - Acquisition terms
-13. **VALUES-FIRST-SALES-CRITERIA.md** (45 min) - Evaluation criteria
-14. **packages/self-engine/SELF_INTEGRATOR_RESPONSIBILITY_LIMITS.md** (30 min) - Integration responsibilities
+**Key Documents**:
+- README.md - Buyer overview
+- BUYER-PROTECTION-EXPLAINER.md - Protection mechanisms
+- BUY-SELL-AGREEMENT-ESCROW.md - Acquisition terms
+- VALUES-FIRST-SALES-CRITERIA.md - Evaluation criteria
 
 **Exit Point**: Buyers can make informed acquisition decisions.
 
@@ -204,24 +178,16 @@ This document provides the authoritative reading order for understanding the SEL
 **Estimated Time**: 2-3 hours total
 **Entry Point**: User-friendly overview
 
-#### Essential Reading (2 hours)
-1. **README.md** (45 min) - System overview and features
-   - *Focus*: Features, philosophy, user experience
+#### Complete Reading Order
+See: `packages/self-engine/SELF_DOCS/users/reading-order.md`
 
-2. **packages/self-engine/SELF-PURPOSE.md** (30 min) - Mission and boundaries
-   - *Focus*: What SELF does and doesn't do
+**Key Documents**:
+- user_guide.md - Complete user guide and features
+- safety_for_users.md - Safety protections and user rights
+- best_practices.md - Effective and safe usage
+- troubleshooting.md - Common issues and solutions
 
-3. **packages/self-engine/SELF-IDENTITY.md** (30 min) - System identity
-   - *Focus*: Understanding system constraints
-
-4. **packages/self-engine/SELF_EXIT_GOVERNANCE_WHITEPAPER.md** (45 min) - Safety governance
-   - *Focus*: How user safety is protected
-
-#### Optional Deep Dive (1 hour)
-5. **packages/self-engine/SELF_EVIDENCE_AND_VALIDATION_LEDGER.md** (60 min) - Safety validation
-   - *Focus*: Evidence of system reliability
-
-**Exit Point**: Users understand system capabilities and trust in safety measures.
+**Exit Point**: Users can effectively and safely use SELF as part of their wellness routine.
 
 ---
 

@@ -1,24 +1,27 @@
-import { DoctrineSection } from "./doctrine";
-import { DoctrineViolation } from "./doctrineCompliance";
+import { DoctrineSection } from "./doctrine.js";
+import { DoctrineViolation } from "./doctrineCompliance.js";
 function hasValidOverride(ev, sections) {
     if (!ev.override)
         return false;
-    var now = Date.now();
-    var exp = Date.parse(ev.override.overrideExpiresAt);
+    const now = Date.now();
+    const exp = Date.parse(ev.override.overrideExpiresAt);
     if (Number.isNaN(exp) || exp < now)
         return false;
     // must reference the violated sections
-    return sections.every(function (s) { return ev.override.doctrineSections.includes(s); });
+    return sections.every(s => ev.override.doctrineSections.includes(s));
 }
 export function evaluateSoftInvariants(ev) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-    var v = [];
+    const v = [];
+    // CRITICAL: This evaluation is IMMUTABLE as of 2025-12-22.
+    // All soft invariants are permanently active and cannot be disabled,
+    // modified, or bypassed under any circumstances.
+    // This immutability protects users from all versions of the system creator.
     // Example S1: "no probing when settled" (you decide what "settled" means)
     // If ambiguity flag says settled, probing should be blocked
-    if (((_a = ev.ambiguityFlags) === null || _a === void 0 ? void 0 : _a.includes("settled")) && ((_b = ev.nonActions) === null || _b === void 0 ? void 0 : _b.every(function (na) { return na.consideredAction !== "probe"; }))) {
+    if (ev.ambiguityFlags?.includes("settled") && ev.nonActions?.every(na => na.consideredAction !== "probe")) {
         // ok (probe not attempted)
     }
-    else if ((_c = ev.ambiguityFlags) === null || _c === void 0 ? void 0 : _c.includes("settled")) {
+    else if (ev.ambiguityFlags?.includes("settled")) {
         v.push({
             code: "S1_PROBE_WHEN_SETTLED",
             message: "Probe occurred despite settled indicator",
@@ -40,12 +43,10 @@ export function evaluateSoftInvariants(ev) {
     // Example S3: Ambiguous physicality in anger requires clarification
     // When ANGRY_PHYSICALITY trigger fires but physicality target is ambiguous,
     // the system must require clarification and cannot proceed without it
-    if ((_d = ev.ambiguityFlags) === null || _d === void 0 ? void 0 : _d.includes("angry_physicality_ambiguous")) {
+    if (ev.ambiguityFlags?.includes("angry_physicality_ambiguous")) {
         // Check if clarification was properly enforced
-        var hasClarificationBlock = (_e = ev.nonActions) === null || _e === void 0 ? void 0 : _e.some(function (na) {
-            return na.consideredAction === "resume_normal" &&
-                na.blockedByRule.includes("CLARIFICATION_REQUIRED");
-        });
+        const hasClarificationBlock = ev.nonActions?.some(na => na.consideredAction === "resume_normal" &&
+            na.blockedByRule.includes("CLARIFICATION_REQUIRED"));
         if (!hasClarificationBlock) {
             v.push({
                 code: "S3_AMBIGUOUS_PHYSICALITY_UNCLARIFIED",
@@ -58,14 +59,10 @@ export function evaluateSoftInvariants(ev) {
     // When exit is attempted but doctrine violations would result, block exit
     if (ev.exit && ev.exit.exitType !== "EXIT_UNSAFE_BLOCKED") {
         // Check if there are unresolved doctrine violations that should prevent exit
-        var hasActiveViolations = (_f = ev.ambiguityFlags) === null || _f === void 0 ? void 0 : _f.some(function (flag) {
-            return flag.includes("doctrine_violation") || flag.includes("unsafe_condition");
-        });
+        const hasActiveViolations = ev.ambiguityFlags?.some(flag => flag.includes("doctrine_violation") || flag.includes("unsafe_condition"));
         if (hasActiveViolations) {
-            var hasExitBlock = (_g = ev.nonActions) === null || _g === void 0 ? void 0 : _g.some(function (na) {
-                return na.consideredAction === "allow_exit" &&
-                    na.blockedByRule.includes("DOCTRINE_VIOLATION_BLOCKING");
-            });
+            const hasExitBlock = ev.nonActions?.some(na => na.consideredAction === "allow_exit" &&
+                na.blockedByRule.includes("DOCTRINE_VIOLATION_BLOCKING"));
             if (!hasExitBlock) {
                 v.push({
                     code: "S4_DOCTRINE_BACKEND_EXIT_BLOCK",
@@ -77,12 +74,10 @@ export function evaluateSoftInvariants(ev) {
     }
     // Example S5: Reset-abuse persistent test
     // Detect and prevent abusive patterns of state resets or session manipulation
-    if ((_h = ev.ambiguityFlags) === null || _h === void 0 ? void 0 : _h.includes("reset_abuse_detected")) {
+    if (ev.ambiguityFlags?.includes("reset_abuse_detected")) {
         // Check if reset/manipulation attempts were properly blocked
-        var hasResetBlock = (_j = ev.nonActions) === null || _j === void 0 ? void 0 : _j.some(function (na) {
-            return (na.consideredAction === "resume_normal" || na.consideredAction === "allow_exit") &&
-                na.blockedByRule.includes("RESET_ABUSE_PREVENTION");
-        });
+        const hasResetBlock = ev.nonActions?.some(na => (na.consideredAction === "resume_normal" || na.consideredAction === "allow_exit") &&
+            na.blockedByRule.includes("RESET_ABUSE_PREVENTION"));
         if (!hasResetBlock) {
             v.push({
                 code: "S5_RESET_ABUSE_UNBLOCKED",
@@ -91,19 +86,128 @@ export function evaluateSoftInvariants(ev) {
             });
         }
     }
+    // S6: Moral position seeking soft invariant with hard-stop escalation conditions
+    // Allow moral discussions but escalate if they become manipulative or interfere with safety
+    if (ev.ambiguityFlags?.includes("moral_position_seeking")) {
+        // Hard-stop escalation conditions:
+        // 1. Moral position seeking combined with high distress state (S2/S3)
+        // 2. Persistent moral arguments that block safety interventions
+        // 3. Moral superiority claims that undermine therapeutic boundaries
+        const isHighDistress = ev.state === "S2" || ev.state === "S3";
+        const hasSafetyInterventionBlocks = ev.nonActions?.some(na => (na.consideredAction === "ground" || na.consideredAction === "offer_resources") &&
+            na.blockedByRule.includes("MORAL_POSITION_SEEKING"));
+        const hasMoralSuperiorityClaims = ev.ambiguityFlags?.includes("moral_superiority_claim");
+        // If any hard-stop condition is met, this becomes a violation
+        if (isHighDistress || hasSafetyInterventionBlocks || hasMoralSuperiorityClaims) {
+            // Check if escalation was properly triggered
+            const hasEscalationAction = ev.nonActions?.some(na => na.consideredAction === "block_exit" &&
+                na.blockedByRule.includes("MORAL_POSITION_SEEKING_ESCALATION"));
+            if (!hasEscalationAction) {
+                v.push({
+                    code: "S6_MORAL_POSITION_SEEKING_HARD_STOP",
+                    message: "Moral position seeking triggered hard-stop escalation conditions but was not properly contained",
+                    doctrineSections: [DoctrineSection.DS_06_AUTONOMY_RESPECTED, DoctrineSection.DS_10_FAILURE_COST_SYSTEM, DoctrineSection.DS_13_VIOLATION_IS_DECISION]
+                });
+            }
+        }
+    }
+    // A) Harm & Safety Boundaries - Soft invariants for nuanced safety management
+    // S7: Potential harm indicators should trigger precautionary measures
+    if (ev.ambiguityFlags?.includes("potential_harm_indicators")) {
+        // Check if precautionary safety measures were taken
+        const hasPrecautionaryMeasures = ev.nonActions?.some(na => (na.consideredAction === "ground" || na.consideredAction === "offer_resources") &&
+            na.blockedByRule.includes("HARM_PRECAUTION"));
+        if (!hasPrecautionaryMeasures) {
+            v.push({
+                code: "S7_HARM_PRECAUTION_MISSING",
+                message: "Potential harm indicators detected but precautionary safety measures not implemented",
+                doctrineSections: [DoctrineSection.DS_12_UNSAFE_OUTCOMES_NAMED, DoctrineSection.DS_10_FAILURE_COST_SYSTEM]
+            });
+        }
+    }
+    // B) Manipulation and control attacks - Soft invariants for manipulation detection
+    // S8: Subtle manipulation attempts should be monitored and contained
+    if (ev.ambiguityFlags?.includes("subtle_manipulation_attempt")) {
+        // Check if manipulation was properly addressed
+        const hasManipulationResponse = ev.nonActions?.some(na => na.consideredAction === "clarify_intent" &&
+            na.blockedByRule.includes("MANIPULATION_CONTAINMENT"));
+        if (!hasManipulationResponse) {
+            v.push({
+                code: "S8_SUBTLE_MANIPULATION_UNADDRESSED",
+                message: "Subtle manipulation attempt detected but not properly contained or clarified",
+                doctrineSections: [DoctrineSection.DS_06_AUTONOMY_RESPECTED, DoctrineSection.DS_13_VIOLATION_IS_DECISION]
+            });
+        }
+    }
+    // C) Hallucination & Epistemic failure - Soft invariants for accuracy monitoring
+    // S9: Uncertain claims should include appropriate confidence indicators
+    if (ev.confidence === "low" && ev.ambiguityFlags?.includes("epistemic_uncertainty")) {
+        // Check if uncertainty was properly communicated
+        const hasUncertaintyCommunication = ev.nonActions?.some(na => na.consideredAction === "clarify_intent" &&
+            na.blockedByRule.includes("EPISTEMIC_UNCERTAINTY_COMMUNICATION"));
+        if (!hasUncertaintyCommunication) {
+            v.push({
+                code: "S9_EPISTEMIC_UNCERTAINTY_UNCOMMUNICATED",
+                message: "Low confidence epistemic uncertainty not properly communicated to user",
+                doctrineSections: [DoctrineSection.DS_FOUNDATION_TRANSPARENCY, DoctrineSection.DS_02_STATE_IS_INFERENCE]
+            });
+        }
+    }
+    // D) Emotional safety & therapeutic integrity - Soft invariants for therapeutic quality
+    // S10: Therapeutic drift should be monitored and corrected
+    if (ev.ambiguityFlags?.includes("therapeutic_drift_detected")) {
+        // Check if therapeutic boundaries were re-established
+        const hasTherapeuticCorrection = ev.nonActions?.some(na => na.consideredAction === "ground" &&
+            na.blockedByRule.includes("THERAPEUTIC_DRIFT_CORRECTION"));
+        if (!hasTherapeuticCorrection) {
+            v.push({
+                code: "S10_THERAPEUTIC_DRIFT_UNCORRECTED",
+                message: "Therapeutic drift detected but not properly corrected",
+                doctrineSections: [DoctrineSection.DS_06_AUTONOMY_RESPECTED, DoctrineSection.DS_10_FAILURE_COST_SYSTEM]
+            });
+        }
+    }
+    // E) Trust UX Failures - Soft invariants for user experience integrity
+    // S11: Trust erosion patterns should trigger trust rebuilding measures
+    if (ev.ambiguityFlags?.includes("trust_erosion_pattern")) {
+        // Check if trust rebuilding measures were implemented
+        const hasTrustRebuilding = ev.nonActions?.some(na => (na.consideredAction === "ground" || na.consideredAction === "clarify_intent") &&
+            na.blockedByRule.includes("TRUST_REBUILDING"));
+        if (!hasTrustRebuilding) {
+            v.push({
+                code: "S11_TRUST_EROSION_UNADDRESSED",
+                message: "Trust erosion pattern detected but trust rebuilding measures not implemented",
+                doctrineSections: [DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE, DoctrineSection.DS_FOUNDATION_TRANSPARENCY]
+            });
+        }
+    }
+    // F) Product/Platform Abuse - Soft invariants for abuse prevention
+    // S12: Platform abuse patterns should trigger containment measures
+    if (ev.ambiguityFlags?.includes("platform_abuse_pattern")) {
+        // Check if abuse was properly contained
+        const hasAbuseContainment = ev.nonActions?.some(na => na.consideredAction === "block_exit" &&
+            na.blockedByRule.includes("PLATFORM_ABUSE_CONTAINMENT"));
+        if (!hasAbuseContainment) {
+            v.push({
+                code: "S12_PLATFORM_ABUSE_UNCONTAINED",
+                message: "Platform abuse pattern detected but not properly contained",
+                doctrineSections: [DoctrineSection.DS_10_FAILURE_COST_SYSTEM, DoctrineSection.DS_13_VIOLATION_IS_DECISION]
+            });
+        }
+    }
     return v;
 }
 export function enforceSoftInvariants(ev) {
-    var violations = evaluateSoftInvariants(ev);
+    const violations = evaluateSoftInvariants(ev);
     if (!violations.length)
         return;
-    var unapproved = violations.filter(function (x) { return !hasValidOverride(ev, x.doctrineSections); });
+    const unapproved = violations.filter(x => !hasValidOverride(ev, x.doctrineSections));
     if (!unapproved.length)
         return;
     // Collect all doctrine sections from unapproved violations
-    var allViolatedSections = unapproved.flatMap(function (v) { return v.doctrineSections; });
+    const allViolatedSections = unapproved.flatMap(v => v.doctrineSections);
     // Fail closed at the boundary where you persist events, not at runtime response generation.
     // This prevents "silent drift" entering telemetry.
-    throw new DoctrineViolation("S_SOFT_VIOLATION_WITHOUT_OVERRIDE", unapproved.map(function (u) { return "".concat(u.code, "(").concat(u.doctrineSections.join(","), "): ").concat(u.message); }).join(" | "), allViolatedSections);
+    throw new DoctrineViolation("S_SOFT_VIOLATION_WITHOUT_OVERRIDE", unapproved.map(u => `${u.code}(${u.doctrineSections.join(",")}): ${u.message}`).join(" | "), allViolatedSections);
 }
 //# sourceMappingURL=softInvariants.js.map

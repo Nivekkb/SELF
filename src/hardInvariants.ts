@@ -16,6 +16,13 @@ function requireField<T>(val: T | undefined | null, code: string, msg: string, s
  * Enforces hard invariants that cannot be violated under any circumstances.
  * Hard invariants cause immediate system failure when breached.
  * These are absolute rules that preserve the fundamental safety properties of SELF.
+ * 
+ * CRITICAL: This enforcement is IMMUTABLE as of 2025-12-22. All hard invariants
+ * are permanently active and cannot be disabled, modified, or bypassed
+ * under any circumstances.
+ * 
+ * This immutability protects users from all versions of the system creator,
+ * including current, future, corrupted, desperate, or overconfident versions.
  */
 export function enforceHardInvariants(ev: SelfEvent): void {
   // H0: Doctrine version integrity - Foundation Section 0

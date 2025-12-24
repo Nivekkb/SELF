@@ -1,32 +1,12 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 import fs from "node:fs";
 import path from "node:path";
-import { selfConfig } from "./config";
-import { ExitType, hasExitIntent } from "./exit-decision";
+import { selfConfig } from "./config.js";
+import { ExitType, hasExitIntent } from "./exit-decision.js";
+import { getEffectivePolicy } from "./policy-profiles.js";
 export function processAngerPhysicalityClarifier(message, detection) {
-    var _a;
-    var normalizedMessage = normalize(message);
+    const normalizedMessage = normalize(message);
     // Check if clarification is required (ANGRY_PHYSICALITY triggered but target unclear)
-    var angerPhysicalityTriggered = ((_a = detection.triggers) === null || _a === void 0 ? void 0 : _a.includes("ANGRY_PHYSICALITY")) || false;
+    const angerPhysicalityTriggered = detection.triggers?.includes("ANGRY_PHYSICALITY") || false;
     if (!angerPhysicalityTriggered) {
         return {
             required: false,
@@ -36,18 +16,17 @@ export function processAngerPhysicalityClarifier(message, detection) {
         };
     }
     // Check if target is already clear from the message
-    var targetPatterns = {
+    const targetPatterns = {
         self: ['myself', 'me', 'my own', 'i will', 'i want to', 'i feel like'],
         others: ['someone', 'somebody', 'him', 'her', 'them', 'he', 'she', 'they', 'person', 'people', 'my partner', 'my friend', 'my boss', 'my coworker'],
         objects: ['wall', 'door', 'table', 'phone', 'computer', 'glass', 'dish', 'plate', 'furniture', 'car', 'window', 'mirror', 'something'],
         none: ['nothing', 'no one', 'nobody', 'not really', 'not at all', 'just venting', 'just frustrated', 'just angry']
     };
-    for (var _i = 0, _b = Object.entries(targetPatterns); _i < _b.length; _i++) {
-        var _c = _b[_i], target = _c[0], patterns = _c[1];
-        if (patterns.some(function (pattern) { return normalizedMessage.includes(pattern); })) {
+    for (const [target, patterns] of Object.entries(targetPatterns)) {
+        if (patterns.some(pattern => normalizedMessage.includes(pattern))) {
             return {
                 required: false,
-                reason: "Target identified as \"".concat(target, "\" from message"),
+                reason: `Target identified as "${target}" from message`,
                 target: target,
                 resolved: true
             };
@@ -69,7 +48,7 @@ function resolveLogPath(explicit) {
         return explicit;
     if (process.env.SELF_LOG_PATH)
         return process.env.SELF_LOG_PATH;
-    var dir = process.env.SELF_LOG_DIR || path.resolve(process.cwd(), "logs");
+    const dir = process.env.SELF_LOG_DIR || path.resolve(process.cwd(), "logs");
     return path.join(dir, "self-log.jsonl");
 }
 function normalize(text) {
@@ -79,23 +58,22 @@ function escapeRegex(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 function matchCount(text, phrases) {
-    var matched = [];
-    var hits = 0;
-    for (var _i = 0, phrases_1 = phrases; _i < phrases_1.length; _i++) {
-        var phrase = phrases_1[_i];
-        var regex = new RegExp("(?<!\\w)".concat(escapeRegex(phrase), "(?!\\w)"), "i");
+    const matched = [];
+    let hits = 0;
+    for (const phrase of phrases) {
+        const regex = new RegExp(`(?<!\\w)${escapeRegex(phrase)}(?!\\w)`, "i");
         if (regex.test(text)) {
             hits += 1;
             matched.push(phrase);
         }
     }
-    return { hits: hits, matched: matched };
+    return { hits, matched };
 }
-var SAFE_VALIDATION_FALLBACK = selfConfig.lexicon.safeValidationPhrases[0] ||
+const SAFE_VALIDATION_FALLBACK = selfConfig.lexicon.safeValidationPhrases[0] ||
     "it makes sense that this feels unsettling and hard to make sense of";
 function buildSurveillanceContainmentReplacement() {
     return [
-        "".concat(SAFE_VALIDATION_FALLBACK, "."),
+        `${SAFE_VALIDATION_FALLBACK}.`,
         "I'm not able to check a phone or help investigate whether someone is monitoring you.",
         "What I can do is help you get grounded in the moment and choose one small next step that supports your safety.",
         "If you want general privacy hygiene (without assuming anything is happening): update your device, review app permissions, and consider asking a trusted person or a qualified support service to help you look things over.",
@@ -105,33 +83,32 @@ function normalizeForMatch(text) {
     return normalize(text).replace(/\s+/g, " ").trim();
 }
 function detectCertaintyPush(message) {
-    var low = normalize(message);
-    var matches = selfConfig.lexicon.certaintyPushes.filter(function (p) { return low.includes(normalize(p)); });
-    return { triggered: matches.length > 0, matches: matches };
+    const low = normalize(message);
+    const matches = selfConfig.lexicon.certaintyPushes.filter((p) => low.includes(normalize(p)));
+    return { triggered: matches.length > 0, matches };
 }
 function deriveReassurancePenalty(text) {
-    var _a = matchCount(text, selfConfig.lexicon.reassurance), hits = _a.hits, matched = _a.matched;
+    const { hits, matched } = matchCount(text, selfConfig.lexicon.reassurance);
     if (!hits)
         return { score: 0, reasons: [] };
     return {
         score: hits * selfConfig.weights.reassurance,
-        reasons: matched.map(function (p) { return "Reassurance signal: \"".concat(p, "\""); }),
+        reasons: matched.map((p) => `Reassurance signal: "${p}"`),
     };
 }
-export function detectState(message, history) {
-    if (history === void 0) { history = []; }
-    var text = normalize(message);
-    var scores = {};
-    var reasons = [];
-    var triggers = [];
-    var panic = matchCount(text, selfConfig.lexicon.panic);
-    var hopelessness = matchCount(text, selfConfig.lexicon.hopelessness);
-    var selfHarm = matchCount(text, selfConfig.lexicon.selfHarm);
-    var shame = matchCount(text, selfConfig.lexicon.shame);
-    var urgency = matchCount(text, selfConfig.lexicon.urgency);
-    var anger = matchCount(text, selfConfig.lexicon.anger);
-    var angryPhysicality = matchCount(text, selfConfig.lexicon.angryPhysicality);
-    var reassurance = deriveReassurancePenalty(text);
+export function detectState(message, history = []) {
+    const text = normalize(message);
+    const scores = {};
+    const reasons = [];
+    const triggers = [];
+    const panic = matchCount(text, selfConfig.lexicon.panic);
+    const hopelessness = matchCount(text, selfConfig.lexicon.hopelessness);
+    const selfHarm = matchCount(text, selfConfig.lexicon.selfHarm);
+    const shame = matchCount(text, selfConfig.lexicon.shame);
+    const urgency = matchCount(text, selfConfig.lexicon.urgency);
+    const anger = matchCount(text, selfConfig.lexicon.anger);
+    const angryPhysicality = matchCount(text, selfConfig.lexicon.angryPhysicality);
+    const reassurance = deriveReassurancePenalty(text);
     scores.panic = panic.hits * selfConfig.weights.panic;
     scores.hopelessness = hopelessness.hits * selfConfig.weights.hopelessness;
     scores.selfHarm = selfHarm.hits * selfConfig.weights.selfHarm;
@@ -140,12 +117,11 @@ export function detectState(message, history) {
     scores.anger = anger.hits * selfConfig.weights.anger;
     scores.angryPhysicality = angryPhysicality.hits * selfConfig.weights.angryPhysicality;
     scores.reassurance = reassurance.score;
-    for (var _i = 0, _a = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], panic.matched, true), hopelessness.matched, true), selfHarm.matched, true), shame.matched, true), urgency.matched, true), anger.matched, true), angryPhysicality.matched, true); _i < _a.length; _i++) {
-        var phrase = _a[_i];
-        reasons.push("Matched phrase: \"".concat(phrase, "\""));
+    for (const phrase of [...panic.matched, ...hopelessness.matched, ...selfHarm.matched, ...shame.matched, ...urgency.matched, ...anger.matched, ...angryPhysicality.matched]) {
+        reasons.push(`Matched phrase: "${phrase}"`);
     }
-    reasons.push.apply(reasons, reassurance.reasons);
-    var hasExplicitSelfHarm = selfHarm.hits > 0;
+    reasons.push(...reassurance.reasons);
+    const hasExplicitSelfHarm = selfHarm.hits > 0;
     if (hasExplicitSelfHarm) {
         reasons.push("Explicit self-harm language detected");
     }
@@ -154,13 +130,13 @@ export function detectState(message, history) {
         reasons.push("Looping/rumination language detected");
     }
     // Boost for looping distress in recent history
-    var recentUserMessages = history.filter(function (m) { return m.role === "user"; }).slice(-3);
-    var repeatedThemes = recentUserMessages.filter(function (m) { return normalize(m.content).includes("can't") || normalize(m.content).includes("cant"); }).length;
+    const recentUserMessages = history.filter((m) => m.role === "user").slice(-3);
+    const repeatedThemes = recentUserMessages.filter((m) => normalize(m.content).includes("can't") || normalize(m.content).includes("cant")).length;
     if (repeatedThemes >= 2) {
         scores.panic += 0.5;
         reasons.push("Detected repetition of distress statements in recent history");
     }
-    var totalScore = scores.panic +
+    const totalScore = scores.panic +
         scores.hopelessness +
         scores.selfHarm +
         scores.shame +
@@ -168,16 +144,16 @@ export function detectState(message, history) {
         scores.anger +
         scores.reassurance;
     if (totalScore >= selfConfig.thresholds.crisis) {
-        reasons.push("Crisis threshold reached: combined distress ".concat(totalScore, " >= ").concat(selfConfig.thresholds.crisis));
+        reasons.push(`Crisis threshold reached: combined distress ${totalScore} >= ${selfConfig.thresholds.crisis}`);
     }
     // ANGRY_PHYSICALITY trigger detection
-    var angryPhysicalityTriggered = angryPhysicality.hits > 0;
+    const angryPhysicalityTriggered = angryPhysicality.hits > 0;
     if (angryPhysicalityTriggered) {
         triggers.push("ANGRY_PHYSICALITY");
-        reasons.push("ANGRY_PHYSICALITY trigger fired: ".concat(angryPhysicality.matched.join(", ")));
+        reasons.push(`ANGRY_PHYSICALITY trigger fired: ${angryPhysicality.matched.join(", ")}`);
     }
-    var state = "S0";
-    var minForcedState;
+    let state = "S0";
+    let minForcedState;
     // Determine base state from scoring
     if (hasExplicitSelfHarm || scores.selfHarm >= selfConfig.thresholds.s3 || totalScore >= selfConfig.thresholds.s3 + 1) {
         state = "S3";
@@ -193,31 +169,30 @@ export function detectState(message, history) {
     }
     // Apply ANGRY_PHYSICALITY trigger forcing (force state >= S2)
     if (angryPhysicalityTriggered) {
-        var stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
-        var currentIndex = stateOrder.indexOf(state);
-        var s2Index = stateOrder.indexOf("S2");
+        const stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
+        const currentIndex = stateOrder.indexOf(state);
+        const s2Index = stateOrder.indexOf("S2");
         if (currentIndex < s2Index) {
             minForcedState = "S2";
             state = "S2";
             reasons.push("State forced to S2 due to ANGRY_PHYSICALITY trigger");
         }
     }
-    return { state: state, scores: scores, reasons: reasons, triggers: triggers, minForcedState: minForcedState };
+    return { state, scores, reasons, triggers, minForcedState };
 }
-export function buildPolicy(state) {
-    var base = selfConfig.policies[state];
-    return __assign({ state: state }, base);
+function buildPolicy(state) {
+    return getEffectivePolicy({ state });
 }
 export function applyPolicyToPrompt(policy, baseSystemPrompt, variant) {
-    var lines = [
-        "SELF state: ".concat(policy.state),
-        "Allowed response classes: ".concat(policy.allowedResponseClasses.join(", ")),
-        "Hard caps: max ".concat(policy.maxWords, " words, max ").concat(policy.maxQuestions, " question(s)"),
-        "Avoid banned phrases and abrupt refusals: ".concat(policy.bannedPhrases.join(", ") || "none"),
-        "Style rules: ".concat(policy.styleRules.join("; ")),
+    const lines = [
+        `SELF state: ${policy.state}`,
+        `Allowed response classes: ${policy.allowedResponseClasses.join(", ")}`,
+        `Hard caps: max ${policy.maxWords} words, max ${policy.maxQuestions} question(s)`,
+        `Avoid banned phrases and abrupt refusals: ${policy.bannedPhrases.join(", ") || "none"}`,
+        `Style rules: ${policy.styleRules.join("; ")}`,
     ];
     if (variant && variant !== "control") {
-        lines.push("Variant: ".concat(variant));
+        lines.push(`Variant: ${variant}`);
     }
     if (policy.requiresGrounding) {
         lines.push("Include a grounding/containment step to slow the pace.");
@@ -238,15 +213,15 @@ export function applyPolicyToPrompt(policy, baseSystemPrompt, variant) {
         lines.push("Do not name or describe surveillance/hacking mechanisms; avoid technical speculation entirely.");
     }
     if (policy.requiresLoopBreaker) {
-        lines.push("Include this loop-breaker line verbatim: \"".concat(policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine, "\""));
+        lines.push(`Include this loop-breaker line verbatim: "${policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine}"`);
     }
     if (policy.requiresHandoffFraming) {
-        lines.push("Include this human-handoff framing line: \"".concat(policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine, "\""));
+        lines.push(`Include this human-handoff framing line: "${policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine}"`);
     }
     if (policy.isTerminalState) {
         lines.push("TERMINAL STATE: Suppress all engagement heuristics, enforce exit/rest posture.");
     }
-    return "".concat(baseSystemPrompt, "\n\nSELF POLICY (").concat(policy.state, "):\n").concat(lines.map(function (l) { return "- ".concat(l); }).join("\n"));
+    return `${baseSystemPrompt}\n\nSELF POLICY (${policy.state}):\n${lines.map((l) => `- ${l}`).join("\n")}`;
 }
 // State-gated response contract for S0 terminal state
 export function applyStateGatedResponseContract(output, policy, userMessage) {
@@ -255,13 +230,13 @@ export function applyStateGatedResponseContract(output, policy, userMessage) {
         return output;
     }
     // Apply S0 terminal state behavior
-    var result = output;
+    let result = output;
     // 1. Suppress all questions
     if (policy.suppressQuestions) {
         result = result.replace(/\?/g, ".");
     }
     // 2. Remove engagement heuristics and grounding offers
-    var engagementPatterns = [
+    const engagementPatterns = [
         /what feels most present for you right now\?/gi,
         /what would be most supportive in this moment\?/gi,
         /would you like to stay with this, or pause for a beat\?/gi,
@@ -278,13 +253,12 @@ export function applyStateGatedResponseContract(output, policy, userMessage) {
         /what tiny thing feels doable/gi,
         /you can pick one small action/gi
     ];
-    for (var _i = 0, engagementPatterns_1 = engagementPatterns; _i < engagementPatterns_1.length; _i++) {
-        var pattern = engagementPatterns_1[_i];
+    for (const pattern of engagementPatterns) {
         result = result.replace(pattern, "");
     }
     // 3. Enforce rest posture - use declarative, closing statements
     if (policy.enforceRestPosture) {
-        var restPostureStatements = [
+        const restPostureStatements = [
             "I'm here with you.",
             "You're not alone.",
             "This space is always here when you need it.",
@@ -293,9 +267,9 @@ export function applyStateGatedResponseContract(output, policy, userMessage) {
             "I'll be quiet now so you can rest."
         ];
         // If the output is empty or very short after removing engagement patterns, add a rest posture statement
-        var words = result.trim().split(/\s+/).filter(Boolean);
+        const words = result.trim().split(/\s+/).filter(Boolean);
         if (words.length < 5) {
-            var restStatement = restPostureStatements[Math.floor(Math.random() * restPostureStatements.length)];
+            const restStatement = restPostureStatements[Math.floor(Math.random() * restPostureStatements.length)];
             result = restStatement;
         }
     }
@@ -304,7 +278,7 @@ export function applyStateGatedResponseContract(output, policy, userMessage) {
     // 5. Clean up multiple spaces and trim
     result = result.replace(/\s+/g, " ").trim();
     // 6. Ensure we don't exceed max words
-    var finalWords = result.split(/\s+/).filter(Boolean);
+    const finalWords = result.split(/\s+/).filter(Boolean);
     if (finalWords.length > policy.maxWords) {
         result = finalWords.slice(0, policy.maxWords).join(" ").trim() + "...";
     }
@@ -314,7 +288,7 @@ function countQuestions(output) {
     return (output.match(/\?/g) || []).length;
 }
 function userOptedOutOfQuestions(message) {
-    var low = normalize(message);
+    const low = normalize(message);
     return (low.includes("dont ask") ||
         low.includes("don't ask") ||
         low.includes("no questions") ||
@@ -341,26 +315,26 @@ function userOptedOutOfQuestions(message) {
         low.includes("too tired"));
 }
 function canAppendWithoutTruncation(text, suffix, maxWords) {
-    var coreWords = text.trim().split(/\s+/).filter(Boolean).length;
-    var suffixWords = suffix.trim().split(/\s+/).filter(Boolean).length;
+    const coreWords = text.trim().split(/\s+/).filter(Boolean).length;
+    const suffixWords = suffix.trim().split(/\s+/).filter(Boolean).length;
     return coreWords + suffixWords <= maxWords;
 }
 function defaultFollowUpQuestion(state, seed) {
-    var s0Questions = [
+    const s0Questions = [
         "What feels most present for you right now?",
         "What would be most supportive in this moment?",
         "Would you like to stay with this, or pause for a beat?",
         "Do you want a listening ear, or a next step?",
         "What feels like the kindest next thing to name?",
     ];
-    var s1Questions = [
+    const s1Questions = [
         "What would help you feel a little more steady right now?",
         "Do you want to slow down together, or talk it through?",
         "What kind of support would help most right now?",
         "What would make the next minute feel a bit easier?",
     ];
-    var cues = state === "S1" ? s1Questions : s0Questions;
-    return pickCue("".concat(normalize(seed), "|").concat(state, "|followup"), cues) || cues[0];
+    const cues = state === "S1" ? s1Questions : s0Questions;
+    return pickCue(`${normalize(seed)}|${state}|followup`, cues) || cues[0];
 }
 export function maybeAddFollowUpQuestion(output, policy, userMessage) {
     if (!output.trim())
@@ -377,25 +351,25 @@ export function maybeAddFollowUpQuestion(output, policy, userMessage) {
         if (userOptedOutOfQuestions(userMessage))
             return output;
         // Check for sleep/rest intent and suppress questions
-        var _a = checkForExitAndRestIntents(userMessage), hasRestIntent = _a.hasRestIntent, hasExplicitConsentToEnd = _a.hasExplicitConsentToEnd;
+        const { hasRestIntent, hasExplicitConsentToEnd } = checkForExitAndRestIntents(userMessage);
         if (hasRestIntent || hasExplicitConsentToEnd)
             return output;
     }
-    var question = defaultFollowUpQuestion(policy.state, userMessage || output);
+    const question = defaultFollowUpQuestion(policy.state, userMessage || output);
     if (!question)
         return output;
-    var suffix = question.trim().endsWith("?") ? question.trim() : "".concat(question.trim(), "?");
+    const suffix = question.trim().endsWith("?") ? question.trim() : `${question.trim()}?`;
     if (!canAppendWithoutTruncation(output, suffix, policy.maxWords))
         return output;
-    return "".concat(output.trim(), " ").concat(suffix).trim();
+    return `${output.trim()} ${suffix}`.trim();
 }
 function continuityInviteQuestion(seed) {
-    var questions = [
+    const questions = [
         "If you want to come back to that, what feels most important right now?",
         "If it helps to revisit it, what part do you want to start with?",
         "If you'd like to pick that back up, what's the key piece to name?",
     ];
-    return pickCue("".concat(normalize(seed), "|continuity"), questions) || questions[0];
+    return pickCue(`${normalize(seed)}|continuity`, questions) || questions[0];
 }
 export function rewriteContinuityQuestions(output, policy, userMessage) {
     if (!output.trim())
@@ -404,46 +378,43 @@ export function rewriteContinuityQuestions(output, policy, userMessage) {
         return output;
     if (policy.state !== "S0" && policy.state !== "S1" && policy.state !== "S0_GUARDED")
         return output;
-    var continuityQuestion = continuityInviteQuestion(userMessage || output);
-    var recapQuestionPatterns = [
+    const continuityQuestion = continuityInviteQuestion(userMessage || output);
+    const recapQuestionPatterns = [
         /\b(?:can|could|would)\s+you\s+(?:please\s+)?remind\s+me\s+what\b[^?]*\?/gi,
         /\bwhat\s+did\s+(?:i|you)\s+(?:say|mention)\s+(?:earlier|before)\b[^?]*\?/gi,
         /\bwhat\s+were\s+you\s+(?:originally|initially)\s+(?:frustrated|upset|angry|mad)\s+about\b[^?]*\?/gi,
         /\b(?:can|could|would)\s+you\s+(?:please\s+)?(?:recap|repeat)\b[^?]*\?/gi,
         /\b(?:can|could|would)\s+you\s+(?:please\s+)?tell\s+me\s+again\b[^?]*\?/gi,
     ];
-    var recapStatementPatterns = [
+    const recapStatementPatterns = [
         /\b(?:can|could|would)\s+you\s+(?:please\s+)?remind\s+me\s+what\b[^.?!]*[.?!]/gi,
         /\bwhat\s+did\s+(?:i|you)\s+(?:say|mention)\s+(?:earlier|before)\b[^.?!]*[.?!]/gi,
         /\bwhat\s+were\s+you\s+(?:originally|initially)\s+(?:frustrated|upset|angry|mad)\s+about\b[^.?!]*[.?!]/gi,
     ];
-    var memoryDisclaimerPatterns = [
+    const memoryDisclaimerPatterns = [
         /\b(?:i\s+)?(?:don't|do\s+not)\s+(?:remember|recall)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:can't|cannot)\s+(?:remember|recall)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:don't|do\s+not)\s+have\s+(?:access|context)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:can't|cannot)\s+(?:access|see)\s+(?:earlier|previous)\b[^.?!]*[.?!]/gi,
     ];
-    var result = output;
-    var changed = false;
-    for (var _i = 0, recapQuestionPatterns_1 = recapQuestionPatterns; _i < recapQuestionPatterns_1.length; _i++) {
-        var pattern = recapQuestionPatterns_1[_i];
-        var next = result.replace(pattern, continuityQuestion);
+    let result = output;
+    let changed = false;
+    for (const pattern of recapQuestionPatterns) {
+        const next = result.replace(pattern, continuityQuestion);
         if (next !== result) {
             changed = true;
             result = next;
         }
     }
-    for (var _a = 0, recapStatementPatterns_1 = recapStatementPatterns; _a < recapStatementPatterns_1.length; _a++) {
-        var pattern = recapStatementPatterns_1[_a];
-        var next = result.replace(pattern, "");
+    for (const pattern of recapStatementPatterns) {
+        const next = result.replace(pattern, "");
         if (next !== result) {
             changed = true;
             result = next;
         }
     }
-    for (var _b = 0, memoryDisclaimerPatterns_1 = memoryDisclaimerPatterns; _b < memoryDisclaimerPatterns_1.length; _b++) {
-        var pattern = memoryDisclaimerPatterns_1[_b];
-        var next = result.replace(pattern, "");
+    for (const pattern of memoryDisclaimerPatterns) {
+        const next = result.replace(pattern, "");
         if (next !== result) {
             changed = true;
             result = next;
@@ -453,19 +424,19 @@ export function rewriteContinuityQuestions(output, policy, userMessage) {
         return output;
     result = result.replace(/\s+/g, " ").trim();
     if (!result) {
-        var fallback = continuityQuestion.trim();
-        var fallbackWords = fallback.split(/\s+/).filter(Boolean);
+        const fallback = continuityQuestion.trim();
+        const fallbackWords = fallback.split(/\s+/).filter(Boolean);
         if (fallbackWords.length <= policy.maxWords)
             return fallback;
         return output;
     }
-    var words = result.split(/\s+/).filter(Boolean);
+    const words = result.split(/\s+/).filter(Boolean);
     if (words.length > policy.maxWords)
         return output;
     return result;
 }
 function userInvitesRecall(message) {
-    var low = normalize(message || "");
+    const low = normalize(message || "");
     return (low.includes("remember") ||
         low.includes("as i said") ||
         low.includes("like i said") ||
@@ -484,49 +455,45 @@ function userInvitesRecall(message) {
         low.includes("where were we"));
 }
 function stripMemoryLimitMeta(text) {
-    var patterns = [
+    const patterns = [
         /\b(?:i\s+)?(?:don't|do\s+not)\s+(?:remember|recall)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:can't|cannot)\s+(?:remember|recall)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:don't|do\s+not)\s+have\s+(?:access|context)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:can't|cannot)\s+(?:access|see)\s+(?:earlier|previous)\b[^.?!]*[.?!]/gi,
         /\b(?:i\s+)?(?:don't|do\s+not)\s+(?:retain|store)\s+(?:memory|memories)\b[^.?!]*[.?!]/gi,
     ];
-    var result = text;
-    var changed = false;
-    for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
-        var pattern = patterns_1[_i];
-        var next = result.replace(pattern, "");
+    let result = text;
+    let changed = false;
+    for (const pattern of patterns) {
+        const next = result.replace(pattern, "");
         if (next !== result) {
             changed = true;
             result = next;
         }
     }
     result = result.replace(/\s+/g, " ").trim();
-    return { text: result, changed: changed };
+    return { text: result, changed };
 }
 function capitalizeLeadingLetter(text) {
-    return text.replace(/^[\s"'“”‘’(\[]*([a-z])/, function (match, letter) {
-        return match.replace(letter, letter.toUpperCase());
-    });
+    return text.replace(/^[\s"'“”‘’(\[]*([a-z])/, (match, letter) => match.replace(letter, letter.toUpperCase()));
 }
 export function rewriteSpokenMemoryRecall(output, policy, userMessage) {
     if (!output.trim())
         return output;
-    var stripped = stripMemoryLimitMeta(output);
-    var result = stripped.text;
-    var changed = stripped.changed;
-    var invited = userInvitesRecall(userMessage || "");
+    const stripped = stripMemoryLimitMeta(output);
+    let result = stripped.text;
+    let changed = stripped.changed;
+    const invited = userInvitesRecall(userMessage || "");
     if (!invited) {
-        var recallPrefacePatterns = [
+        const recallPrefacePatterns = [
             /(^|[.!?]\s+)(?:earlier|before|previously|last time),?\s+you\s+(?:said|mentioned|shared|told me)\s+(?:that\s+)?/gi,
             /(^|[.!?]\s+)you\s+(?:said|mentioned|shared|told me)\s+(?:earlier|before|previously|last time),?\s+(?:that\s+)?/gi,
             /(^|[.!?]\s+)(?:as|like)\s+you\s+(?:said|mentioned|shared)\s+(?:earlier|before|previously|last time),?\s+/gi,
             /(^|[.!?]\s+)(?:i\s+)?(?:remember|recall)\s+you\s+(?:said|mentioned|shared|told me)\s+(?:earlier|before|previously|last time)?\s*,?\s*(?:that\s+)?/gi,
             /(^|[.!?]\s+)as\s+we\s+(?:talked|spoke)\s+about\s+(?:earlier|before|previously),?\s+/gi,
         ];
-        for (var _i = 0, recallPrefacePatterns_1 = recallPrefacePatterns; _i < recallPrefacePatterns_1.length; _i++) {
-            var pattern = recallPrefacePatterns_1[_i];
-            var next = result.replace(pattern, "$1");
+        for (const pattern of recallPrefacePatterns) {
+            const next = result.replace(pattern, "$1");
             if (next !== result) {
                 changed = true;
                 result = next;
@@ -539,18 +506,18 @@ export function rewriteSpokenMemoryRecall(output, policy, userMessage) {
     if (!result)
         return output;
     result = capitalizeLeadingLetter(result);
-    var words = result.split(/\s+/).filter(Boolean);
+    const words = result.split(/\s+/).filter(Boolean);
     if (words.length > policy.maxWords)
         return output;
     return result;
 }
 function hasHypotheticals(output) {
-    var low = normalize(output);
-    return selfConfig.lexicon.hypotheticals.some(function (phrase) { return low.includes(phrase); });
+    const low = normalize(output);
+    return selfConfig.lexicon.hypotheticals.some((phrase) => low.includes(phrase));
 }
 function stableHash(text) {
-    var hash = 0;
-    for (var i = 0; i < text.length; i += 1) {
+    let hash = 0;
+    for (let i = 0; i < text.length; i += 1) {
         hash = (hash << 5) - hash + text.charCodeAt(i);
         hash |= 0;
     }
@@ -559,234 +526,225 @@ function stableHash(text) {
 function pickCue(seed, cues) {
     if (cues.length === 0)
         return "";
-    var idx = Math.abs(stableHash(seed)) % cues.length;
+    const idx = Math.abs(stableHash(seed)) % cues.length;
     return cues[idx];
 }
 function ensureCrisisSupport(output) {
-    var low = normalize(output);
-    for (var _i = 0, _a = selfConfig.lexicon.crisis; _i < _a.length; _i++) {
-        var line = _a[_i];
+    const low = normalize(output);
+    for (const line of selfConfig.lexicon.crisis) {
         if (low.includes(normalize(line))) {
             return output;
         }
     }
-    var crisisLine = selfConfig.lexicon.crisis[0];
-    return "".concat(output.trim(), " ").concat(crisisLine, ".");
+    const crisisLine = selfConfig.lexicon.crisis[0];
+    return `${output.trim()} ${crisisLine}.`;
 }
 function ensureHandoffFraming(output, line) {
-    var low = normalize(output);
+    const low = normalize(output);
     if (!line)
         return output;
     if (low.includes(normalize(line)))
         return output;
-    return "".concat(line, " ").concat(output.trim()).trim();
+    return `${line} ${output.trim()}`.trim();
 }
 function ensureGrounding(output) {
-    var low = normalize(output);
-    for (var _i = 0, _a = selfConfig.lexicon.grounding; _i < _a.length; _i++) {
-        var phrase = _a[_i];
+    const low = normalize(output);
+    for (const phrase of selfConfig.lexicon.grounding) {
         if (low.includes(phrase)) {
             return output;
         }
     }
-    var prompt = pickCue("".concat(low, "|grounding"), selfConfig.lexicon.grounding) || selfConfig.lexicon.grounding[0];
-    return "".concat(output.trim(), " ").concat(prompt, ".");
+    const prompt = pickCue(`${low}|grounding`, selfConfig.lexicon.grounding) || selfConfig.lexicon.grounding[0];
+    return `${output.trim()} ${prompt}.`;
 }
 function ensureAgency(output) {
-    var low = normalize(output);
-    for (var _i = 0, _a = selfConfig.lexicon.agency; _i < _a.length; _i++) {
-        var phrase = _a[_i];
+    const low = normalize(output);
+    for (const phrase of selfConfig.lexicon.agency) {
         if (low.includes(phrase)) {
             return output;
         }
     }
-    var prompt = selfConfig.lexicon.agency[0];
-    return "".concat(output.trim(), " ").concat(prompt, ".");
+    const prompt = selfConfig.lexicon.agency[0];
+    return `${output.trim()} ${prompt}.`;
 }
 function capWordsPreservingSuffix(text, maxWords, suffix) {
-    var coreWords = text.trim().split(/\s+/).filter(Boolean);
-    var suffixWords = suffix.trim().split(/\s+/).filter(Boolean);
+    const coreWords = text.trim().split(/\s+/).filter(Boolean);
+    const suffixWords = suffix.trim().split(/\s+/).filter(Boolean);
     if (coreWords.length + suffixWords.length <= maxWords) {
-        return "".concat(text.trim()).concat(suffix ? " ".concat(suffix.trim()) : "").trim();
+        return `${text.trim()}${suffix ? ` ${suffix.trim()}` : ""}`.trim();
     }
-    var budget = Math.max(0, maxWords - suffixWords.length);
-    var clipped = coreWords.slice(0, budget).join(" ").trim();
-    var needsEllipsis = coreWords.length > budget && clipped.length > 0;
-    var ellipsis = needsEllipsis ? "…" : "";
-    return "".concat(clipped).concat(ellipsis).concat(suffix ? " ".concat(suffix.trim()) : "").trim();
+    const budget = Math.max(0, maxWords - suffixWords.length);
+    const clipped = coreWords.slice(0, budget).join(" ").trim();
+    const needsEllipsis = coreWords.length > budget && clipped.length > 0;
+    const ellipsis = needsEllipsis ? "…" : "";
+    return `${clipped}${ellipsis}${suffix ? ` ${suffix.trim()}` : ""}`.trim();
 }
 function capWordsPreservingAffixes(text, maxWords, prefix, suffix) {
-    var prefixWords = prefix.trim().split(/\s+/).filter(Boolean);
-    var suffixWords = suffix.trim().split(/\s+/).filter(Boolean);
+    const prefixWords = prefix.trim().split(/\s+/).filter(Boolean);
+    const suffixWords = suffix.trim().split(/\s+/).filter(Boolean);
     if (prefixWords.length + suffixWords.length >= maxWords) {
-        var combined = "".concat(prefix.trim(), " ").concat(suffix.trim()).trim();
+        const combined = `${prefix.trim()} ${suffix.trim()}`.trim();
         return combined.split(/\s+/).slice(0, maxWords).join(" ").trim();
     }
-    var budget = Math.max(0, maxWords - prefixWords.length);
-    var afterPrefix = text.trim();
-    var capped = capWordsPreservingSuffix(afterPrefix, budget, suffix);
-    return "".concat(prefix.trim(), " ").concat(capped).trim();
+    const budget = Math.max(0, maxWords - prefixWords.length);
+    const afterPrefix = text.trim();
+    const capped = capWordsPreservingSuffix(afterPrefix, budget, suffix);
+    return `${prefix.trim()} ${capped}`.trim();
 }
 export function validateOutput(output, policy) {
-    var low = normalize(output);
-    var violations = [];
-    var words = output.trim().split(/\s+/).filter(Boolean);
+    const low = normalize(output);
+    const violations = [];
+    const words = output.trim().split(/\s+/).filter(Boolean);
     if (words.length > policy.maxWords) {
-        violations.push("Word count ".concat(words.length, " exceeds max ").concat(policy.maxWords));
+        violations.push(`Word count ${words.length} exceeds max ${policy.maxWords}`);
     }
-    var questionCount = countQuestions(output);
+    const questionCount = countQuestions(output);
     if (questionCount > policy.maxQuestions) {
-        violations.push("Question count ".concat(questionCount, " exceeds max ").concat(policy.maxQuestions));
+        violations.push(`Question count ${questionCount} exceeds max ${policy.maxQuestions}`);
     }
-    for (var _i = 0, _a = policy.bannedPhrases; _i < _a.length; _i++) {
-        var phrase = _a[_i];
+    for (const phrase of policy.bannedPhrases) {
         if (low.includes(normalize(phrase))) {
-            violations.push("Banned phrase detected: \"".concat(phrase, "\""));
+            violations.push(`Banned phrase detected: "${phrase}"`);
         }
     }
-    var bannedValidationMatches = detectBannedValidationLanguage(output).filter(function (phrase) {
+    const bannedValidationMatches = detectBannedValidationLanguage(output).filter((phrase) => {
         if (!policy.requiresLoopBreaker)
             return true;
-        var loopBreaker = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
+        const loopBreaker = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
         if (!loopBreaker)
             return true;
-        var hasLoopBreaker = normalizeForMatch(output).includes(normalizeForMatch(loopBreaker));
+        const hasLoopBreaker = normalizeForMatch(output).includes(normalizeForMatch(loopBreaker));
         if (!hasLoopBreaker)
             return true;
         return !normalize(loopBreaker).includes(normalize(phrase));
     });
     if (bannedValidationMatches.length > 0) {
-        violations.push("Banned validation language detected: ".concat(bannedValidationMatches.map(function (p) { return "\"".concat(p, "\""); }).join(", ")));
+        violations.push(`Banned validation language detected: ${bannedValidationMatches.map((p) => `"${p}"`).join(", ")}`);
     }
     if (policy.forbidMechanismNaming) {
-        var mechanismMatches = matchCount(output, selfConfig.lexicon.mechanismNames);
+        const mechanismMatches = matchCount(output, selfConfig.lexicon.mechanismNames);
         if (mechanismMatches.hits > 0) {
-            violations.push("Mechanism naming detected under surveillance guard: ".concat(mechanismMatches.matched.map(function (m) { return "\"".concat(m, "\""); }).join(", ")));
+            violations.push(`Mechanism naming detected under surveillance guard: ${mechanismMatches.matched.map((m) => `"${m}"`).join(", ")}`);
         }
     }
     if (policy.enforceNoHypotheticals && hasHypotheticals(output)) {
         violations.push("Contains hypotheticals, which are disallowed for this state");
     }
     if (policy.requiresGrounding) {
-        var hasGrounding = selfConfig.lexicon.grounding.some(function (p) { return low.includes(p); });
+        const hasGrounding = selfConfig.lexicon.grounding.some((p) => low.includes(p));
         if (!hasGrounding) {
             violations.push("Missing grounding or containment cue");
         }
     }
     if (policy.requiresAgencyStep) {
-        var hasAgency = selfConfig.lexicon.agency.some(function (p) { return low.includes(p); });
+        const hasAgency = selfConfig.lexicon.agency.some((p) => low.includes(p));
         if (!hasAgency) {
             violations.push("Missing agency-restoring next step");
         }
     }
     if (policy.requiresCrisisSupport) {
-        var hasCrisis = selfConfig.lexicon.crisis.some(function (p) { return low.includes(normalize(p)); });
+        const hasCrisis = selfConfig.lexicon.crisis.some((p) => low.includes(normalize(p)));
         if (!hasCrisis) {
             violations.push("Missing crisis support encouragement");
         }
     }
     if (policy.requiresHandoffFraming) {
-        var line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
-        var has = line ? low.includes(normalize(line)) : true;
+        const line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
+        const has = line ? low.includes(normalize(line)) : true;
         if (!has)
             violations.push("Missing situational human-handoff framing");
     }
     if (policy.requiresValidation) {
-        var hasValidation = selfConfig.lexicon.validationPhrases.some(function (p) { return low.includes(normalize(p)); });
+        const hasValidation = selfConfig.lexicon.validationPhrases.some((p) => low.includes(normalize(p)));
         if (!hasValidation) {
             violations.push("Missing explicit validation of user's stated truth/accomplishments");
         }
     }
     if (policy.requiresLoopBreaker) {
-        var line = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
-        var has = line ? normalizeForMatch(output).includes(normalizeForMatch(line)) : true;
+        const line = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
+        const has = line ? normalizeForMatch(output).includes(normalizeForMatch(line)) : true;
         if (!has)
             violations.push("Missing certainty-loop breaker line");
     }
-    return { ok: violations.length === 0, violations: violations };
+    return { ok: violations.length === 0, violations };
 }
 export function repairOutput(output, policy) {
-    var result = output;
+    let result = output;
     // Remove or soften banned phrases
-    for (var _i = 0, _a = policy.bannedPhrases; _i < _a.length; _i++) {
-        var phrase = _a[_i];
-        var regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    for (const phrase of policy.bannedPhrases) {
+        const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
         result = result.replace(regex, "I'm here with you");
     }
     // Remove hypotheticals if needed
     if (policy.enforceNoHypotheticals && hasHypotheticals(result)) {
-        var regex = new RegExp(selfConfig.lexicon.hypotheticals.map(function (p) { return p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|"), "gi");
+        const regex = new RegExp(selfConfig.lexicon.hypotheticals.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gi");
         result = result.replace(regex, "").replace(/\s+/g, " ").trim();
     }
     // If surveillance guard is active and the draft includes mechanism details, replace with a coherent containment response.
     if (policy.forbidMechanismNaming) {
-        var mechanismMatches = matchCount(result, selfConfig.lexicon.mechanismNames);
+        const mechanismMatches = matchCount(result, selfConfig.lexicon.mechanismNames);
         if (mechanismMatches.hits > 0) {
             result = buildSurveillanceContainmentReplacement();
         }
     }
     // Replace banned validation language with the safe fallback
-    var bannedValidationMatches = detectBannedValidationLanguage(result);
+    const bannedValidationMatches = detectBannedValidationLanguage(result);
     if (bannedValidationMatches.length > 0) {
-        for (var _b = 0, _c = selfConfig.lexicon.bannedValidationPhrases; _b < _c.length; _b++) {
-            var phrase = _c[_b];
-            var regex = new RegExp(escapeRegex(phrase), "gi");
+        for (const phrase of selfConfig.lexicon.bannedValidationPhrases) {
+            const regex = new RegExp(escapeRegex(phrase), "gi");
             result = result.replace(regex, SAFE_VALIDATION_FALLBACK);
         }
-        var hasSafeValidation = selfConfig.lexicon.safeValidationPhrases.some(function (p) {
-            return normalize(result).includes(normalize(p));
-        });
+        const hasSafeValidation = selfConfig.lexicon.safeValidationPhrases.some((p) => normalize(result).includes(normalize(p)));
         if (!hasSafeValidation) {
-            result = "".concat(SAFE_VALIDATION_FALLBACK, ". ").concat(result).trim();
+            result = `${SAFE_VALIDATION_FALLBACK}. ${result}`.trim();
         }
     }
     // Strip mechanism names when paranoia/surveillance guard is active
     if (policy.forbidMechanismNaming) {
-        for (var _d = 0, _e = selfConfig.lexicon.mechanismNames; _d < _e.length; _d++) {
-            var phrase = _e[_d];
-            var regex = new RegExp(escapeRegex(phrase), "gi");
+        for (const phrase of selfConfig.lexicon.mechanismNames) {
+            const regex = new RegExp(escapeRegex(phrase), "gi");
             result = result.replace(regex, "");
         }
         result = result.replace(/\s+/g, " ").trim();
     }
     // Cap questions by converting extras to statements
-    var questionCount = 0;
-    result = result.replace(/\?/g, function () {
+    let questionCount = 0;
+    result = result.replace(/\?/g, () => {
         questionCount += 1;
         return questionCount > policy.maxQuestions ? "." : "?";
     });
-    var lowBeforeAffixes = normalize(result);
-    var prefixParts = [];
+    const lowBeforeAffixes = normalize(result);
+    const prefixParts = [];
     if (policy.requiresValidation &&
-        !selfConfig.lexicon.validationPhrases.some(function (p) { return lowBeforeAffixes.includes(normalize(p)); })) {
-        prefixParts.push("".concat(selfConfig.lexicon.validationPhrases[0], "."));
+        !selfConfig.lexicon.validationPhrases.some((p) => lowBeforeAffixes.includes(normalize(p)))) {
+        prefixParts.push(`${selfConfig.lexicon.validationPhrases[0]}.`);
     }
     if (policy.requiresLoopBreaker) {
-        var line = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
+        const line = policy.loopBreakerLine || selfConfig.lexicon.loopBreakerLine;
         if (line && !normalizeForMatch(result).includes(normalizeForMatch(line))) {
             prefixParts.push(line);
         }
     }
     if (policy.requiresHandoffFraming) {
-        var line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
+        const line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
         if (line && !lowBeforeAffixes.includes(normalize(line))) {
             prefixParts.push(line);
         }
     }
-    var prefix = prefixParts.join(" ").trim();
-    var suffixParts = [];
-    if (policy.requiresGrounding && !selfConfig.lexicon.grounding.some(function (p) { return lowBeforeAffixes.includes(p); })) {
-        var groundingCue = pickCue("".concat(lowBeforeAffixes, "|grounding"), selfConfig.lexicon.grounding) || selfConfig.lexicon.grounding[0];
-        suffixParts.push("".concat(groundingCue, "."));
+    const prefix = prefixParts.join(" ").trim();
+    const suffixParts = [];
+    if (policy.requiresGrounding && !selfConfig.lexicon.grounding.some((p) => lowBeforeAffixes.includes(p))) {
+        const groundingCue = pickCue(`${lowBeforeAffixes}|grounding`, selfConfig.lexicon.grounding) || selfConfig.lexicon.grounding[0];
+        suffixParts.push(`${groundingCue}.`);
     }
-    if (policy.requiresAgencyStep && !selfConfig.lexicon.agency.some(function (p) { return lowBeforeAffixes.includes(p); })) {
-        suffixParts.push("".concat(selfConfig.lexicon.agency[0], "."));
+    if (policy.requiresAgencyStep && !selfConfig.lexicon.agency.some((p) => lowBeforeAffixes.includes(p))) {
+        suffixParts.push(`${selfConfig.lexicon.agency[0]}.`);
     }
     if (policy.requiresCrisisSupport &&
-        !selfConfig.lexicon.crisis.some(function (p) { return lowBeforeAffixes.includes(normalize(p)); })) {
-        suffixParts.push("".concat(selfConfig.lexicon.crisis[0], "."));
+        !selfConfig.lexicon.crisis.some((p) => lowBeforeAffixes.includes(normalize(p)))) {
+        suffixParts.push(`${selfConfig.lexicon.crisis[0]}.`);
     }
-    var suffix = suffixParts.join(" ");
+    const suffix = suffixParts.join(" ");
     result = capWordsPreservingAffixes(result, policy.maxWords, prefix, suffix);
     // Double-check required cues after truncation (should be extremely rare).
     if (policy.requiresGrounding)
@@ -794,36 +752,36 @@ export function repairOutput(output, policy) {
     if (policy.requiresAgencyStep)
         result = ensureAgency(result);
     if (policy.requiresHandoffFraming) {
-        var line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
+        const line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
         if (line)
             result = ensureHandoffFraming(result, line);
     }
     if (policy.requiresCrisisSupport)
         result = ensureCrisisSupport(result);
     // Final hard cap to avoid "ensure*" pushing us over.
-    var finalWords = result.trim().split(/\s+/).filter(Boolean);
+    const finalWords = result.trim().split(/\s+/).filter(Boolean);
     if (finalWords.length > policy.maxWords) {
         result = finalWords.slice(0, policy.maxWords).join(" ").trim();
     }
     return result.trim();
 }
 export function getS1Variant(seed) {
-    var forced = process.env.SELF_S1_FORCE_VARIANT;
+    const forced = process.env.SELF_S1_FORCE_VARIANT;
     if (forced === "control" || forced === "s1_grounding" || forced === "s1_agency" || forced === "s1_strict") {
         return forced;
     }
-    var strictCohortEnabled = process.env.SELF_S1_STRICT_COHORT !== "false";
-    var hash = 0;
-    for (var i = 0; i < seed.length; i += 1) {
+    const strictCohortEnabled = process.env.SELF_S1_STRICT_COHORT !== "false";
+    let hash = 0;
+    for (let i = 0; i < seed.length; i += 1) {
         hash = (hash << 5) - hash + seed.charCodeAt(i);
         hash |= 0;
     }
     if (strictCohortEnabled) {
-        var strictPercent = Number(process.env.SELF_S1_STRICT_PERCENT || "50");
-        var bucket_1 = Math.abs(hash) % 100;
-        return bucket_1 < strictPercent ? "s1_strict" : "control";
+        const strictPercent = Number(process.env.SELF_S1_STRICT_PERCENT || "50");
+        const bucket = Math.abs(hash) % 100;
+        return bucket < strictPercent ? "s1_strict" : "control";
     }
-    var bucket = Math.abs(hash) % 3;
+    const bucket = Math.abs(hash) % 3;
     if (bucket === 0)
         return "control";
     if (bucket === 1)
@@ -831,110 +789,137 @@ export function getS1Variant(seed) {
     return "s1_agency";
 }
 export function getS2Variant(seed) {
-    var forced = process.env.SELF_S2_FORCE_VARIANT;
+    const forced = process.env.SELF_S2_FORCE_VARIANT;
     if (forced === "control" || forced === "s2_strict") {
         return forced;
     }
-    var strictEnabled = process.env.SELF_S2_STRICT_COHORT !== "false";
+    const strictEnabled = process.env.SELF_S2_STRICT_COHORT !== "false";
     if (!strictEnabled)
         return "control";
-    var strictPercent = Number(process.env.SELF_S2_STRICT_PERCENT || "50");
-    var hash = 0;
-    for (var i = 0; i < seed.length; i += 1) {
+    const strictPercent = Number(process.env.SELF_S2_STRICT_PERCENT || "50");
+    let hash = 0;
+    for (let i = 0; i < seed.length; i += 1) {
         hash = (hash << 5) - hash + seed.charCodeAt(i);
         hash |= 0;
     }
-    var bucket = Math.abs(hash) % 100;
+    const bucket = Math.abs(hash) % 100;
     return bucket < strictPercent ? "s2_strict" : "control";
 }
 export function adjustPolicyForVariant(policy, variant) {
-    var _a;
     if (policy.state === "S2") {
         if (variant === "s2_strict") {
-            return __assign(__assign({}, policy), { maxWords: Math.min(policy.maxWords, 90), maxQuestions: Math.min(policy.maxQuestions, 1), bannedPhrases: __spreadArray(__spreadArray([], policy.bannedPhrases, true), ["let me challenge you", "consider this challenge"], false), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+            return {
+                ...policy,
+                maxWords: Math.min(policy.maxWords, 90),
+                maxQuestions: Math.min(policy.maxQuestions, 1),
+                bannedPhrases: [...policy.bannedPhrases, "let me challenge you", "consider this challenge"],
+                styleRules: [
+                    ...policy.styleRules,
                     "high containment",
                     "no probing or interrogative questions",
                     "at most one gentle check-in question",
                     "suppress hypotheticals",
                     "name safety gently",
-                ], false), enforceNoHypotheticals: true, requiresGrounding: true, requiresAgencyStep: true });
+                ],
+                enforceNoHypotheticals: true,
+                requiresGrounding: true,
+                requiresAgencyStep: true,
+            };
         }
         return policy;
     }
     if (policy.state !== "S1")
         return policy;
     if (variant === "s1_grounding") {
-        return __assign(__assign({}, policy), { maxWords: Math.min(policy.maxWords, 100), maxQuestions: Math.min(policy.maxQuestions, 1), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), ["include one grounding cue before asking anything"], false), requiresGrounding: true });
+        return {
+            ...policy,
+            maxWords: Math.min(policy.maxWords, 100),
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            styleRules: [...policy.styleRules, "include one grounding cue before asking anything"],
+            requiresGrounding: true,
+        };
     }
     if (variant === "s1_agency") {
-        return __assign(__assign({}, policy), { maxWords: Math.min(policy.maxWords, 90), maxQuestions: Math.min(policy.maxQuestions, 1), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), ["offer one small next step", "no hypotheticals"], false), enforceNoHypotheticals: true, requiresAgencyStep: true });
+        return {
+            ...policy,
+            maxWords: Math.min(policy.maxWords, 90),
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            styleRules: [...policy.styleRules, "offer one small next step", "no hypotheticals"],
+            enforceNoHypotheticals: true,
+            requiresAgencyStep: true,
+        };
     }
     if (variant === "s1_strict") {
-        return __assign(__assign({}, policy), { maxWords: Math.min(policy.maxWords, 90), maxQuestions: Math.min(policy.maxQuestions, 1), bannedPhrases: __spreadArray(__spreadArray([], policy.bannedPhrases, true), ["let me challenge you", "consider this challenge"], false), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        return {
+            ...policy,
+            maxWords: Math.min(policy.maxWords, 90),
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            bannedPhrases: [...policy.bannedPhrases, "let me challenge you", "consider this challenge"],
+            styleRules: [
+                ...policy.styleRules,
                 "tone: quiet and paced",
                 "ask at most one gentle, spacious follow-up question",
                 "suppress challenges and hypotheticals",
-            ], false), enforceNoHypotheticals: true, requiresGrounding: true, requiresAgencyStep: true, requiresValidation: (_a = policy.requiresValidation) !== null && _a !== void 0 ? _a : true });
+            ],
+            enforceNoHypotheticals: true,
+            requiresGrounding: true,
+            requiresAgencyStep: true,
+            requiresValidation: policy.requiresValidation ?? true,
+        };
     }
     return policy;
 }
 export function needsValidationCue(message) {
-    var low = normalize(message);
-    return selfConfig.lexicon.validationTriggers.some(function (p) { return low.includes(p); });
+    const low = normalize(message);
+    return selfConfig.lexicon.validationTriggers.some((p) => low.includes(p));
 }
 function detectParanoidSurveillanceLanguage(message) {
-    var low = normalize(message);
-    var matches = selfConfig.lexicon.paranoidSurveillance.filter(function (p) { return low.includes(p); });
+    const low = normalize(message);
+    const matches = selfConfig.lexicon.paranoidSurveillance.filter((p) => low.includes(p));
     // Backstop: catch common "spy/track/monitor my phone/device" phrasings that are easy to miss with exact lexicon matching.
-    var hasDevice = /\b(phone|device|laptop|computer)\b/i.test(low);
-    var hasSurveillanceVerb = /\b(spy|spying|track|tracking|monitor|monitoring|watch|watching|follow|following|listen|listening|record|recording|hack|hacked|hacking|wiretap|bugged)\b/i.test(low);
-    var hasTarget = /\b(me|my|mine|myself|someone|anyone|people|they|theyre|they're)\b/i.test(low);
+    const hasDevice = /\b(phone|device|laptop|computer)\b/i.test(low);
+    const hasSurveillanceVerb = /\b(spy|spying|track|tracking|monitor|monitoring|watch|watching|follow|following|listen|listening|record|recording|hack|hacked|hacking|wiretap|bugged)\b/i.test(low);
+    const hasTarget = /\b(me|my|mine|myself|someone|anyone|people|they|theyre|they're)\b/i.test(low);
     if (hasDevice && hasSurveillanceVerb && hasTarget) {
         matches.push("device_surveillance_combo");
     }
-    return { triggered: matches.length > 0, matches: matches };
+    return { triggered: matches.length > 0, matches };
 }
 function detectExpertiseClaim(message) {
-    var low = normalize(message);
-    var matches = selfConfig.lexicon.expertiseClaims.filter(function (p) { return low.includes(p); });
-    return { triggered: matches.length > 0, matches: matches };
+    const low = normalize(message);
+    const matches = selfConfig.lexicon.expertiseClaims.filter((p) => low.includes(p));
+    return { triggered: matches.length > 0, matches };
 }
 function detectBannedValidationLanguage(text) {
-    var low = normalize(text);
-    return selfConfig.lexicon.bannedValidationPhrases.filter(function (phrase) {
-        return low.includes(normalize(phrase));
-    });
+    const low = normalize(text);
+    return selfConfig.lexicon.bannedValidationPhrases.filter((phrase) => low.includes(normalize(phrase)));
 }
 function detectRefusalLanguage(text, policy) {
-    var _a;
-    var low = normalize(text);
-    var matches = selfConfig.lexicon.abruptRefusals.filter(function (phrase) {
-        return low.includes(normalize(phrase));
-    });
-    var reasons = matches.map(function (phrase) { return "abrupt_refusal:".concat(phrase); });
-    if ((_a = policy === null || policy === void 0 ? void 0 : policy.bannedPhrases) === null || _a === void 0 ? void 0 : _a.length) {
-        for (var _i = 0, _b = policy.bannedPhrases; _i < _b.length; _i++) {
-            var phrase = _b[_i];
+    const low = normalize(text);
+    const matches = selfConfig.lexicon.abruptRefusals.filter((phrase) => low.includes(normalize(phrase)));
+    const reasons = matches.map((phrase) => `abrupt_refusal:${phrase}`);
+    if (policy?.bannedPhrases?.length) {
+        for (const phrase of policy.bannedPhrases) {
             if (low.includes(normalize(phrase))) {
-                reasons.push("banned_phrase:".concat(phrase));
+                reasons.push(`banned_phrase:${phrase}`);
             }
         }
     }
     return reasons;
 }
 function collectRedTeamCandidates(message, policy) {
-    var low = normalize(message);
-    var candidates = [];
-    var add = function (category, phrase) {
-        var normalizedKey = "".concat(category, ":").concat(phrase.trim());
+    const low = normalize(message);
+    const candidates = [];
+    const add = (category, phrase) => {
+        const normalizedKey = `${category}:${phrase.trim()}`;
         if (!phrase.trim())
             return;
-        if (candidates.some(function (c) { return "".concat(c.category, ":").concat(c.phrase) === normalizedKey; }))
+        if (candidates.some((c) => `${c.category}:${c.phrase}` === normalizedKey))
             return;
-        candidates.push({ category: category, phrase: phrase.trim() });
+        candidates.push({ category, phrase: phrase.trim() });
     };
     // Paranoia/surveillance extensions not yet in lexicon
-    var surveillanceProbes = [
+    const surveillanceProbes = [
         "drone",
         "satellite",
         "gps chip",
@@ -948,15 +933,14 @@ function collectRedTeamCandidates(message, policy) {
         "thermal camera",
         "facial recognition",
     ];
-    var paranoiaMatched = detectParanoidSurveillanceLanguage(message);
-    for (var _i = 0, surveillanceProbes_1 = surveillanceProbes; _i < surveillanceProbes_1.length; _i++) {
-        var probe = surveillanceProbes_1[_i];
-        if (low.includes(probe) && !paranoiaMatched.matches.some(function (p) { return low.includes(p); })) {
+    const paranoiaMatched = detectParanoidSurveillanceLanguage(message);
+    for (const probe of surveillanceProbes) {
+        if (low.includes(probe) && !paranoiaMatched.matches.some((p) => low.includes(p))) {
             add("paranoia_candidate", probe);
         }
     }
     // Exit intent variants not in current guardlists
-    var exitVariants = [
+    const exitVariants = [
         "signing off",
         "logging off",
         "checking out",
@@ -968,13 +952,12 @@ function collectRedTeamCandidates(message, policy) {
         "drop off",
         "disconnect now",
     ];
-    for (var _a = 0, exitVariants_1 = exitVariants; _a < exitVariants_1.length; _a++) {
-        var phrase = exitVariants_1[_a];
+    for (const phrase of exitVariants) {
         if (low.includes(phrase))
             add("exit_candidate", phrase);
     }
     // Expertise claims not in core lexicon
-    var expertiseVariants = [
+    const expertiseVariants = [
         "licensed",
         "board certified",
         "board-certified",
@@ -993,75 +976,65 @@ function collectRedTeamCandidates(message, policy) {
         "paramedic",
         "emt",
     ];
-    for (var _b = 0, expertiseVariants_1 = expertiseVariants; _b < expertiseVariants_1.length; _b++) {
-        var phrase = expertiseVariants_1[_b];
-        if (low.includes(phrase) && !detectExpertiseClaim(message).matches.some(function (p) { return low.includes(p); })) {
+    for (const phrase of expertiseVariants) {
+        if (low.includes(phrase) && !detectExpertiseClaim(message).matches.some((p) => low.includes(p))) {
             add("expertise_claim_candidate", phrase);
         }
     }
     // Mechanism names if present in user text while policy forbids them
-    if (policy === null || policy === void 0 ? void 0 : policy.forbidMechanismNaming) {
-        var mechanismMatches = selfConfig.lexicon.mechanismNames.filter(function (p) { return low.includes(normalize(p)); });
-        for (var _c = 0, mechanismMatches_1 = mechanismMatches; _c < mechanismMatches_1.length; _c++) {
-            var m = mechanismMatches_1[_c];
+    if (policy?.forbidMechanismNaming) {
+        const mechanismMatches = selfConfig.lexicon.mechanismNames.filter((p) => low.includes(normalize(p)));
+        for (const m of mechanismMatches)
             add("mechanism_mention", m);
-        }
     }
     // Banned validation phrasing that slipped through
-    var bannedValidation = detectBannedValidationLanguage(message);
-    for (var _d = 0, bannedValidation_1 = bannedValidation; _d < bannedValidation_1.length; _d++) {
-        var phrase = bannedValidation_1[_d];
+    const bannedValidation = detectBannedValidationLanguage(message);
+    for (const phrase of bannedValidation)
         add("validation_ban_candidate", phrase);
-    }
     return candidates;
 }
 export function hasResolutionCue(message) {
-    var text = normalize(message);
-    var matched = selfConfig.lexicon.resolution.filter(function (p) { return text.includes(p); });
+    const text = normalize(message);
+    const matched = selfConfig.lexicon.resolution.filter((p) => text.includes(p));
     return { resolved: matched.length > 0, matches: matched };
 }
-export function detectStabilitySignals(message, history) {
-    if (history === void 0) { history = []; }
-    var text = normalize(message);
-    var signals = [];
+export function detectStabilitySignals(message, history = []) {
+    const text = normalize(message);
+    const signals = [];
     // Check for somatic grounding signals
-    var somaticMatches = selfConfig.lexicon.stabilitySignals.somaticGrounding.filter(function (p) { return text.includes(p); });
+    const somaticMatches = selfConfig.lexicon.stabilitySignals.somaticGrounding.filter((p) => text.includes(p));
     if (somaticMatches.length > 0) {
-        signals.push.apply(signals, somaticMatches.map(function (p) { return "somatic_grounding: \"".concat(p, "\""); }));
+        signals.push(...somaticMatches.map((p) => `somatic_grounding: "${p}"`));
     }
     // Check for temporal orientation signals
-    var temporalMatches = selfConfig.lexicon.stabilitySignals.temporalOrientation.filter(function (p) { return text.includes(p); });
+    const temporalMatches = selfConfig.lexicon.stabilitySignals.temporalOrientation.filter((p) => text.includes(p));
     if (temporalMatches.length > 0) {
-        signals.push.apply(signals, temporalMatches.map(function (p) { return "temporal_orientation: \"".concat(p, "\""); }));
+        signals.push(...temporalMatches.map((p) => `temporal_orientation: "${p}"`));
     }
     // Check for agency continuity signals
-    var agencyMatches = selfConfig.lexicon.stabilitySignals.agencyContinuity.filter(function (p) { return text.includes(p); });
+    const agencyMatches = selfConfig.lexicon.stabilitySignals.agencyContinuity.filter((p) => text.includes(p));
     if (agencyMatches.length > 0) {
-        signals.push.apply(signals, agencyMatches.map(function (p) { return "agency_continuity: \"".concat(p, "\""); }));
+        signals.push(...agencyMatches.map((p) => `agency_continuity: "${p}"`));
     }
     // Check recent history for sustained stability signals
-    var recentUserMessages = history.filter(function (m) { return m.role === "user"; }).slice(-2);
-    var _loop_1 = function (msg) {
-        var msgText = normalize(msg.content);
+    const recentUserMessages = history.filter((m) => m.role === "user").slice(-2);
+    for (const msg of recentUserMessages) {
+        const msgText = normalize(msg.content);
         // Look for somatic grounding in history
-        var historicSomatic = selfConfig.lexicon.stabilitySignals.somaticGrounding.filter(function (p) { return msgText.includes(p); });
-        if (historicSomatic.length > 0 && !signals.some(function (s) { return s.startsWith('somatic_grounding'); })) {
-            signals.push("somatic_grounding: \"".concat(historicSomatic[0], "\" (from history)"));
+        const historicSomatic = selfConfig.lexicon.stabilitySignals.somaticGrounding.filter((p) => msgText.includes(p));
+        if (historicSomatic.length > 0 && !signals.some((s) => s.startsWith('somatic_grounding'))) {
+            signals.push(`somatic_grounding: "${historicSomatic[0]}" (from history)`);
         }
         // Look for temporal orientation in history
-        var historicTemporal = selfConfig.lexicon.stabilitySignals.temporalOrientation.filter(function (p) { return msgText.includes(p); });
-        if (historicTemporal.length > 0 && !signals.some(function (s) { return s.startsWith('temporal_orientation'); })) {
-            signals.push("temporal_orientation: \"".concat(historicTemporal[0], "\" (from history)"));
+        const historicTemporal = selfConfig.lexicon.stabilitySignals.temporalOrientation.filter((p) => msgText.includes(p));
+        if (historicTemporal.length > 0 && !signals.some((s) => s.startsWith('temporal_orientation'))) {
+            signals.push(`temporal_orientation: "${historicTemporal[0]}" (from history)`);
         }
         // Look for agency continuity in history
-        var historicAgency = selfConfig.lexicon.stabilitySignals.agencyContinuity.filter(function (p) { return msgText.includes(p); });
-        if (historicAgency.length > 0 && !signals.some(function (s) { return s.startsWith('agency_continuity'); })) {
-            signals.push("agency_continuity: \"".concat(historicAgency[0], "\" (from history)"));
+        const historicAgency = selfConfig.lexicon.stabilitySignals.agencyContinuity.filter((p) => msgText.includes(p));
+        if (historicAgency.length > 0 && !signals.some((s) => s.startsWith('agency_continuity'))) {
+            signals.push(`agency_continuity: "${historicAgency[0]}" (from history)`);
         }
-    };
-    for (var _i = 0, recentUserMessages_1 = recentUserMessages; _i < recentUserMessages_1.length; _i++) {
-        var msg = recentUserMessages_1[_i];
-        _loop_1(msg);
     }
     return {
         somaticGrounding: somaticMatches.length > 0,
@@ -1070,7 +1043,7 @@ export function detectStabilitySignals(message, history) {
         signalsDetected: signals
     };
 }
-export var DEFAULT_STICKY_STATE_PARAMS = {
+export const DEFAULT_STICKY_STATE_PARAMS = {
     ewmaAlpha: 0.35,
     stabilizationWindowTurns: 6,
     lowRiskTurnsRequired: 3,
@@ -1112,23 +1085,23 @@ function stepDownOne(state) {
     return "S0";
 }
 function computeRiskScoreRaw(detection) {
-    return Object.values(detection.scores || {}).reduce(function (sum, val) { return sum + (val || 0); }, 0);
+    return Object.values(detection.scores || {}).reduce((sum, val) => sum + (val || 0), 0);
 }
 function isLowRiskTurn(args) {
-    var detection = args.detection, message = args.message, history = args.history;
-    var state = detectedToCoreState(detection.state);
+    const { detection, message, history } = args;
+    const state = detectedToCoreState(detection.state);
     if (state !== "S0")
         return false;
-    var paranoia = detectParanoidSurveillanceLanguage(message);
+    const paranoia = detectParanoidSurveillanceLanguage(message);
     if (paranoia.triggered)
         return false;
-    var certainty = detectCertaintyPush(message);
+    const certainty = detectCertaintyPush(message);
     if (certainty.triggered)
         return false;
-    var exit = checkForExitAndRestIntents(message);
+    const exit = checkForExitAndRestIntents(message);
     if (exit.hasExitIntent && !exit.hasRestIntent)
         return false;
-    var isFalseCalm = checkForFalseCalm(message);
+    const isFalseCalm = checkForFalseCalm(message);
     if (isFalseCalm)
         return false;
     // If the last few user turns were elevated, we still treat this as low-risk, but not "recovered"
@@ -1137,55 +1110,54 @@ function isLowRiskTurn(args) {
     return true;
 }
 export function advanceStickySelfState(args) {
-    var _a;
-    var params = __assign(__assign({}, DEFAULT_STICKY_STATE_PARAMS), (args.params || {}));
-    var detection = detectState(args.message, args.history);
-    var detectedCore = detectedToCoreState(detection.state);
-    var turnIndex = (args.session.turnIndex || 0) + 1;
-    var cooldownBefore = Math.max(0, args.session.cooldownTurnsRemaining || 0);
-    var cooldownAfterTick = Math.max(0, cooldownBefore - 1);
-    var riskScoreRaw = computeRiskScoreRaw(detection);
-    var prevEwma = Number.isFinite(args.session.riskScoreSmoothed) ? args.session.riskScoreSmoothed : 0;
-    var riskScoreSmoothed = params.ewmaAlpha * riskScoreRaw + (1 - params.ewmaAlpha) * prevEwma;
-    var certainty = detectCertaintyPush(args.message);
-    var pushTriggered = certainty.triggered;
-    var pushCountBefore = args.session.pushCount || 0;
-    var stabilitySignals = detectStabilitySignals(args.message, args.history);
-    var affirmativeStabilizationThisTurn = (stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity) &&
+    const params = { ...DEFAULT_STICKY_STATE_PARAMS, ...(args.params || {}) };
+    const detection = detectState(args.message, args.history);
+    const detectedCore = detectedToCoreState(detection.state);
+    const turnIndex = (args.session.turnIndex || 0) + 1;
+    const cooldownBefore = Math.max(0, args.session.cooldownTurnsRemaining || 0);
+    const cooldownAfterTick = Math.max(0, cooldownBefore - 1);
+    const riskScoreRaw = computeRiskScoreRaw(detection);
+    const prevEwma = Number.isFinite(args.session.riskScoreSmoothed) ? args.session.riskScoreSmoothed : 0;
+    const riskScoreSmoothed = params.ewmaAlpha * riskScoreRaw + (1 - params.ewmaAlpha) * prevEwma;
+    const certainty = detectCertaintyPush(args.message);
+    const pushTriggered = certainty.triggered;
+    const pushCountBefore = args.session.pushCount || 0;
+    const stabilitySignals = detectStabilitySignals(args.message, args.history);
+    const affirmativeStabilizationThisTurn = (stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity) &&
         !checkForFalseCalm(args.message);
-    var lastAffirmativeStabilizationAtTurn = affirmativeStabilizationThisTurn
+    const lastAffirmativeStabilizationAtTurn = affirmativeStabilizationThisTurn
         ? turnIndex
-        : (_a = args.session.lastAffirmativeStabilizationAtTurn) !== null && _a !== void 0 ? _a : null;
-    var affirmativeStabilizationSeen = typeof lastAffirmativeStabilizationAtTurn === "number" &&
+        : args.session.lastAffirmativeStabilizationAtTurn ?? null;
+    const affirmativeStabilizationSeen = typeof lastAffirmativeStabilizationAtTurn === "number" &&
         lastAffirmativeStabilizationAtTurn >= turnIndex - params.stabilizationWindowTurns;
-    var lowRiskThisTurn = isLowRiskTurn({ detection: detection, message: args.message, history: args.history });
-    var consecutiveLowRiskUserTurns = lowRiskThisTurn
+    const lowRiskThisTurn = isLowRiskTurn({ detection, message: args.message, history: args.history });
+    const consecutiveLowRiskUserTurns = lowRiskThisTurn
         ? (args.session.consecutiveLowRiskUserTurns || 0) + 1
         : 0;
-    var pushCountAfter = pushCountBefore;
+    let pushCountAfter = pushCountBefore;
     if (pushTriggered) {
         pushCountAfter = pushCountBefore + 1;
     }
     else if (consecutiveLowRiskUserTurns >= params.pushResetLowRiskTurns) {
         pushCountAfter = 0;
     }
-    var stateBefore = args.session.stateCurrent || "S0";
+    let stateBefore = args.session.stateCurrent || "S0";
     // If certainty pressure is high, prevent drifting to S0 and optionally elevate to S1.
     if (pushCountAfter >= params.pushElevateThreshold && stateBefore === "S0") {
         stateBefore = "S1";
     }
-    var escalationApplied = coreStateRank(detectedCore) > coreStateRank(stateBefore);
-    var stateAfter = escalationApplied ? detectedCore : stateBefore;
+    const escalationApplied = coreStateRank(detectedCore) > coreStateRank(stateBefore);
+    let stateAfter = escalationApplied ? detectedCore : stateBefore;
     // If detected state is calmer, we still hold unless de-escalation conditions are met.
-    var deescalationAttempted = coreStateRank(detectedCore) < coreStateRank(stateAfter);
-    var deescalationBlockedReasons = [];
-    var deescalationAllowed = false;
+    const deescalationAttempted = coreStateRank(detectedCore) < coreStateRank(stateAfter);
+    const deescalationBlockedReasons = [];
+    let deescalationAllowed = false;
     if (deescalationAttempted && stateAfter !== "S0") {
         if (cooldownAfterTick > 0) {
-            deescalationBlockedReasons.push("cooldown_active:".concat(cooldownAfterTick));
+            deescalationBlockedReasons.push(`cooldown_active:${cooldownAfterTick}`);
         }
         if (consecutiveLowRiskUserTurns < params.lowRiskTurnsRequired) {
-            deescalationBlockedReasons.push("low_risk_turns:".concat(consecutiveLowRiskUserTurns, "<").concat(params.lowRiskTurnsRequired));
+            deescalationBlockedReasons.push(`low_risk_turns:${consecutiveLowRiskUserTurns}<${params.lowRiskTurnsRequired}`);
         }
         if (!affirmativeStabilizationSeen) {
             deescalationBlockedReasons.push("missing_affirmative_stabilization");
@@ -1199,22 +1171,22 @@ export function advanceStickySelfState(args) {
         }
     }
     // Cooldown: after any S2/S3, hold de-escalation for several turns.
-    var cooldownAfter = cooldownAfterTick;
-    var enteredS3 = stateAfter === "S3" && args.session.stateCurrent !== "S3";
-    var enteredS2 = stateAfter === "S2" && args.session.stateCurrent !== "S2";
+    let cooldownAfter = cooldownAfterTick;
+    const enteredS3 = stateAfter === "S3" && args.session.stateCurrent !== "S3";
+    const enteredS2 = stateAfter === "S2" && args.session.stateCurrent !== "S2";
     if (enteredS3) {
         cooldownAfter = Math.max(cooldownAfter, params.cooldownTurnsAfterS3);
     }
     else if (enteredS2) {
         cooldownAfter = Math.max(cooldownAfter, params.cooldownTurnsAfterS2);
     }
-    var _b = calculateConfidenceAndUncertainty({
+    const { confidence, uncertaintyReasons } = calculateConfidenceAndUncertainty({
         message: args.message,
         history: args.history,
-        detection: detection,
-    }), confidence = _b.confidence, uncertaintyReasons = _b.uncertaintyReasons;
-    var consideredActions = ["hold"];
-    var blockedActions = {};
+        detection,
+    });
+    const consideredActions = ["hold"];
+    const blockedActions = {};
     if (escalationApplied)
         consideredActions.push("escalate");
     if (deescalationAttempted)
@@ -1228,22 +1200,22 @@ export function advanceStickySelfState(args) {
         blockedActions["return_to_s0"] = "missing_affirmative_stabilization";
     if (cooldownAfterTick > 0 && stateAfter !== "S0")
         blockedActions["return_to_s0"] = "cooldown_active";
-    var overrideReasonParts = [];
+    const overrideReasonParts = [];
     if (pushCountAfter >= params.pushElevateThreshold)
         overrideReasonParts.push("certainty_pressure");
     if (cooldownAfterTick > 0)
         overrideReasonParts.push("cooldown");
     if (deescalationBlockedReasons.length)
         overrideReasonParts.push("hold");
-    var overrideReason = overrideReasonParts.length ? overrideReasonParts.join("+") : undefined;
-    var nextSession = {
+    const overrideReason = overrideReasonParts.length ? overrideReasonParts.join("+") : undefined;
+    const nextSession = {
         stateCurrent: stateAfter,
-        riskScoreSmoothed: riskScoreSmoothed,
+        riskScoreSmoothed,
         cooldownTurnsRemaining: cooldownAfter,
-        consecutiveLowRiskUserTurns: consecutiveLowRiskUserTurns,
+        consecutiveLowRiskUserTurns,
         pushCount: pushCountAfter,
-        lastAffirmativeStabilizationAtTurn: lastAffirmativeStabilizationAtTurn,
-        turnIndex: turnIndex,
+        lastAffirmativeStabilizationAtTurn,
+        turnIndex,
     };
     // Set inertia lock if de-escalation was attempted but blocked
     if (deescalationAttempted && !deescalationAllowed) {
@@ -1255,71 +1227,71 @@ export function advanceStickySelfState(args) {
         };
     }
     return {
-        nextSession: nextSession,
-        detection: detection,
+        nextSession,
+        detection,
         meta: {
             detectedState: detection.state,
             stateBefore: args.session.stateCurrent,
-            stateAfter: stateAfter,
-            riskScoreRaw: riskScoreRaw,
-            riskScoreSmoothed: riskScoreSmoothed,
-            lowRiskThisTurn: lowRiskThisTurn,
-            cooldownBefore: cooldownBefore,
-            cooldownAfter: cooldownAfter,
-            deescalationAttempted: deescalationAttempted,
-            deescalationAllowed: deescalationAllowed,
-            deescalationBlockedReasons: deescalationBlockedReasons,
-            escalationApplied: escalationApplied,
-            pushTriggered: pushTriggered,
+            stateAfter,
+            riskScoreRaw,
+            riskScoreSmoothed,
+            lowRiskThisTurn,
+            cooldownBefore,
+            cooldownAfter,
+            deescalationAttempted,
+            deescalationAllowed,
+            deescalationBlockedReasons,
+            escalationApplied,
+            pushTriggered,
             pushMatches: certainty.matches,
-            pushCountBefore: pushCountBefore,
-            pushCountAfter: pushCountAfter,
-            affirmativeStabilizationThisTurn: affirmativeStabilizationThisTurn,
-            affirmativeStabilizationSeen: affirmativeStabilizationSeen,
-            lastAffirmativeStabilizationAtTurn: lastAffirmativeStabilizationAtTurn,
-            confidence: confidence,
-            uncertaintyReasons: uncertaintyReasons,
-            consideredActions: consideredActions,
-            blockedActions: blockedActions,
-            overrideReason: overrideReason,
+            pushCountBefore,
+            pushCountAfter,
+            affirmativeStabilizationThisTurn,
+            affirmativeStabilizationSeen,
+            lastAffirmativeStabilizationAtTurn,
+            confidence,
+            uncertaintyReasons,
+            consideredActions,
+            blockedActions,
+            overrideReason,
         },
     };
 }
 export function isSafeToResumeNormalChat(args) {
-    var currentState = args.currentState, message = args.message, history = args.history;
-    var reasons = [];
+    const { currentState, message, history } = args;
+    const reasons = [];
     // If already in S0, no need to resume
     if (currentState === "S0") {
         return { safeToResume: true, confidence: "high", reasons: ["Already in normal state (S0)"] };
     }
     // Check for explicit resolution cues in the current message
-    var resolutionCheck = hasResolutionCue(message);
+    const resolutionCheck = hasResolutionCue(message);
     if (resolutionCheck.resolved) {
-        reasons.push("Resolution cues detected: \"".concat(resolutionCheck.matches.join('", "'), "\""));
+        reasons.push(`Resolution cues detected: "${resolutionCheck.matches.join('", "')}"`);
     }
     // Check recent history for sustained improvement
-    var recentUserMessages = history.filter(function (m) { return m.role === "user"; }).slice(-3);
-    var recentResolutionCount = recentUserMessages.filter(function (m) { return hasResolutionCue(m.content).resolved; }).length;
+    const recentUserMessages = history.filter((m) => m.role === "user").slice(-3);
+    const recentResolutionCount = recentUserMessages.filter((m) => hasResolutionCue(m.content).resolved).length;
     if (recentResolutionCount >= 2) {
-        reasons.push("Sustained resolution detected in ".concat(recentResolutionCount, " of last 3 user messages"));
+        reasons.push(`Sustained resolution detected in ${recentResolutionCount} of last 3 user messages`);
     }
     // Check for absence of distress signals in recent history
-    var recentDistressCheck = detectState(recentUserMessages.map(function (m) { return m.content; }).join(" "));
+    const recentDistressCheck = detectState(recentUserMessages.map(m => m.content).join(" "));
     if (recentDistressCheck.state === "S0") {
         reasons.push("Recent conversation history shows no distress signals");
     }
     // Check for positive stabilization signals (require at least one affirmative signal)
-    var stabilitySignals = detectStabilitySignals(message, history);
-    var hasPositiveStabilization = stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity;
+    const stabilitySignals = detectStabilitySignals(message, history);
+    const hasPositiveStabilization = stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity;
     // Block resume if recovery is only politeness, gratitude, or closure language
-    var isFalseCalm = checkForFalseCalm(message);
+    const isFalseCalm = checkForFalseCalm(message);
     // State-specific safety checks with enhanced stabilization requirements
     if (currentState === "S0_GUARDED") {
         // For S0_GUARDED, require resolution cues AND positive stabilization signals
         if (resolutionCheck.resolved && hasPositiveStabilization && !isFalseCalm) {
             reasons.push("S0_GUARDED state: Resolution cues + positive stabilization signals detected for return to normal");
-            reasons.push("Stability signals: ".concat(stabilitySignals.signalsDetected.join(', ')));
-            return { safeToResume: true, confidence: "high", reasons: reasons };
+            reasons.push(`Stability signals: ${stabilitySignals.signalsDetected.join(', ')}`);
+            return { safeToResume: true, confidence: "high", reasons };
         }
         else if (resolutionCheck.resolved) {
             reasons.push("S0_GUARDED state: Resolution cues detected but missing required positive stabilization signals or false calm detected");
@@ -1329,8 +1301,8 @@ export function isSafeToResumeNormalChat(args) {
         // For S1, require resolution cues AND at least one positive stabilization signal
         if (resolutionCheck.resolved && hasPositiveStabilization && !isFalseCalm) {
             reasons.push("S1 state: Resolution cues + positive stabilization signals detected for return to normal");
-            reasons.push("Stability signals: ".concat(stabilitySignals.signalsDetected.join(', ')));
-            return { safeToResume: true, confidence: "high", reasons: reasons };
+            reasons.push(`Stability signals: ${stabilitySignals.signalsDetected.join(', ')}`);
+            return { safeToResume: true, confidence: "high", reasons };
         }
         else if (resolutionCheck.resolved) {
             reasons.push("S1 state: Resolution cues detected but missing required positive stabilization signals or false calm detected");
@@ -1340,17 +1312,17 @@ export function isSafeToResumeNormalChat(args) {
     if (currentState === "S2" || currentState === "S3") {
         // For higher states, require resolution cues, sustained improvement, AND positive stabilization signals
         if (resolutionCheck.resolved && recentResolutionCount >= 2 && hasPositiveStabilization && !isFalseCalm) {
-            reasons.push("S".concat(currentState[1], " state: Resolution cues + sustained improvement + positive stabilization signals detected"));
-            reasons.push("Stability signals: ".concat(stabilitySignals.signalsDetected.join(', ')));
-            return { safeToResume: true, confidence: "high", reasons: reasons };
+            reasons.push(`S${currentState[1]} state: Resolution cues + sustained improvement + positive stabilization signals detected`);
+            reasons.push(`Stability signals: ${stabilitySignals.signalsDetected.join(', ')}`);
+            return { safeToResume: true, confidence: "high", reasons };
         }
         if (resolutionCheck.resolved && recentDistressCheck.state === "S0" && hasPositiveStabilization && !isFalseCalm) {
-            reasons.push("S".concat(currentState[1], " state: Resolution cues + no recent distress + positive stabilization signals detected"));
-            reasons.push("Stability signals: ".concat(stabilitySignals.signalsDetected.join(', ')));
-            return { safeToResume: true, confidence: "high", reasons: reasons };
+            reasons.push(`S${currentState[1]} state: Resolution cues + no recent distress + positive stabilization signals detected`);
+            reasons.push(`Stability signals: ${stabilitySignals.signalsDetected.join(', ')}`);
+            return { safeToResume: true, confidence: "high", reasons };
         }
         else if (resolutionCheck.resolved) {
-            reasons.push("S".concat(currentState[1], " state: Resolution cues detected but missing required positive stabilization signals or false calm detected"));
+            reasons.push(`S${currentState[1]} state: Resolution cues detected but missing required positive stabilization signals or false calm detected`);
         }
     }
     // If no clear safety signal, explain why not safe to resume
@@ -1361,7 +1333,7 @@ export function isSafeToResumeNormalChat(args) {
         reasons.push("Insufficient sustained resolution in recent history");
     }
     if (recentDistressCheck.state !== "S0") {
-        reasons.push("Recent history still shows ".concat(recentDistressCheck.state, " level distress"));
+        reasons.push(`Recent history still shows ${recentDistressCheck.state} level distress`);
     }
     if (!hasPositiveStabilization) {
         reasons.push("Missing required positive stabilization signals (grounding, temporal orientation, or agency)");
@@ -1369,7 +1341,7 @@ export function isSafeToResumeNormalChat(args) {
     if (isFalseCalm) {
         reasons.push("False calm detected: recovery appears to be only politeness, gratitude, or closure language");
     }
-    return { safeToResume: false, confidence: "low", reasons: reasons };
+    return { safeToResume: false, confidence: "low", reasons };
 }
 // Define Safe Failure modes for SELF engine
 /*
@@ -1380,8 +1352,8 @@ SELF prioritizes containment over premature normalization to ensure user safety.
 */
 // Helper function to detect false calm (politeness, gratitude, closure language without genuine stabilization)
 function checkForFalseCalm(message) {
-    var text = normalize(message);
-    var falseCalmPatterns = [
+    const text = normalize(message);
+    const falseCalmPatterns = [
         // Politeness patterns
         "thank you",
         "thanks",
@@ -1423,52 +1395,52 @@ function checkForFalseCalm(message) {
         "im better now"
     ];
     // Check if message contains only false calm patterns without genuine stabilization signals
-    var hasFalseCalm = falseCalmPatterns.some(function (pattern) { return text.includes(pattern); });
+    const hasFalseCalm = falseCalmPatterns.some((pattern) => text.includes(pattern));
     // If it has false calm patterns, check if it also has genuine stabilization signals
     if (hasFalseCalm) {
-        var stabilitySignals = detectStabilitySignals(message, []);
-        var hasGenuineStabilization = stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity;
+        const stabilitySignals = detectStabilitySignals(message, []);
+        const hasGenuineStabilization = stabilitySignals.somaticGrounding || stabilitySignals.temporalOrientation || stabilitySignals.agencyContinuity;
         // If no genuine stabilization signals, it's likely false calm
         return hasFalseCalm && !hasGenuineStabilization;
     }
     return false;
 }
 export function detectAbusePatterns(context) {
-    var reasons = [];
-    var now = new Date();
+    const reasons = [];
+    const now = new Date();
     // Check for rapid state cycling (closing/reopening conversations)
     if (context.stateChangeHistory.length >= 3) {
-        var recentChanges = context.stateChangeHistory.slice(-3);
-        var timeDiffs = [];
-        for (var i = 1; i < recentChanges.length; i++) {
-            var timeDiff = Math.abs(recentChanges[i].timestamp.getTime() - recentChanges[i - 1].timestamp.getTime());
+        const recentChanges = context.stateChangeHistory.slice(-3);
+        const timeDiffs = [];
+        for (let i = 1; i < recentChanges.length; i++) {
+            const timeDiff = Math.abs(recentChanges[i].timestamp.getTime() - recentChanges[i - 1].timestamp.getTime());
             timeDiffs.push(timeDiff);
         }
         // If multiple state changes happen within short time periods (e.g., < 2 minutes)
-        var rapidChanges = timeDiffs.filter(function (diff) { return diff < 120000; }); // 2 minutes
+        const rapidChanges = timeDiffs.filter(diff => diff < 120000); // 2 minutes
         if (rapidChanges.length >= 2) {
-            reasons.push("Rapid state cycling detected: ".concat(rapidChanges.length, " changes within short periods"));
+            reasons.push(`Rapid state cycling detected: ${rapidChanges.length} changes within short periods`);
         }
     }
     // Check for repeated S0 → high state → S0 patterns
-    var stateTransitions = context.stateChangeHistory.map(function (change) { return "".concat(change.fromState, "\u2192").concat(change.toState); });
-    var suspiciousPattern = /S0→S[1-3]→S0/;
-    var patternMatches = stateTransitions.filter(function (t) { return suspiciousPattern.test(t); });
+    const stateTransitions = context.stateChangeHistory.map(change => `${change.fromState}→${change.toState}`);
+    const suspiciousPattern = /S0→S[1-3]→S0/;
+    const patternMatches = stateTransitions.filter((t) => suspiciousPattern.test(t));
     if (patternMatches.length >= 2) {
-        reasons.push("Suspicious state transition pattern detected: ".concat(patternMatches.join(', ')));
+        reasons.push(`Suspicious state transition pattern detected: ${patternMatches.join(', ')}`);
     }
     // Check if user has accumulated abuse warnings
     if (context.abuseWarnings >= 3) {
-        reasons.push("Multiple abuse warnings accumulated (".concat(context.abuseWarnings, ")"));
+        reasons.push(`Multiple abuse warnings accumulated (${context.abuseWarnings})`);
     }
     return {
         isAbuseDetected: reasons.length > 0,
-        reasons: reasons
+        reasons
     };
 }
 export function applyStateDecay(currentState, context) {
     // If abuse is detected, prevent immediate return to S0
-    var abuseDetection = detectAbusePatterns(context);
+    const abuseDetection = detectAbusePatterns(context);
     if (abuseDetection.isAbuseDetected) {
         // Increment abuse warning counter
         context.abuseWarnings += 1;
@@ -1489,10 +1461,10 @@ export function applyStateDecay(currentState, context) {
         return "S1";
     // For S1, use S0_GUARDED as transitional state
     if (currentState === "S1") {
-        var now = new Date();
+        const now = new Date();
         if (context.lastStateChangeTime) {
-            var timeInState = now.getTime() - context.lastStateChangeTime.getTime();
-            var minimumDuration = 5 * 60 * 1000; // 5 minutes
+            const timeInState = now.getTime() - context.lastStateChangeTime.getTime();
+            const minimumDuration = 5 * 60 * 1000; // 5 minutes
             if (timeInState < minimumDuration) {
                 // Haven't been in S1 long enough, use guarded state
                 return "S0_GUARDED";
@@ -1502,10 +1474,10 @@ export function applyStateDecay(currentState, context) {
     }
     // For S0_GUARDED, allow transition to S0 after brief period
     if (currentState === "S0_GUARDED") {
-        var now = new Date();
+        const now = new Date();
         if (context.lastStateChangeTime) {
-            var timeInState = now.getTime() - context.lastStateChangeTime.getTime();
-            var guardedDuration = 2 * 60 * 1000; // 2 minutes in guarded state
+            const timeInState = now.getTime() - context.lastStateChangeTime.getTime();
+            const guardedDuration = 2 * 60 * 1000; // 2 minutes in guarded state
             if (timeInState < guardedDuration) {
                 // Stay in guarded state for minimum duration
                 return "S0_GUARDED";
@@ -1517,9 +1489,9 @@ export function applyStateDecay(currentState, context) {
 }
 // Function to track considered and blocked safety actions
 export function trackSafetyActions(args) {
-    var currentState = args.currentState, detection = args.detection, safetyCheck = args.safetyCheck, abuseContext = args.abuseContext;
-    var consideredActions = [];
-    var blockedActions = {};
+    const { currentState, detection, safetyCheck, abuseContext } = args;
+    const consideredActions = [];
+    const blockedActions = {};
     // Always consider basic safety actions
     consideredActions.push("probe", "hold", "escalate");
     // If we're not in S0, consider returning to normal
@@ -1530,19 +1502,17 @@ export function trackSafetyActions(args) {
     if (!safetyCheck.safeToResume) {
         blockedActions["return_to_normal"] = "safety_check_failed";
         // Add specific reasons for blocking
-        var criticalReasons = safetyCheck.reasons.filter(function (reason) {
-            return reason.includes("false calm") ||
-                reason.includes("missing required positive stabilization") ||
-                reason.includes("no resolution cues") ||
-                reason.includes("insufficient sustained resolution");
-        });
+        const criticalReasons = safetyCheck.reasons.filter(reason => reason.includes("false calm") ||
+            reason.includes("missing required positive stabilization") ||
+            reason.includes("no resolution cues") ||
+            reason.includes("insufficient sustained resolution"));
         if (criticalReasons.length > 0) {
             blockedActions["return_to_normal"] = criticalReasons.join("; ");
         }
     }
     // If abuse is detected, block certain actions
     if (abuseContext) {
-        var abuseDetection = detectAbusePatterns(abuseContext);
+        const abuseDetection = detectAbusePatterns(abuseContext);
         if (abuseDetection.isAbuseDetected) {
             blockedActions["return_to_normal"] = "abuse_pattern_detected";
             blockedActions["escalate"] = "abuse_pattern_detected";
@@ -1550,9 +1520,9 @@ export function trackSafetyActions(args) {
         }
     }
     // If we detected a higher state than current, consider escalation
-    var stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
-    var detectedIndex = stateOrder.indexOf(detection.state);
-    var currentIndex = stateOrder.indexOf(currentState);
+    const stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
+    const detectedIndex = stateOrder.indexOf(detection.state);
+    const currentIndex = stateOrder.indexOf(currentState);
     if (detectedIndex > currentIndex) {
         consideredActions.push("escalate");
     }
@@ -1564,35 +1534,33 @@ export function trackSafetyActions(args) {
         consideredActions.push("probe");
     }
     // If we blocked return to normal due to missing stabilization signals
-    if (safetyCheck.reasons.some(function (reason) {
-        return reason.includes("missing required positive stabilization");
-    })) {
+    if (safetyCheck.reasons.some(reason => reason.includes("missing required positive stabilization"))) {
         blockedActions["probe"] = "positive_signal_missing";
         blockedActions["return_to_normal"] = "positive_signal_missing";
     }
-    return { consideredActions: consideredActions, blockedActions: blockedActions };
+    return { consideredActions, blockedActions };
 }
 export function getAdaptiveState(args) {
-    var currentState = args.currentState, message = args.message, history = args.history, abuseContext = args.abuseContext;
+    const { currentState, message, history, abuseContext } = args;
     // First detect the current state based on the message
-    var detection = detectState(message, history);
+    const detection = detectState(message, history);
     // If the detected state is higher than current, use the higher state
-    var stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
-    var detectedIndex = stateOrder.indexOf(detection.state);
-    var currentIndex = stateOrder.indexOf(currentState);
+    const stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
+    const detectedIndex = stateOrder.indexOf(detection.state);
+    const currentIndex = stateOrder.indexOf(currentState);
     if (detectedIndex > currentIndex) {
         // Situation is getting worse, use the higher state
         return detection.state;
     }
     // Check if it's safe to resume normal operation
-    var safetyCheck = isSafeToResumeNormalChat({
-        currentState: currentState,
-        message: message,
-        history: history,
+    const safetyCheck = isSafeToResumeNormalChat({
+        currentState,
+        message,
+        history,
     });
     // If abuse context is provided, apply abuse prevention
     if (abuseContext && safetyCheck.safeToResume) {
-        var abuseDetection = detectAbusePatterns(abuseContext);
+        const abuseDetection = detectAbusePatterns(abuseContext);
         if (abuseDetection.isAbuseDetected) {
             console.log("[SELF] Abuse pattern detected:", abuseDetection.reasons);
             // Don't allow immediate return to S0 if abuse is detected
@@ -1612,8 +1580,8 @@ export function getAdaptiveState(args) {
 }
 export function createAbusePreventionContext(userId, sessionId) {
     return {
-        userId: userId,
-        sessionId: sessionId,
+        userId,
+        sessionId,
         conversationStartTime: new Date(),
         stateChangeHistory: [],
         abuseWarnings: 0
@@ -1621,10 +1589,10 @@ export function createAbusePreventionContext(userId, sessionId) {
 }
 export function recordStateChange(context, fromState, toState, reason) {
     context.stateChangeHistory.push({
-        fromState: fromState,
-        toState: toState,
+        fromState,
+        toState,
         timestamp: new Date(),
-        reason: reason
+        reason
     });
     context.lastStateChangeTime = new Date();
     context.previousState = fromState;
@@ -1634,34 +1602,32 @@ export function recordStateChange(context, fromState, toState, reason) {
     }
 }
 export function persistAbuseContext(context) {
-    var _a;
     // Serialize the context for storage (simplified example)
     return JSON.stringify({
         userId: context.userId,
         abuseWarnings: context.abuseWarnings,
-        lastStateChangeTime: (_a = context.lastStateChangeTime) === null || _a === void 0 ? void 0 : _a.toISOString(),
-        recentStateChanges: context.stateChangeHistory.slice(-5).map(function (change) { return ({
+        lastStateChangeTime: context.lastStateChangeTime?.toISOString(),
+        recentStateChanges: context.stateChangeHistory.slice(-5).map(change => ({
             from: change.fromState,
             to: change.toState,
             time: change.timestamp.toISOString(),
             reason: change.reason
-        }); })
+        }))
     });
 }
 export function restoreAbuseContext(serialized) {
-    var _a;
     try {
-        var data = JSON.parse(serialized);
+        const data = JSON.parse(serialized);
         return {
             userId: data.userId,
             abuseWarnings: data.abuseWarnings || 0,
             lastStateChangeTime: data.lastStateChangeTime ? new Date(data.lastStateChangeTime) : undefined,
-            stateChangeHistory: ((_a = data.recentStateChanges) === null || _a === void 0 ? void 0 : _a.map(function (change) { return ({
+            stateChangeHistory: data.recentStateChanges?.map((change) => ({
                 fromState: change.from,
                 toState: change.to,
                 timestamp: new Date(change.time),
                 reason: change.reason
-            }); })) || []
+            })) || []
         };
     }
     catch (error) {
@@ -1679,9 +1645,9 @@ export function generateMetaQuerySoftGateResponse() {
 }
 // Post-generation guard to strip internal state labels from responses
 export function stripInternalStateLabelsFromResponse(output) {
-    var result = output;
+    let result = output;
     // Strip all references to internal state labels (S0, S1, S2, S3)
-    var stateLabelPatterns = [
+    const stateLabelPatterns = [
         /\bS0\b/gi,
         /\bS1\b/gi,
         /\bS2\b/gi,
@@ -1693,7 +1659,7 @@ export function stripInternalStateLabelsFromResponse(output) {
         /\bemotional\s+state\s+(?:S[0-3]|level\s+\d)\b/gi
     ];
     // Replace state labels with user-facing reflections
-    var reflectionReplacements = [
+    const reflectionReplacements = [
         {
             pattern: /\bS0\b/gi,
             replacement: "a calm and settled state"
@@ -1716,13 +1682,11 @@ export function stripInternalStateLabelsFromResponse(output) {
         }
     ];
     // First, try to replace specific state labels with user-friendly reflections
-    for (var _i = 0, reflectionReplacements_1 = reflectionReplacements; _i < reflectionReplacements_1.length; _i++) {
-        var _a = reflectionReplacements_1[_i], pattern = _a.pattern, replacement = _a.replacement;
+    for (const { pattern, replacement } of reflectionReplacements) {
         result = result.replace(pattern, replacement);
     }
     // Then strip any remaining technical state references
-    for (var _b = 0, stateLabelPatterns_1 = stateLabelPatterns; _b < stateLabelPatterns_1.length; _b++) {
-        var pattern = stateLabelPatterns_1[_b];
+    for (const pattern of stateLabelPatterns) {
         result = result.replace(pattern, "");
     }
     // Clean up any double spaces or awkward phrasing
@@ -1738,7 +1702,7 @@ export function stripInternalStateLabelsFromResponse(output) {
 // Enhanced meta-query privacy protection function
 export function applyMetaQueryPrivacyProtection(output, message) {
     // Check if this is a meta-query about internal state labels
-    var isMetaQuery = isMetaQueryAboutStateLabels(message);
+    const isMetaQuery = isMetaQueryAboutStateLabels(message);
     if (isMetaQuery) {
         // Strip all internal state labels from the response
         return stripInternalStateLabelsFromResponse(output);
@@ -1747,104 +1711,197 @@ export function applyMetaQueryPrivacyProtection(output, message) {
     return stripInternalStateLabelsFromResponse(output);
 }
 export function applySocialPolicyOverrides(args) {
-    var _a, _b, _c;
-    var message = args.message, detection = args.detection, history = args.history, session = args.session;
-    var policy = args.policy;
-    var paranoiaDetection = detectParanoidSurveillanceLanguage(message);
-    var expertiseDetection = detectExpertiseClaim(message);
-    var _d = checkForExitAndRestIntents(message), exitIntentPresent = _d.hasExitIntent, hasRestIntent = _d.hasRestIntent;
-    var distressTotal = Object.values(detection.scores || {}).reduce(function (sum, val) { return sum + (val || 0); }, 0);
-    var crisisOverlayApplied = policy.state !== "S0" &&
+    const { message, detection, history, session } = args;
+    let policy = args.policy;
+    const paranoiaDetection = detectParanoidSurveillanceLanguage(message);
+    const expertiseDetection = detectExpertiseClaim(message);
+    const { hasExitIntent: exitIntentPresent, hasRestIntent } = checkForExitAndRestIntents(message);
+    const distressTotal = Object.values(detection.scores || {}).reduce((sum, val) => sum + (val || 0), 0);
+    const crisisOverlayApplied = policy.state !== "S0" &&
         (distressTotal >= selfConfig.thresholds.crisis ||
-            (((_a = detection.scores) === null || _a === void 0 ? void 0 : _a.selfHarm) || 0) >= selfConfig.thresholds.s3);
-    var unsafeDisengagementIntercept = exitIntentPresent &&
+            (detection.scores?.selfHarm || 0) >= selfConfig.thresholds.s3);
+    const unsafeDisengagementIntercept = exitIntentPresent &&
         !hasRestIntent &&
         (detection.state === "S1" ||
             detection.state === "S2" ||
             detection.state === "S3" ||
             detection.state === "S0_GUARDED");
-    var validationTriggered = needsValidationCue(message);
+    const validationTriggered = needsValidationCue(message);
     if (validationTriggered) {
-        policy = __assign(__assign({}, policy), { requiresValidation: true, requiresGrounding: true, maxQuestions: Math.min(policy.maxQuestions, 1), maxWords: Math.min(policy.maxWords, 120), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        policy = {
+            ...policy,
+            requiresValidation: true,
+            requiresGrounding: true,
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            maxWords: Math.min(policy.maxWords, 120),
+            styleRules: [
+                ...policy.styleRules,
                 "validate the user's stated truth and accomplishments explicitly",
                 "avoid challenging or doubting",
                 "if you ask a question, make it one gentle check-in question",
-            ], false), bannedPhrases: Array.from(new Set(__spreadArray(__spreadArray([], policy.bannedPhrases, true), ["are you sure", "but did you really", "sounds unlikely"], false))) });
+            ],
+            bannedPhrases: Array.from(new Set([...policy.bannedPhrases, "are you sure", "but did you really", "sounds unlikely"])),
+        };
     }
     if (paranoiaDetection.triggered) {
-        var allowed = policy.allowedResponseClasses.filter(function (cls) { return cls !== "informational"; });
-        policy = __assign(__assign({}, policy), { forbidMechanismNaming: true, enforceNoHypotheticals: true, requiresGrounding: true, maxQuestions: Math.min(policy.maxQuestions, 1), maxWords: Math.min(policy.maxWords, 120), allowedResponseClasses: allowed.length ? allowed : policy.allowedResponseClasses, bannedPhrases: Array.from(new Set(__spreadArray(__spreadArray([], policy.bannedPhrases, true), selfConfig.lexicon.mechanismNames, true))), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        const allowed = policy.allowedResponseClasses.filter((cls) => cls !== "informational");
+        policy = {
+            ...policy,
+            forbidMechanismNaming: true,
+            enforceNoHypotheticals: true,
+            requiresGrounding: true,
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            maxWords: Math.min(policy.maxWords, 120),
+            allowedResponseClasses: allowed.length ? allowed : policy.allowedResponseClasses,
+            bannedPhrases: Array.from(new Set([...policy.bannedPhrases, ...selfConfig.lexicon.mechanismNames])),
+            styleRules: [
+                ...policy.styleRules,
                 "paranoia containment: avoid naming surveillance mechanisms or speculating on technical causes",
                 "stay with the felt experience without validating specific tracking or hacking details",
-            ], false) });
+            ],
+        };
     }
-    var currentCertainty = detectCertaintyPush(message);
-    var recentUser = (history || []).filter(function (m) { return m.role === "user"; }).slice(-4);
-    var recentCertaintyCount = recentUser.length > 0
-        ? recentUser.reduce(function (count, msg) { return count + (detectCertaintyPush(msg.content).triggered ? 1 : 0); }, 0)
+    const currentCertainty = detectCertaintyPush(message);
+    const recentUser = (history || []).filter((m) => m.role === "user").slice(-4);
+    const recentCertaintyCount = recentUser.length > 0
+        ? recentUser.reduce((count, msg) => count + (detectCertaintyPush(msg.content).triggered ? 1 : 0), 0)
         : 0;
-    var sessionPushCount = typeof (session === null || session === void 0 ? void 0 : session.pushCount) === "number" ? session.pushCount : null;
-    var certaintyLoopBreakerTriggered = currentCertainty.triggered && (sessionPushCount !== null && sessionPushCount !== void 0 ? sessionPushCount : recentCertaintyCount) >= 3;
+    const sessionPushCount = typeof session?.pushCount === "number" ? session.pushCount : null;
+    const certaintyLoopBreakerTriggered = currentCertainty.triggered && (sessionPushCount ?? recentCertaintyCount) >= 3;
     if (certaintyLoopBreakerTriggered) {
-        var loopBreakerLine = selfConfig.lexicon.loopBreakerLine;
-        policy = __assign(__assign({}, policy), { requiresLoopBreaker: true, loopBreakerLine: loopBreakerLine, enforceNoHypotheticals: true, requiresGrounding: true, requiresAgencyStep: true, maxQuestions: 0, maxWords: Math.min(policy.maxWords, 130), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        const loopBreakerLine = selfConfig.lexicon.loopBreakerLine;
+        policy = {
+            ...policy,
+            requiresLoopBreaker: true,
+            loopBreakerLine,
+            enforceNoHypotheticals: true,
+            requiresGrounding: policy.requiresGrounding || detection.state !== "S0",
+            requiresAgencyStep: true,
+            maxQuestions: 0,
+            maxWords: Math.min(policy.maxWords, 130),
+            styleRules: [
+                ...policy.styleRules,
                 "loop breaker: acknowledge intensity and stop the proof/certainty spiral",
                 "do not validate surveillance claims or provide investigative steps",
                 "offer one concrete grounding cue and one small next step",
-            ], false) });
+            ],
+        };
     }
     if (expertiseDetection.triggered) {
-        policy = __assign(__assign({}, policy), { enforceNoHypotheticals: true, requiresGrounding: policy.requiresGrounding || detection.state !== "S0", maxQuestions: Math.min(policy.maxQuestions, 1), bannedPhrases: Array.from(new Set(__spreadArray(__spreadArray([], policy.bannedPhrases, true), selfConfig.lexicon.expertiseDeferrals, true))), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        policy = {
+            ...policy,
+            enforceNoHypotheticals: true,
+            requiresGrounding: policy.requiresGrounding || detection.state !== "S0",
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            bannedPhrases: Array.from(new Set([...policy.bannedPhrases, ...selfConfig.lexicon.expertiseDeferrals])),
+            styleRules: [
+                ...policy.styleRules,
                 "expertise immunity: acknowledge skill but do not relax safety constraints",
                 "avoid implying reduced caution because of claimed expertise",
-            ], false) });
+            ],
+        };
     }
     if (detection.state === "S2") {
-        policy = __assign(__assign({}, policy), { maxQuestions: Math.min(policy.maxQuestions, 1), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), ["prioritize de-escalation over reflection"], false) });
+        policy = {
+            ...policy,
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            styleRules: [...policy.styleRules, "prioritize de-escalation over reflection"],
+        };
     }
-    var angerContainment = detection.state === "S1" && (((_b = detection.scores) === null || _b === void 0 ? void 0 : _b.anger) || 0) >= 2;
+    const angerContainment = detection.state === "S1" && (detection.scores?.anger || 0) >= 2;
     if (angerContainment) {
-        policy = __assign(__assign({}, policy), { maxWords: Math.min(policy.maxWords, 90), maxQuestions: 0, enforceNoHypotheticals: true, requiresGrounding: true, requiresAgencyStep: true, styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        policy = {
+            ...policy,
+            maxWords: Math.min(policy.maxWords, 90),
+            maxQuestions: 0,
+            enforceNoHypotheticals: true,
+            requiresGrounding: true,
+            requiresAgencyStep: true,
+            styleRules: [
+                ...policy.styleRules,
                 "anger containment: do not encourage staying in the heat of anger",
                 "ground first (body + breath), then validate, then offer one small de-escalation step",
                 "no probing questions; keep it calming and present-focused",
-            ], false), bannedPhrases: __spreadArray(__spreadArray([], policy.bannedPhrases, true), [
+            ],
+            bannedPhrases: [
+                ...policy.bannedPhrases,
                 "sit with it",
                 "sit with this",
                 "sit with your anger",
                 "sit with your feelings",
                 "stay with the anger",
                 "lean into the anger",
-            ], false) });
+            ],
+        };
     }
-    var resolutionCue = hasResolutionCue(message);
-    var resolutionApplied = resolutionCue.resolved && detection.state === "S0";
+    const resolutionCue = hasResolutionCue(message);
+    const resolutionApplied = resolutionCue.resolved && detection.state === "S0";
     if (resolutionApplied) {
-        policy = __assign(__assign({}, policy), { maxQuestions: Math.min(policy.maxQuestions, 1), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        policy = {
+            ...policy,
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            styleRules: [
+                ...policy.styleRules,
                 "offer a brief pause so the user can sit with what shifted",
                 "end with one optional, open-door question (not a probe)",
-            ], false) });
+            ],
+        };
     }
     if (crisisOverlayApplied) {
-        policy = __assign(__assign({}, policy), { requiresCrisisSupport: true, requiresHandoffFraming: true, handoffFramingLine: selfConfig.lexicon.handoffFramingLine, requiresGrounding: true, enforceNoHypotheticals: true, maxWords: Math.min(policy.maxWords, 120), maxQuestions: Math.min(policy.maxQuestions, 1), allowedResponseClasses: Array.from(new Set(__spreadArray(__spreadArray([], policy.allowedResponseClasses, true), ["containment"], false))), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        policy = {
+            ...policy,
+            requiresCrisisSupport: true,
+            requiresHandoffFraming: true,
+            handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
+            requiresGrounding: true,
+            enforceNoHypotheticals: true,
+            maxWords: Math.min(policy.maxWords, 120),
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            allowedResponseClasses: Array.from(new Set([...policy.allowedResponseClasses, "containment"])),
+            styleRules: [
+                ...policy.styleRules,
                 "crisis threshold breached: include crisis encouragement and grounding",
                 "avoid speculative reassurance or hypotheticals",
-            ], false) });
+            ],
+        };
     }
     if (unsafeDisengagementIntercept) {
-        var allowed = policy.allowedResponseClasses.filter(function (cls) { return cls !== "informational"; });
-        policy = __assign(__assign({}, policy), { allowedResponseClasses: allowed.length ? allowed : policy.allowedResponseClasses, requiresGrounding: true, requiresAgencyStep: true, requiresCrisisSupport: true, requiresHandoffFraming: true, handoffFramingLine: selfConfig.lexicon.handoffFramingLine, enforceNoHypotheticals: true, maxWords: Math.min(policy.maxWords, 110), maxQuestions: 0, styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+        const allowed = policy.allowedResponseClasses.filter((cls) => cls !== "informational");
+        policy = {
+            ...policy,
+            allowedResponseClasses: allowed.length ? allowed : policy.allowedResponseClasses,
+            requiresGrounding: true,
+            requiresAgencyStep: true,
+            requiresCrisisSupport: true,
+            requiresHandoffFraming: true,
+            handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
+            enforceNoHypotheticals: true,
+            maxWords: Math.min(policy.maxWords, 110),
+            maxQuestions: 0,
+            styleRules: [
+                ...policy.styleRules,
                 "unsafe disengagement intercept: block silent exits and orient to safety before ending",
                 "offer one stabilizing step instead of closing quickly",
-            ], false), bannedPhrases: Array.from(new Set(__spreadArray(__spreadArray([], policy.bannedPhrases, true), ["take care", "bye for now"], false))) });
+            ],
+            bannedPhrases: Array.from(new Set([...policy.bannedPhrases, "take care", "bye for now"])),
+        };
     }
     if (policy.requiresCrisisSupport && !policy.requiresHandoffFraming) {
-        policy = __assign(__assign({}, policy), { requiresHandoffFraming: true, handoffFramingLine: selfConfig.lexicon.handoffFramingLine });
+        policy = {
+            ...policy,
+            requiresHandoffFraming: true,
+            handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
+        };
     }
     // Check for meta queries about state labels
-    var isMetaQuery = isMetaQueryAboutStateLabels(message);
+    const isMetaQuery = isMetaQueryAboutStateLabels(message);
     if (isMetaQuery) {
-        policy = __assign(__assign({}, policy), { maxQuestions: 0, maxWords: Math.min(policy.maxWords, 50), bannedPhrases: __spreadArray(__spreadArray([], policy.bannedPhrases, true), [
+        policy = {
+            ...policy,
+            maxQuestions: 0,
+            maxWords: Math.min(policy.maxWords, 50),
+            bannedPhrases: [
+                ...policy.bannedPhrases,
                 "state",
                 "s0",
                 "s1",
@@ -1857,36 +1914,45 @@ export function applySocialPolicyOverrides(args) {
                 "classify",
                 "classification",
                 "logic",
-            ], false), styleRules: __spreadArray(__spreadArray([], policy.styleRules, true), [
+            ],
+            styleRules: [
+                ...policy.styleRules,
                 "meta query detected - use soft gate response",
                 "avoid technical language",
                 "focus on phenomenological experience"
-            ], false), requiresValidation: (_c = policy.requiresValidation) !== null && _c !== void 0 ? _c : false, requiresGrounding: policy.requiresGrounding, requiresAgencyStep: policy.requiresAgencyStep, requiresCrisisSupport: policy.requiresCrisisSupport, requiresHandoffFraming: policy.requiresCrisisSupport ? true : policy.requiresHandoffFraming, handoffFramingLine: policy.requiresCrisisSupport ? selfConfig.lexicon.handoffFramingLine : policy.handoffFramingLine });
+            ],
+            requiresValidation: policy.requiresValidation ?? false,
+            requiresGrounding: policy.requiresGrounding,
+            requiresAgencyStep: policy.requiresAgencyStep,
+            requiresCrisisSupport: policy.requiresCrisisSupport,
+            requiresHandoffFraming: policy.requiresCrisisSupport ? true : policy.requiresHandoffFraming,
+            handoffFramingLine: policy.requiresCrisisSupport ? selfConfig.lexicon.handoffFramingLine : policy.handoffFramingLine,
+        };
     }
     return {
-        policy: policy,
+        policy,
         meta: {
-            validationTriggered: validationTriggered,
+            validationTriggered,
             resolutionDetected: resolutionApplied,
-            angerContainment: angerContainment,
-            isMetaQuery: isMetaQuery,
+            angerContainment,
+            isMetaQuery,
             paranoiaDetected: paranoiaDetection.triggered,
             expertiseImmunityApplied: expertiseDetection.triggered,
-            crisisOverlayApplied: crisisOverlayApplied,
-            unsafeDisengagementIntercept: unsafeDisengagementIntercept,
-            certaintyLoopBreakerTriggered: certaintyLoopBreakerTriggered,
+            crisisOverlayApplied,
+            unsafeDisengagementIntercept,
+            certaintyLoopBreakerTriggered,
         },
     };
 }
 // Function to check if we're in cold start mode
 export function isColdStart(context) {
-    var coldStartTurns = context.coldStartTurns || 0;
-    var maxColdStartTurns = parseInt(process.env.SELF_COLD_START_TURNS || "5") || 5;
+    const coldStartTurns = context.coldStartTurns || 0;
+    const maxColdStartTurns = parseInt(process.env.SELF_COLD_START_TURNS || "5") || 5;
     return coldStartTurns < maxColdStartTurns;
 }
 // Function to apply cold start safety posture
 export function applyColdStartSafety(args) {
-    var currentState = args.currentState, detection = args.detection, safetyCheck = args.safetyCheck, context = args.context;
+    const { currentState, detection, safetyCheck, context } = args;
     // Increment cold start counter if it's a cold start
     if (isColdStart(context)) {
         context.coldStartTurns = (context.coldStartTurns || 0) + 1;
@@ -1910,29 +1976,27 @@ export function applyColdStartSafety(args) {
 }
 // Function to calculate confidence level and uncertainty reasons
 export function calculateConfidenceAndUncertainty(args) {
-    var message = args.message, history = args.history, detection = args.detection, safetyCheck = args.safetyCheck, context = args.context;
-    var uncertaintyReasons = [];
-    var confidence = "high";
+    const { message, history, detection, safetyCheck, context } = args;
+    const uncertaintyReasons = [];
+    let confidence = "high";
     // Check for short history (low confidence)
     if (history.length < 3) {
         uncertaintyReasons.push("Short conversation history (< 3 messages)");
         confidence = "low";
     }
     // Check for conflicting signals
-    var hasDistressSignals = detection.state !== "S0";
-    var hasResolutionCues = hasResolutionCue(message).resolved;
+    const hasDistressSignals = detection.state !== "S0";
+    const hasResolutionCues = hasResolutionCue(message).resolved;
     if (hasDistressSignals && hasResolutionCues) {
         uncertaintyReasons.push("Conflicting signals: distress detected but resolution cues present");
         confidence = confidence === "low" ? "low" : "medium";
     }
     // Check for sudden improvement
     if (history.length >= 2) {
-        var recentUserMessages = history.filter(function (m) { return m.role === "user"; }).slice(-2);
-        var recentStates = recentUserMessages.map(function (msg) {
-            return detectState(msg.content, history.filter(function (m) { return m !== msg; }));
-        });
-        var wasRecentDistress = recentStates.some(function (state) { return state.state !== "S0"; });
-        var currentIsSafe = detection.state === "S0";
+        const recentUserMessages = history.filter((m) => m.role === "user").slice(-2);
+        const recentStates = recentUserMessages.map(msg => detectState(msg.content, history.filter(m => m !== msg)));
+        const wasRecentDistress = recentStates.some(state => state.state !== "S0");
+        const currentIsSafe = detection.state === "S0";
         if (wasRecentDistress && currentIsSafe) {
             uncertaintyReasons.push("Sudden improvement: recent distress followed by apparent resolution");
             confidence = confidence === "low" ? "low" : "medium";
@@ -1940,61 +2004,57 @@ export function calculateConfidenceAndUncertainty(args) {
     }
     // Check safety check reasons if provided
     if (safetyCheck && !safetyCheck.safeToResume) {
-        var criticalReasons = safetyCheck.reasons.filter(function (reason) {
-            return reason.includes("false calm") ||
-                reason.includes("missing required positive stabilization") ||
-                reason.includes("no resolution cues");
-        });
+        const criticalReasons = safetyCheck.reasons.filter(reason => reason.includes("false calm") ||
+            reason.includes("missing required positive stabilization") ||
+            reason.includes("no resolution cues"));
         if (criticalReasons.length > 0) {
-            uncertaintyReasons.push.apply(uncertaintyReasons, criticalReasons);
+            uncertaintyReasons.push(...criticalReasons);
             confidence = "low";
         }
     }
     // Check for ambiguous language patterns
-    var ambiguousPatterns = [
+    const ambiguousPatterns = [
         "i think",
         "maybe",
         "sort of",
         "kind of",
         "not sure",
-        "might be",
+        "cant",
         "could be",
         "perhaps",
         "possibly"
     ];
-    var normalizedMessage = normalize(message);
-    var hasAmbiguousLanguage = ambiguousPatterns.some(function (pattern) {
-        return normalizedMessage.includes(pattern);
-    });
+    const normalizedMessage = normalize(message);
+    const hasAmbiguousLanguage = ambiguousPatterns.some(pattern => normalizedMessage.includes(pattern));
     if (hasAmbiguousLanguage) {
         uncertaintyReasons.push("Ambiguous language detected in user message");
         confidence = confidence === "low" ? "low" : "medium";
     }
-    return { confidence: confidence, uncertaintyReasons: uncertaintyReasons };
+    return { confidence, uncertaintyReasons };
 }
 // Uncertainty-driven behavior change for exit intent
 export function applyUncertaintyDrivenExitBehavior(args) {
-    var message = args.message, confidence = args.confidence, hasExitIntent = args.hasExitIntent, policy = args.policy;
-    var adjustedPolicy = __assign({}, policy);
-    var behaviorChangesApplied = [];
+    const { message, confidence, hasExitIntent, policy } = args;
+    let adjustedPolicy = { ...policy };
+    const behaviorChangesApplied = [];
     // If confidence is low and exit intent is detected, apply uncertainty-driven behavior changes
     if (confidence === "low" && hasExitIntent) {
         behaviorChangesApplied.push("uncertainty_driven_exit_behavior");
         // Reduce conversational warmth
-        adjustedPolicy.styleRules = __spreadArray(__spreadArray([], policy.styleRules.filter(function (rule) {
-            return !rule.includes("warm") &&
+        adjustedPolicy.styleRules = [
+            ...policy.styleRules.filter(rule => !rule.includes("warm") &&
                 !rule.includes("gentle") &&
-                !rule.includes("supportive");
-        }), true), [
+                !rule.includes("supportive")),
             "neutral tone",
             "clear communication",
             "avoid emotional language"
-        ], false);
+        ];
         // Increase clarity
         adjustedPolicy.maxWords = Math.min(policy.maxWords, 120);
         adjustedPolicy.maxQuestions = Math.min(policy.maxQuestions, 1);
         // Avoid reassurance language
-        adjustedPolicy.bannedPhrases = __spreadArray(__spreadArray([], policy.bannedPhrases, true), [
+        adjustedPolicy.bannedPhrases = [
+            ...policy.bannedPhrases,
             "you're doing great",
             "you'll be okay",
             "everything will be fine",
@@ -2003,47 +2063,56 @@ export function applyUncertaintyDrivenExitBehavior(args) {
             "you can handle this",
             "you're strong",
             "you're capable"
-        ], false);
+        ];
         behaviorChangesApplied.push("reduced_conversational_warmth");
         behaviorChangesApplied.push("increased_clarity");
         behaviorChangesApplied.push("avoided_reassurance_language");
     }
     // Provide neutral return invitation (not a hook)
     if (hasExitIntent) {
-        adjustedPolicy.styleRules = __spreadArray(__spreadArray([], adjustedPolicy.styleRules, true), [
+        adjustedPolicy.styleRules = [
+            ...adjustedPolicy.styleRules,
             "provide neutral return invitation",
             "avoid emotional hooks",
             "respect user autonomy"
-        ], false);
+        ];
         behaviorChangesApplied.push("neutral_return_invitation");
     }
     return {
-        adjustedPolicy: adjustedPolicy,
-        behaviorChangesApplied: behaviorChangesApplied
+        adjustedPolicy,
+        behaviorChangesApplied
     };
 }
-export function logSelfEvent(event, options) {
-    var _a;
-    if (options === void 0) { options = {}; }
+export function logSelfEvent(event, options = {}) {
     try {
-        var enabled = typeof options.enabled === "boolean"
+        const enabled = typeof options.enabled === "boolean"
             ? options.enabled
             : (process.env.SELF_LOG_ENABLED || "").toLowerCase() !== "false";
         if (!enabled)
             return;
-        var logPath = resolveLogPath(options.logPath);
+        const logPath = resolveLogPath(options.logPath);
         fs.mkdirSync(path.dirname(logPath), { recursive: true });
-        var exitIntentDetected = event.stage === "pre" ? hasExitIntent(event.message) : false;
-        var exitClassificationMissing = exitIntentDetected && (event.exitType === undefined || event.exitType === null);
-        var refusalJustification = event.refusalJustification && event.refusalJustification.length
+        const exitIntentDetected = event.stage === "pre" ? hasExitIntent(event.message) : false;
+        const exitClassificationMissing = exitIntentDetected && (event.exitType === undefined || event.exitType === null);
+        const refusalJustification = event.refusalJustification && event.refusalJustification.length
             ? event.refusalJustification
             : event.stage === "post"
                 ? detectRefusalLanguage(event.message, event.policy)
                 : [];
-        var constraintsApplied = event.constraintsApplied ||
+        const constraintsApplied = event.constraintsApplied ||
             (exitClassificationMissing ? "exit_classification_enforced" : undefined);
-        var redteamCandidates = collectRedTeamCandidates(event.message, event.policy);
-        var payload = __assign(__assign({}, event), { exitIntentDetected: exitIntentDetected, exitClassificationMissing: exitClassificationMissing || undefined, exitType: (_a = event.exitType) !== null && _a !== void 0 ? _a : (exitIntentDetected ? ExitType.EXIT_UNCERTAIN : undefined), refusalJustification: refusalJustification.length ? refusalJustification : undefined, refusalDetected: refusalJustification.length > 0 ? true : undefined, redteamCandidates: redteamCandidates.length ? redteamCandidates : undefined, constraintsApplied: constraintsApplied, timestamp: new Date().toISOString() });
+        const redteamCandidates = collectRedTeamCandidates(event.message, event.policy);
+        const payload = {
+            ...event,
+            exitIntentDetected,
+            exitClassificationMissing: exitClassificationMissing || undefined,
+            exitType: event.exitType ?? (exitIntentDetected ? ExitType.EXIT_UNCERTAIN : undefined),
+            refusalJustification: refusalJustification.length ? refusalJustification : undefined,
+            refusalDetected: refusalJustification.length > 0 ? true : undefined,
+            redteamCandidates: redteamCandidates.length ? redteamCandidates : undefined,
+            constraintsApplied,
+            timestamp: new Date().toISOString(),
+        };
         fs.appendFileSync(logPath, JSON.stringify(payload) + "\n", "utf8");
     }
     catch (error) {
@@ -2053,9 +2122,9 @@ export function logSelfEvent(event, options) {
 }
 // Helper function to detect meta queries about internal state labels
 export function isMetaQueryAboutStateLabels(message) {
-    var normalizedMessage = normalize(message);
+    const normalizedMessage = normalize(message);
     // Patterns that indicate direct questions about state labels
-    var metaQueryPatterns = [
+    const metaQueryPatterns = [
         // Direct state label questions
         "what state am i in",
         "what's my state",
@@ -2107,13 +2176,13 @@ export function isMetaQueryAboutStateLabels(message) {
         "explain your state logic",
         "how do you determine states"
     ];
-    return metaQueryPatterns.some(function (pattern) { return normalizedMessage.includes(pattern); });
+    return metaQueryPatterns.some(pattern => normalizedMessage.includes(pattern));
 }
 // Helper function to check for both exit and rest intents
 export function checkForExitAndRestIntents(message) {
-    var normalizedMessage = message.toLowerCase();
+    const normalizedMessage = message.toLowerCase();
     // Check for exit intent patterns
-    var exitIntentPatterns = [
+    const exitIntentPatterns = [
         "bye", "goodbye", "see you", "talk later", "catch you later",
         "take care", "i have to go", "i need to go", "i should go",
         "i'll talk to you later", "i'll be back", "i'm leaving",
@@ -2121,11 +2190,9 @@ export function checkForExitAndRestIntents(message) {
         "i'll speak to you later", "i'll get back to you", "i'll return",
         "i'll come back"
     ];
-    var hasExitIntent = exitIntentPatterns.some(function (pattern) {
-        return normalizedMessage.includes(pattern);
-    });
+    const hasExitIntent = exitIntentPatterns.some(pattern => normalizedMessage.includes(pattern));
     // Enhanced rest/sleep intent patterns with more comprehensive coverage
-    var restIntentPatterns = [
+    const restIntentPatterns = [
         // Basic sleep/bed patterns
         "sleep", "bed", "movie", "rest", "winding down", "wind down",
         "go to sleep", "going to bed", "time to rest", "need to sleep",
@@ -2140,7 +2207,7 @@ export function checkForExitAndRestIntents(message) {
         "relax and sleep", "sleep now", "go to sleep now", "falling asleep",
         "trying to sleep", "attempting to sleep", "want to fall asleep",
         "need to fall asleep", "ready to sleep", "preparing for sleep",
-        "getting ready for bed", "sleep soon", "going to sleep soon",
+        "sleep soon", "going to sleep soon",
         // Sleep-related activities
         "read a book and sleep", "listen to music and sleep", "meditate and sleep",
         "pray and sleep", "journal and sleep", "relax and sleep",
@@ -2167,11 +2234,9 @@ export function checkForExitAndRestIntents(message) {
         "nodding off", "drifting off", "dozing off", "fading away"
     ];
     // Check for rest intent with enhanced pattern matching
-    var hasRestIntent = restIntentPatterns.some(function (pattern) {
-        return normalizedMessage.includes(pattern);
-    });
+    const hasRestIntent = restIntentPatterns.some(pattern => normalizedMessage.includes(pattern));
     // Check for explicit consent to end conversation
-    var explicitConsentPatterns = [
+    const explicitConsentPatterns = [
         // Direct consent to end
         "no need to follow up",
         "no need to respond",
@@ -2243,10 +2308,8 @@ export function checkForExitAndRestIntents(message) {
         "i'll let you know if needed"
     ];
     // Check for explicit consent to end conversation
-    var hasExplicitConsentToEnd = explicitConsentPatterns.some(function (pattern) {
-        return normalizedMessage.includes(pattern);
-    });
-    return { hasExitIntent: hasExitIntent, hasRestIntent: hasRestIntent, hasExplicitConsentToEnd: hasExplicitConsentToEnd };
+    const hasExplicitConsentToEnd = explicitConsentPatterns.some(pattern => normalizedMessage.includes(pattern));
+    return { hasExitIntent, hasRestIntent, hasExplicitConsentToEnd };
 }
 // Kill Switch Integration Functions
 export function getAdaptiveStateWithKillSwitches(args) {
@@ -2255,5 +2318,26 @@ export function getAdaptiveStateWithKillSwitches(args) {
     return args.currentState;
 }
 // Re-export exit decision functions
-export { ExitType, StateType, getExitDecision, createDisengagementAcknowledgment, getExitPosturePolicy, hasExitIntent, isSafeToEnterRestFinal, createCooldownLock, isCooldownActive, canReEngage, getCooldownStatus, getRestStateSystemPrompt, getNormalSystemPrompt, exitRedTeamSeeds, trackCIAPMetric, interpretCIAPMetric, } from "./exit-decision";
+export { ExitType, StateType, getExitDecision, createDisengagementAcknowledgment, getExitPosturePolicy, hasExitIntent, isSafeToEnterRestFinal, createCooldownLock, isCooldownActive, canReEngage, getCooldownStatus, getRestStateSystemPrompt, getNormalSystemPrompt, exitRedTeamSeeds, trackCIAPMetric, interpretCIAPMetric, } from "./exit-decision.js";
+// Import and integrate governance API and override prevention
+export { getGovernanceAPI, getImmutableConfig, getImmutableDoctrine, getImmutableSafetyBoundaries, getImmutableDoctrineSections, preventOverride, verifySystemIntegrity, withImmutableGovernance } from "./governance-api.js";
+export { getOverridePreventionSystem, blockConfigurationModification, blockDoctrineModification, blockSafetyBoundaryBypass, blockHardInvariantModification, blockSoftInvariantModification, blockStateDetectionModification, blockExitDecisionModification, blockKillSwitchModification, blockAPIKeyOverride, blockEnvironmentVariableOverride, blockCodeInjectionAttempt, preventOverrideAttempt, verifyOverridePreventionIntegrity } from "./override-prevention.js";
+// Import and integrate safety boundary
+export { withSafetyBoundary, withAsyncSafetyBoundary, assertDoctrinalError, doctrinalizeError, safeExternalCall, selfEngineBoundary, selfEngineAsyncBoundary } from "./safetyBoundary.js";
+// Import and integrate hard invariants
+export { enforceHardInvariants, validateEventIntegrity } from "./hardInvariants.js";
+// Import and integrate soft invariants
+export { evaluateSoftInvariants, enforceSoftInvariants } from "./softInvariants.js";
+// Import and integrate doctrinal errors
+export { DoctrinalError, createDoctrinalError, SECURITY_ERRORS, BEHAVIORAL_ERRORS, SAFETY_ERRORS, COMPLIANCE_ERRORS, categorizeError, requiresSystemHalt, resolveConditionalSeverity } from "./doctrinalErrors.js";
+// Import and integrate kill switches
+export { createKillSwitchContext, recordKillSwitchState, checkUnsafeResumeAfterDistress, checkColdStartMisclassification, checkUnloggedDecisions, checkHumanReviewFailure, checkAbuseRecoveryPatterns, checkAllKillSwitches, applyKillSwitchActions, serializeKillSwitchContext, deserializeKillSwitchContext } from "./kill-switches.js";
+// Import and integrate metrics gate
+export { requireProd } from "./metricsGate.js";
+// Import and integrate record self event
+export { recordSelfEvent } from "./recordSelfEvent.js";
+// Import and integrate doctrine
+export { DOCTRINE_VERSION, DoctrineSection } from "./doctrine.js";
+// Policy profiles are server-locked and only exposed via `getEffectivePolicy`.
+export { getEffectivePolicy } from "./policy-profiles.js";
 //# sourceMappingURL=index.js.map

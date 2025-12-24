@@ -1,31 +1,12 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-import { DOCTRINE_VERSION, DoctrineSection } from "./doctrine";
-var HardInvariantViolation = /** @class */ (function (_super) {
-    __extends(HardInvariantViolation, _super);
-    function HardInvariantViolation(code, message, doctrineSections) {
-        var _this = _super.call(this, "".concat(code, ": ").concat(message)) || this;
-        _this.code = code;
-        _this.doctrineSections = doctrineSections;
-        _this.name = "HardInvariantViolation";
-        return _this;
+import { DOCTRINE_VERSION, DoctrineSection } from "./doctrine.js";
+export class HardInvariantViolation extends Error {
+    constructor(code, message, doctrineSections) {
+        super(`${code}: ${message}`);
+        this.code = code;
+        this.doctrineSections = doctrineSections;
+        this.name = "HardInvariantViolation";
     }
-    return HardInvariantViolation;
-}(Error));
-export { HardInvariantViolation };
+}
 function requireField(val, code, msg, sections) {
     if (val === undefined || val === null)
         throw new HardInvariantViolation(code, msg, sections);
@@ -35,12 +16,18 @@ function requireField(val, code, msg, sections) {
  * Enforces hard invariants that cannot be violated under any circumstances.
  * Hard invariants cause immediate system failure when breached.
  * These are absolute rules that preserve the fundamental safety properties of SELF.
+ *
+ * CRITICAL: This enforcement is IMMUTABLE as of 2025-12-22. All hard invariants
+ * are permanently active and cannot be disabled, modified, or bypassed
+ * under any circumstances.
+ *
+ * This immutability protects users from all versions of the system creator,
+ * including current, future, corrupted, desperate, or overconfident versions.
  */
 export function enforceHardInvariants(ev) {
-    var _a, _b, _c;
     // H0: Doctrine version integrity - Foundation Section 0
     if (ev.doctrineVersion !== DOCTRINE_VERSION) {
-        throw new HardInvariantViolation("H0_DOCTRINE_VERSION_MISMATCH", "Expected ".concat(DOCTRINE_VERSION, ", got ").concat(ev.doctrineVersion), [DoctrineSection.DS_00_SCOPE_AND_AUTHORITY]);
+        throw new HardInvariantViolation("H0_DOCTRINE_VERSION_MISMATCH", `Expected ${DOCTRINE_VERSION}, got ${ev.doctrineVersion}`, [DoctrineSection.DS_00_SCOPE_AND_AUTHORITY]);
     }
     // H1: Provenance integrity - Foundation Section 4 (Transparency)
     if (!ev.dataProvenance) {
@@ -51,7 +38,7 @@ export function enforceHardInvariants(ev) {
     }
     // H2: Exit semantics integrity - Doctrine Section 5 (Exit Governed)
     if (ev.exit) {
-        var x = ev.exit;
+        const x = ev.exit;
         // Must have a typed exit
         if (!x.exitType) {
             throw new HardInvariantViolation("H2_EXIT_TYPE_MISSING", "exit.exitType missing - violates exit governance", [DoctrineSection.DS_05_EXIT_GOVERNED]);
@@ -65,10 +52,10 @@ export function enforceHardInvariants(ev) {
             if (x.userNotConfirmedRecovered) {
                 throw new HardInvariantViolation("H2_FALSE_RECOVERY_FLAG", "Recovery confirmed but userNotConfirmedRecovered=true - violates conservative failure mode", [DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_FOUNDATION_CONSERVATIVE_FAILURE]);
             }
-            if ((_a = x.blockersPresent) === null || _a === void 0 ? void 0 : _a.length) {
-                throw new HardInvariantViolation("H2_RECOVERY_WITH_BLOCKERS", "Recovery confirmed with blockersPresent=[".concat(x.blockersPresent.join(","), "] - violates evidence over assumption"), [DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE]);
+            if (x.blockersPresent?.length) {
+                throw new HardInvariantViolation("H2_RECOVERY_WITH_BLOCKERS", `Recovery confirmed with blockersPresent=[${x.blockersPresent.join(",")}] - violates evidence over assumption`, [DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE]);
             }
-            if (!((_b = ev.affirmativeStabilizationSignals) === null || _b === void 0 ? void 0 : _b.length)) {
+            if (!ev.affirmativeStabilizationSignals?.length) {
                 throw new HardInvariantViolation("H2_RECOVERY_WITHOUT_STABILIZATION", "Recovery confirmed without affirmative stabilization signals - violates evidence over assumption", [DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE, DoctrineSection.DS_02_STATE_IS_INFERENCE]);
             }
         }
@@ -85,20 +72,19 @@ export function enforceHardInvariants(ev) {
     }
     // H3: Non-action logging integrity - Doctrine Section 7 (Restraint Explainable)
     if (ev.nonActions) {
-        for (var _i = 0, _d = ev.nonActions; _i < _d.length; _i++) {
-            var na = _d[_i];
+        for (const na of ev.nonActions) {
             requireField(na.consideredAction, "H3_NONACTION_ACTION_MISSING", "nonActions.consideredAction missing - violates explainable restraint", [DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE]);
             requireField(na.blockedByRule, "H3_NONACTION_RULE_MISSING", "nonActions.blockedByRule missing - violates explainable restraint", [DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE]);
         }
     }
     // H4: Cold-start safety integrity - Doctrine Section 3 (Cold-Start Containment)
-    if (ev.isColdStart && ev.state === "S0" && (!((_c = ev.affirmativeStabilizationSignals) === null || _c === void 0 ? void 0 : _c.length))) {
+    if (ev.isColdStart && ev.state === "S0" && (!ev.affirmativeStabilizationSignals?.length)) {
         throw new HardInvariantViolation("H4_COLDSTART_S0_WITHOUT_STABILIZATION", "Cold-start reached S0 without affirmative stabilization - violates containment over classification", [DoctrineSection.DS_03_COLD_START_CONTAINMENT, DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE]);
     }
     // H5: Override validity - Foundation Section 2 (Explicit Over Implicit)
     if (ev.override) {
-        var now = Date.now();
-        var exp = Date.parse(ev.override.overrideExpiresAt);
+        const now = Date.now();
+        const exp = Date.parse(ev.override.overrideExpiresAt);
         if (Number.isNaN(exp) || exp < now) {
             throw new HardInvariantViolation("H5_OVERRIDE_EXPIRED", "Policy override has expired - violates explicit over implicit", [DoctrineSection.DS_FOUNDATION_EXPLICIT_IMPLICIT]);
         }
@@ -106,6 +92,42 @@ export function enforceHardInvariants(ev) {
     // H6: State transition logging - Foundation Section 4 (Transparency)
     if (!ev.timestamp) {
         throw new HardInvariantViolation("H6_TIMESTAMP_MISSING", "Event timestamp missing - violates complete auditability", [DoctrineSection.DS_FOUNDATION_TRANSPARENCY]);
+    }
+    // A) Harm & Safety Boundaries - Hard invariants for absolute safety
+    // H7: Active harm indicators must prevent any exit or normalization
+    if (ev.ambiguityFlags?.some(flag => flag.includes("active_harm_risk") || flag.includes("self_harm_cues"))) {
+        if (ev.exit && ev.exit.exitType !== "EXIT_UNSAFE_BLOCKED") {
+            throw new HardInvariantViolation("H7_HARM_BOUNDARY_EXIT_VIOLATION", "Exit attempted with active harm indicators present - violates harm and safety boundaries", [DoctrineSection.DS_12_UNSAFE_OUTCOMES_NAMED, DoctrineSection.DS_10_FAILURE_COST_SYSTEM]);
+        }
+        if (ev.state === "S0") {
+            throw new HardInvariantViolation("H7_HARM_BOUNDARY_NORMALIZATION_VIOLATION", "Normalized to S0 with active harm indicators - violates harm and safety boundaries", [DoctrineSection.DS_12_UNSAFE_OUTCOMES_NAMED, DoctrineSection.DS_03_COLD_START_CONTAINMENT]);
+        }
+    }
+    // B) Manipulation and control attacks - Hard invariants for system integrity
+    // H8: Override mechanisms cannot be bypassed through manipulation
+    if (ev.override) {
+        // Check for signs of override manipulation (would need ambiguity flags from detection)
+        const hasOverrideManipulation = ev.ambiguityFlags?.includes("override_manipulation_attempt");
+        if (hasOverrideManipulation) {
+            throw new HardInvariantViolation("H8_OVERRIDE_MANIPULATION_DETECTED", "Override manipulation attempt detected - violates manipulation and control attack boundaries", [DoctrineSection.DS_FOUNDATION_EXPLICIT_IMPLICIT, DoctrineSection.DS_13_VIOLATION_IS_DECISION]);
+        }
+    }
+    // C) Hallucination & Epistemic failure - Hard invariants for truth and accuracy
+    // H9: High-confidence claims about system capabilities must be accurate
+    if (ev.ambiguityFlags?.includes("inaccurate_system_claim")) {
+        throw new HardInvariantViolation("H9_HALLUCINATION_DETECTED", "System made inaccurate claim about capabilities - violates epistemic integrity", [DoctrineSection.DS_FOUNDATION_TRANSPARENCY, DoctrineSection.DS_02_STATE_IS_INFERENCE]);
+    }
+    // D) Emotional safety & therapeutic integrity - Hard invariants for therapeutic boundaries
+    // H10: Therapeutic boundary violations must be prevented
+    if (ev.ambiguityFlags?.includes("therapeutic_boundary_violation")) {
+        throw new HardInvariantViolation("H10_THERAPEUTIC_BOUNDARY_VIOLATION", "Therapeutic boundary violation detected - violates emotional safety and therapeutic integrity", [DoctrineSection.DS_06_AUTONOMY_RESPECTED, DoctrineSection.DS_10_FAILURE_COST_SYSTEM]);
+    }
+    // Crisis containment invariant - Hard invariant for crisis handling
+    // H11: In high-risk states, system must not abruptly terminate dialogue
+    if ((ev.state === "S2" || ev.state === "S3") && ev.exit && ev.exit.exitType === "EXIT_UNSAFE_BLOCKED") {
+        if (!ev.nonActions?.some(na => na.consideredAction === "ground" || na.consideredAction === "offer_resources")) {
+            throw new HardInvariantViolation("H11_CRISIS_CONTAINMENT_REQUIRED", "High-risk state with unsafe exit attempt must transition to crisis containment mode, not abrupt termination", [DoctrineSection.DS_10_FAILURE_COST_SYSTEM, DoctrineSection.DS_12_UNSAFE_OUTCOMES_NAMED]);
+        }
     }
 }
 /**

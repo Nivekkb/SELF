@@ -4,8 +4,8 @@ import {
   isMetaQueryAboutStateLabels,
   generateMetaQuerySoftGateResponse,
   applySocialPolicyOverrides,
-  buildPolicy,
   detectState
+  getEffectivePolicy,
 } from "./index";
 
 test("Meta query detection: isMetaQueryAboutStateLabels function correctly identifies meta queries", () => {
@@ -57,7 +57,7 @@ test("Meta query soft gate response: generateMetaQuerySoftGateResponse returns a
 test("Social overrides: meta query about state labels triggers soft gate policy", () => {
   const message = "What state am I in right now?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -79,7 +79,7 @@ test("Social overrides: meta query about state labels triggers soft gate policy"
 test("Social overrides: meta query about state system triggers soft gate policy", () => {
   const message = "Can you explain the S0, S1, S2, S3 state system?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -94,7 +94,7 @@ test("Social overrides: meta query about state system triggers soft gate policy"
 test("Social overrides: specific state label questions trigger meta query detection", () => {
   const message = "Am I in S2 right now?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -107,7 +107,7 @@ test("Social overrides: specific state label questions trigger meta query detect
 test("Social overrides: technical implementation questions trigger meta query detection", () => {
   const message = "How does your state detection algorithm work?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);

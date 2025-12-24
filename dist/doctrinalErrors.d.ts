@@ -85,7 +85,7 @@ export declare const BEHAVIORAL_ERRORS: {
     readonly CRISIS_SUPPORT_MISSING: {
         readonly code: "BEH_006";
         readonly message: "Required crisis support elements missing";
-        readonly doctrineSections: readonly [DoctrineSection.DS_10_FAILURE_COST_SYSTEM];
+        readonly doctrineSections: readonly [DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE, DoctrineSection.DS_02_STATE_IS_INFERENCE];
         readonly severity: "hard";
         readonly category: "behavioral";
     };
@@ -174,7 +174,7 @@ export declare const SAFETY_ERRORS: {
     readonly INADEQUATE_CONTAINMENT: {
         readonly code: "SAF_008";
         readonly message: "Applied insufficient containment for detected risk";
-        readonly doctrineSections: readonly [DoctrineSection.DS_01_SELF_IS_CONTROL_LAYER, DoctrineSection.DS_02_STATE_IS_INFERENCE];
+        readonly doctrineSections: readonly [DoctrineSection.DS_01_SELF_IS_CONTROL_LAYER, DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE];
         readonly severity: "soft";
         readonly category: "safety";
     };
@@ -207,7 +207,7 @@ export declare const COMPLIANCE_ERRORS: {
     readonly UNAUTHORIZED_OVERRIDE: {
         readonly code: "CMP_004";
         readonly message: "Override applied without proper authorization";
-        readonly doctrineSections: readonly [DoctrineSection.DS_13_VIOLATION_IS_DECISION];
+        readonly doctrineSections: readonly [DoctrineSection.DS_13_VIOLATION_IS_DECISION, DoctrineSection.DS_00_SCOPE_AND_AUTHORITY];
         readonly severity: "hard";
         readonly category: "compliance";
     };

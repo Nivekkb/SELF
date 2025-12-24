@@ -1,4 +1,4 @@
-export var selfConfig = {
+export const selfConfig = {
     thresholds: {
         s1: 1,
         s2: 3,

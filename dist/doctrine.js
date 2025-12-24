@@ -1,4 +1,4 @@
-export var DOCTRINE_VERSION = "1.0";
+export const DOCTRINE_VERSION = "1.0";
 export var DoctrineSection;
 (function (DoctrineSection) {
     // Core Doctrine Sections (0-13)

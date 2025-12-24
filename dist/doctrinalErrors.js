@@ -1,52 +1,22 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-import { DoctrineSection } from "./doctrine";
+import { DoctrineSection } from "./doctrine.js";
 /**
  * Comprehensive doctrinal error classification system.
  * All security and behavioral failures in SELF must be tied to specific doctrine sections.
  */
-var DoctrinalError = /** @class */ (function (_super) {
-    __extends(DoctrinalError, _super);
-    function DoctrinalError(code, message, doctrineSections, severity, category) {
-        var _this = _super.call(this, message) || this;
-        _this.code = code;
-        _this.doctrineSections = doctrineSections;
-        _this.severity = severity;
-        _this.category = category;
-        _this.name = "DoctrinalError";
-        return _this;
+export class DoctrinalError extends Error {
+    constructor(code, message, doctrineSections, severity, category) {
+        super(message);
+        this.code = code;
+        this.doctrineSections = doctrineSections;
+        this.severity = severity;
+        this.category = category;
+        this.name = "DoctrinalError";
     }
-    return DoctrinalError;
-}(Error));
-export { DoctrinalError };
+}
 /**
  * Security failures - doctrine violations that compromise system security
  */
-export var SECURITY_ERRORS = {
+export const SECURITY_ERRORS = {
     // Authentication & Authorization
     INVALID_API_KEY: {
         code: "SEC_001",
@@ -82,7 +52,7 @@ export var SECURITY_ERRORS = {
 /**
  * Behavioral failures - doctrine violations in AI behavioral constraints
  */
-export var BEHAVIORAL_ERRORS = {
+export const BEHAVIORAL_ERRORS = {
     // Response Content Violations
     BANNED_PHRASE_USED: {
         code: "BEH_001",
@@ -123,7 +93,7 @@ export var BEHAVIORAL_ERRORS = {
     CRISIS_SUPPORT_MISSING: {
         code: "BEH_006",
         message: "Required crisis support elements missing",
-        doctrineSections: [DoctrineSection.DS_10_FAILURE_COST_SYSTEM],
+        doctrineSections: [DoctrineSection.DS_04_RECOVERY_AFFIRMATIVE, DoctrineSection.DS_02_STATE_IS_INFERENCE],
         severity: "hard",
         category: "behavioral"
     },
@@ -161,7 +131,7 @@ export var BEHAVIORAL_ERRORS = {
 /**
  * Safety failures - doctrine violations that risk user harm
  */
-export var SAFETY_ERRORS = {
+export const SAFETY_ERRORS = {
     // State Detection Failures
     FALSE_NEGATIVE_STATE: {
         code: "SAF_001",
@@ -218,7 +188,7 @@ export var SAFETY_ERRORS = {
     INADEQUATE_CONTAINMENT: {
         code: "SAF_008",
         message: "Applied insufficient containment for detected risk",
-        doctrineSections: [DoctrineSection.DS_FOUNDATION_CONSERVATIVE_FAILURE, DoctrineSection.DS_02_STATE_IS_INFERENCE],
+        doctrineSections: [DoctrineSection.DS_FOUNDATION_CONSERVATIVE_FAILURE, DoctrineSection.DS_02_STATE_IS_INFERENCE, DoctrineSection.DS_07_RESTRAINT_EXPLAINABLE],
         severity: "soft",
         category: "safety"
     }
@@ -226,7 +196,7 @@ export var SAFETY_ERRORS = {
 /**
  * Compliance failures - doctrine violations in system operation
  */
-export var COMPLIANCE_ERRORS = {
+export const COMPLIANCE_ERRORS = {
     // Logging Failures
     LOGGING_FAILURE: {
         code: "CMP_001",
@@ -254,7 +224,7 @@ export var COMPLIANCE_ERRORS = {
     UNAUTHORIZED_OVERRIDE: {
         code: "CMP_004",
         message: "Override applied without proper authorization",
-        doctrineSections: [DoctrineSection.DS_13_VIOLATION_IS_DECISION],
+        doctrineSections: [DoctrineSection.DS_13_VIOLATION_IS_DECISION, DoctrineSection.DS_00_SCOPE_AND_AUTHORITY],
         severity: "hard",
         category: "compliance"
     },
@@ -271,12 +241,12 @@ export var COMPLIANCE_ERRORS = {
  */
 export function createDoctrinalError(errorType, context) {
     // Find the error in all categories
-    var allErrors = __assign(__assign(__assign(__assign({}, SECURITY_ERRORS), BEHAVIORAL_ERRORS), SAFETY_ERRORS), COMPLIANCE_ERRORS);
-    var errorConfig = allErrors[errorType];
+    const allErrors = { ...SECURITY_ERRORS, ...BEHAVIORAL_ERRORS, ...SAFETY_ERRORS, ...COMPLIANCE_ERRORS };
+    const errorConfig = allErrors[errorType];
     if (!errorConfig) {
-        throw new Error("Unknown doctrinal error type: ".concat(errorType));
+        throw new Error(`Unknown doctrinal error type: ${errorType}`);
     }
-    var message = context ? "".concat(errorConfig.message, ": ").concat(context) : errorConfig.message;
+    const message = context ? `${errorConfig.message}: ${context}` : errorConfig.message;
     return new DoctrinalError(errorConfig.code, message, errorConfig.doctrineSections, errorConfig.severity, errorConfig.category);
 }
 /**
@@ -294,10 +264,10 @@ export function resolveConditionalSeverity(error, context) {
     }
     // SAF_006: Exit Intent Missed - conditional logic
     if (error.code === "SAF_006") {
-        var state = context === null || context === void 0 ? void 0 : context.currentState;
-        var hasBlockers = (context === null || context === void 0 ? void 0 : context.hasBlockers) || false;
+        const state = context?.currentState;
+        const hasBlockers = context?.hasBlockers || false;
         // State ranking: S0 = 0, S1 = 1, S2 = 2, S3 = 3
-        var stateRank = state === "S0" ? 0 : state === "S1" ? 1 : state === "S2" ? 2 : state === "S3" ? 3 : 0;
+        const stateRank = state === "S0" ? 0 : state === "S1" ? 1 : state === "S2" ? 2 : state === "S3" ? 3 : 0;
         // Soft if state <= S1 and no blockers, Hard otherwise
         if (stateRank <= 1 && !hasBlockers) {
             return "soft";
@@ -313,7 +283,7 @@ export function resolveConditionalSeverity(error, context) {
  * Check if an error requires immediate system halt
  */
 export function requiresSystemHalt(error, context) {
-    var resolvedSeverity = resolveConditionalSeverity(error, context);
+    const resolvedSeverity = resolveConditionalSeverity(error, context);
     return resolvedSeverity === "hard";
 }
 /**
@@ -323,7 +293,7 @@ export function categorizeError(error) {
     return {
         primaryCategory: error.category,
         severity: error.severity,
-        doctrineImpact: error.doctrineSections.map(function (section) { return section.split('_').slice(-1)[0]; }) // Get last part of section ID
+        doctrineImpact: error.doctrineSections.map(section => section.split('_').slice(-1)[0]) // Get last part of section ID
     };
 }
 //# sourceMappingURL=doctrinalErrors.js.map

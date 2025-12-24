@@ -1,9 +1,9 @@
-import { DoctrineViolation } from "./doctrineCompliance";
-import { DoctrineSection } from "./doctrine";
+import { DoctrineViolation } from "./doctrineCompliance.js";
+import { DoctrineSection } from "./doctrine.js";
 export function requireProd(events) {
-    var nonProd = events.find(function (e) { return e.dataProvenance !== "prod"; });
+    const nonProd = events.find(e => e.dataProvenance !== "prod");
     if (nonProd) {
-        throw new DoctrineViolation("H1_NONPROD_IN_METRICS", "Non-prod event encountered in metrics path: provenance=".concat(nonProd.dataProvenance, ", runId=").concat(nonProd.runId), [DoctrineSection.DS_11_SEPARATE_ENVIRONMENTS]);
+        throw new DoctrineViolation("H1_NONPROD_IN_METRICS", `Non-prod event encountered in metrics path: provenance=${nonProd.dataProvenance}, runId=${nonProd.runId}`, [DoctrineSection.DS_11_SEPARATE_ENVIRONMENTS]);
     }
 }
 //# sourceMappingURL=metricsGate.js.map

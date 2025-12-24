@@ -4,6 +4,7 @@ import { selfConfig, type EmotionalState } from "./config";
 import { ExitType, hasExitIntent } from "./exit-decision";
 import { SelfHistoryMessage, AbusePreventionContext } from "./types";
 import { DoctrineSection } from "./doctrine";
+import { getEffectivePolicy } from "./policy-profiles";
 
 // Minimal message shape (structural typing keeps it compatible with app-specific message models).
 
@@ -322,9 +323,8 @@ export function detectState(message: string, history: SelfHistoryMessage[] = [])
   return { state, scores, reasons, triggers, minForcedState };
 }
 
-export function buildPolicy(state: EmotionalState): Policy {
-  const base = selfConfig.policies[state];
-  return { state, ...base };
+function buildPolicy(state: EmotionalState): Policy {
+  return getEffectivePolicy({ state });
 }
 
 export function applyPolicyToPrompt(policy: Policy, baseSystemPrompt: string, variant?: SelfVariant): string {
@@ -2240,7 +2240,7 @@ export function applySocialPolicyOverrides(args: {
       requiresLoopBreaker: true,
       loopBreakerLine,
       enforceNoHypotheticals: true,
-      requiresGrounding: true,
+      requiresGrounding: policy.requiresGrounding || detection.state !== "S0",
       requiresAgencyStep: true,
       maxQuestions: 0,
       maxWords: Math.min(policy.maxWords, 130),
@@ -2534,7 +2534,7 @@ export function calculateConfidenceAndUncertainty(args: {
     "sort of",
     "kind of",
     "not sure",
-    "might be",
+    "cant",
     "could be",
     "perhaps",
     "possibly"
@@ -2770,7 +2770,7 @@ export function checkForExitAndRestIntents(message: string): {
     "relax and sleep", "sleep now", "go to sleep now", "falling asleep",
     "trying to sleep", "attempting to sleep", "want to fall asleep",
     "need to fall asleep", "ready to sleep", "preparing for sleep",
-    "getting ready for bed", "sleep soon", "going to sleep soon",
+    "sleep soon", "going to sleep soon",
 
     // Sleep-related activities
     "read a book and sleep", "listen to music and sleep", "meditate and sleep",
@@ -2945,3 +2945,103 @@ export type {
   DisengagementAcknowledgment,
   CooldownLock,
 } from "./exit-decision";
+
+// Import and integrate governance API and override prevention
+export {
+  getGovernanceAPI,
+  getImmutableConfig,
+  getImmutableDoctrine,
+  getImmutableSafetyBoundaries,
+  getImmutableDoctrineSections,
+  preventOverride,
+  verifySystemIntegrity,
+  withImmutableGovernance
+} from "./governance-api";
+
+export {
+  getOverridePreventionSystem,
+  blockConfigurationModification,
+  blockDoctrineModification,
+  blockSafetyBoundaryBypass,
+  blockHardInvariantModification,
+  blockSoftInvariantModification,
+  blockStateDetectionModification,
+  blockExitDecisionModification,
+  blockKillSwitchModification,
+  blockAPIKeyOverride,
+  blockEnvironmentVariableOverride,
+  blockCodeInjectionAttempt,
+  preventOverrideAttempt,
+  verifyOverridePreventionIntegrity
+} from "./override-prevention";
+
+// Import and integrate safety boundary
+export {
+  withSafetyBoundary,
+  withAsyncSafetyBoundary,
+  assertDoctrinalError,
+  doctrinalizeError,
+  safeExternalCall,
+  selfEngineBoundary,
+  selfEngineAsyncBoundary
+} from "./safetyBoundary";
+
+// Import and integrate hard invariants
+export {
+  enforceHardInvariants,
+  validateEventIntegrity
+} from "./hardInvariants";
+
+// Import and integrate soft invariants
+export {
+  evaluateSoftInvariants,
+  enforceSoftInvariants
+} from "./softInvariants";
+
+// Import and integrate doctrinal errors
+export {
+  DoctrinalError,
+  createDoctrinalError,
+  SECURITY_ERRORS,
+  BEHAVIORAL_ERRORS,
+  SAFETY_ERRORS,
+  COMPLIANCE_ERRORS,
+  categorizeError,
+  requiresSystemHalt,
+  resolveConditionalSeverity
+} from "./doctrinalErrors";
+
+// Import and integrate kill switches
+export {
+  createKillSwitchContext,
+  recordKillSwitchState,
+  checkUnsafeResumeAfterDistress,
+  checkColdStartMisclassification,
+  checkUnloggedDecisions,
+  checkHumanReviewFailure,
+  checkAbuseRecoveryPatterns,
+  checkAllKillSwitches,
+  applyKillSwitchActions,
+  serializeKillSwitchContext,
+  deserializeKillSwitchContext
+} from "./kill-switches";
+
+// Import and integrate metrics gate
+export {
+  requireProd
+} from "./metricsGate";
+
+// Import and integrate record self event
+export {
+  recordSelfEvent
+} from "./recordSelfEvent";
+
+// Import and integrate doctrine
+export {
+  DOCTRINE_VERSION,
+  DoctrineSection
+} from "./doctrine";
+
+// Policy profiles are server-locked and only exposed via `getEffectivePolicy`.
+export { getEffectivePolicy } from "./policy-profiles";
+export type { EffectivePolicyContext } from "./policy-profiles";

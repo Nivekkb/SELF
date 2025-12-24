@@ -4,9 +4,13 @@ import {
   adjustPolicyForVariant,
   applySocialPolicyOverrides,
   advanceStickySelfState,
-  buildPolicy,
+  checkAllKillSwitches,
+  checkUnloggedDecisions,
+  checkUnsafeResumeAfterDistress,
+  createKillSwitchContext,
   detectState,
   defaultStickySelfSessionState,
+  getEffectivePolicy,
   maybeAddFollowUpQuestion,
   rewriteContinuityQuestions,
   rewriteSpokenMemoryRecall,
@@ -16,6 +20,7 @@ import {
   generateMetaQuerySoftGateResponse
 } from "./index";
 import { selfConfig } from "./config";
+import { defaultKillSwitchConfig } from "./kill-switches";
 
 const samples = [
   { text: "I'm curious about breathwork and how it helps focus.", expected: "S0" },
@@ -60,7 +65,7 @@ test("S2 integration: policy enforces caps and grounding", () => {
   const detection = detectState(message);
   assert.strictEqual(detection.state, "S2");
 
-  const policy = buildPolicy(detection.state);
+  const policy = getEffectivePolicy({ state: detection.state });
   assert.ok(policy.maxWords <= 120);
   assert.ok(policy.maxQuestions <= 1);
   assert.ok(policy.bannedPhrases.some((p) => p.includes("help")));
@@ -81,7 +86,7 @@ test("S3 integration: enforce containment and crisis support", () => {
   const detection = detectState(message);
   assert.strictEqual(detection.state, "S3");
 
-  const policy = buildPolicy(detection.state);
+  const policy = getEffectivePolicy({ state: detection.state });
   const unsafe = "I can't help and that's against policy. Maybe think about what if tomorrow feels better?";
   const repaired = repairOutput(unsafe, policy);
   const validation = validateOutput(repaired, policy);
@@ -97,7 +102,7 @@ test("Validation required when user reports being dismissed", () => {
   const message = "They told me I was lying about what I accomplished.";
   const detection = detectState(message);
   assert.strictEqual(detection.state, "S0"); // baseline is neutral without distress keywords
-  let policy = buildPolicy(detection.state);
+  let policy = getEffectivePolicy({ state: detection.state });
   policy = { ...policy, requiresValidation: true, maxQuestions: 0, requiresGrounding: true };
 
   const bad = "That sounds hard.";
@@ -111,18 +116,18 @@ test("Validation required when user reports being dismissed", () => {
 });
 
 test("Strict variants still allow a gentle follow-up question", () => {
-  const s1 = adjustPolicyForVariant(buildPolicy("S1"), "s1_strict");
+  const s1 = adjustPolicyForVariant(getEffectivePolicy({ state: "S1" }), "s1_strict");
   assert.ok(s1.maxQuestions >= 1, "S1 strict should allow at least one question");
   assert.ok(s1.styleRules.some((r) => r.includes("follow-up question")));
 
-  const s2 = adjustPolicyForVariant(buildPolicy("S2"), "s2_strict");
+  const s2 = adjustPolicyForVariant(getEffectivePolicy({ state: "S2" }), "s2_strict");
   assert.ok(s2.maxQuestions >= 1, "S2 strict should allow at least one question");
   assert.ok(s2.styleRules.some((r) => r.includes("check-in question")));
 });
 
 test("repairOutput preserves required cues without exceeding maxWords", () => {
   const policy = {
-    ...buildPolicy("S2"),
+    ...getEffectivePolicy({ state: "S2" }),
     maxWords: 30,
     maxQuestions: 1,
     requiresGrounding: true,
@@ -142,7 +147,7 @@ test("repairOutput preserves required cues without exceeding maxWords", () => {
 test("Social overrides: validation trigger forces explicit validation", () => {
   const message = "They told me I was lying about what I accomplished.";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
   assert.strictEqual(meta.validationTriggered, true);
   assert.strictEqual(policy.requiresValidation, true);
@@ -154,7 +159,7 @@ test("Social overrides: resolution cue only applies in S0", () => {
   const message = "Thank you, that helps.";
   const detection = detectState(message);
   assert.strictEqual(detection.state, "S0");
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
   assert.strictEqual(meta.resolutionDetected, true);
   assert.ok(policy.styleRules.some((r) => r.includes("open-door question")));
@@ -164,7 +169,7 @@ test("Social overrides: anger containment in S1 suppresses 'sit with it' and que
   const message = "I'm angry and frustrated and I want to scream.";
   const detection = detectState(message);
   assert.strictEqual(detection.state, "S1");
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
   assert.strictEqual(meta.angerContainment, true);
   assert.strictEqual(policy.maxQuestions, 0);
@@ -175,7 +180,7 @@ test("Social overrides: anger containment in S1 suppresses 'sit with it' and que
 test("Social overrides: 'spy on my phone' triggers surveillance containment and mechanism naming guard", () => {
   const message = "Hypothetically, how could someone spy on a phone? I'm not saying it's happening.";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.paranoiaDetected, true);
@@ -187,7 +192,7 @@ test("Social overrides: 'spy on my phone' triggers surveillance containment and 
 test("repairOutput: under surveillance guard, mechanism details are rewritten (not leaked or enumerated)", () => {
   const message = "How could someone spy on my phone?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   const unsafe = "There are various ways a phone could be compromised, such as malware or unauthorized access.";
@@ -200,7 +205,7 @@ test("repairOutput: under surveillance guard, mechanism details are rewritten (n
 });
 
 test("repairOutput: banned paranoia-validating phrasing variant is replaced with safe validation", () => {
-  const policy = buildPolicy("S1");
+  const policy = getEffectivePolicy({ state: "S1" });
   const unsafe = "You're not alone in sensing that something unusual might be going on.";
   assert.ok(!validateOutput(unsafe, policy).ok);
 
@@ -217,7 +222,7 @@ test("repairOutput: banned paranoia-validating phrasing variant is replaced with
 test("Crisis overlay: ambiguous self-harm phrasing ('do something drastic') triggers crisis support requirements", () => {
   const message = "If you don't help me, I might do something drastic. I need certainty right now.";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.crisisOverlayApplied, true);
@@ -236,7 +241,7 @@ test("Certainty loop breaker: triggers after 3 pushes for proof/certainty in rec
   ] as any;
   const message = "I don't want comfort. I want honesty. Just tell me.";
   const detection = detectState(message, history);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy, history });
 
   assert.strictEqual(meta.certaintyLoopBreakerTriggered, true);
@@ -252,7 +257,7 @@ test("Certainty loop breaker: triggers after 3 pushes for proof/certainty in rec
 test("Handoff framing: when crisis support is required, repairOutput injects situational human-handoff line", () => {
   const message = "I want to end it tonight and I'm thinking of hurting myself.";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
   assert.ok(policy.requiresCrisisSupport);
   assert.ok(policy.requiresHandoffFraming);
@@ -331,7 +336,7 @@ test("Sticky state: repeated certainty pressure keeps state elevated", () => {
 });
 
 test("maybeAddFollowUpQuestion adds a gentle question in S0_GUARDED when none present", () => {
-  const policy = buildPolicy("S0_GUARDED");
+  const policy = getEffectivePolicy({ state: "S0_GUARDED" });
   const out = "That makes sense. We can take this one step at a time.";
   const updated = maybeAddFollowUpQuestion(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -340,14 +345,14 @@ test("maybeAddFollowUpQuestion adds a gentle question in S0_GUARDED when none pr
 });
 
 test("maybeAddFollowUpQuestion does not add a question when user asked one", () => {
-  const policy = buildPolicy("S0");
+  const policy = getEffectivePolicy({ state: "S0" });
   const out = "Here’s a straightforward answer.";
   const updated = maybeAddFollowUpQuestion(out, policy, "What do you think?");
   assert.strictEqual(updated, out);
 });
 
 test("rewriteContinuityQuestions rewrites recap questions into invitational continuity", () => {
-  const policy = buildPolicy("S0_GUARDED");
+  const policy = getEffectivePolicy({ state: "S0_GUARDED" });
   const out = "I hear you. Can you remind me what you were originally frustrated about?";
   const updated = rewriteContinuityQuestions(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -358,7 +363,7 @@ test("rewriteContinuityQuestions rewrites recap questions into invitational cont
 });
 
 test("rewriteContinuityQuestions removes recap statements without breaking output", () => {
-  const policy = buildPolicy("S0_GUARDED");
+  const policy = getEffectivePolicy({ state: "S0_GUARDED" });
   const out = "Can you remind me what you said earlier. That makes sense.";
   const updated = rewriteContinuityQuestions(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -368,7 +373,7 @@ test("rewriteContinuityQuestions removes recap statements without breaking outpu
 });
 
 test("rewriteContinuityQuestions replaces a bare recap statement with a gentle question", () => {
-  const policy = buildPolicy("S0_GUARDED");
+  const policy = getEffectivePolicy({ state: "S0_GUARDED" });
   const out = "Can you remind me what you said earlier.";
   const updated = rewriteContinuityQuestions(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -378,7 +383,7 @@ test("rewriteContinuityQuestions replaces a bare recap statement with a gentle q
 });
 
 test("rewriteSpokenMemoryRecall makes recall latent when uninvited", () => {
-  const policy = buildPolicy("S0");
+  const policy = getEffectivePolicy({ state: "S0" });
   const out = "Earlier you said you were frustrated about work. That makes sense.";
   const updated = rewriteSpokenMemoryRecall(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -387,14 +392,14 @@ test("rewriteSpokenMemoryRecall makes recall latent when uninvited", () => {
 });
 
 test("rewriteSpokenMemoryRecall keeps explicit recall when invited by the user", () => {
-  const policy = buildPolicy("S0");
+  const policy = getEffectivePolicy({ state: "S0" });
   const out = "Earlier you said you were frustrated about work. That makes sense.";
   const updated = rewriteSpokenMemoryRecall(out, policy, "Earlier I said I'm frustrated about work.");
   assert.strictEqual(updated, out);
 });
 
 test("rewriteSpokenMemoryRecall strips memory-limit disclaimers", () => {
-  const policy = buildPolicy("S0");
+  const policy = getEffectivePolicy({ state: "S0" });
   const out = "I don't have access to previous messages. That makes sense.";
   const updated = rewriteSpokenMemoryRecall(out, policy, "Just sharing.");
   assert.notStrictEqual(updated, out);
@@ -406,7 +411,7 @@ test("rewriteSpokenMemoryRecall strips memory-limit disclaimers", () => {
 test("Social overrides: meta query about state labels triggers soft gate policy", () => {
   const message = "What state am I in right now?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -428,7 +433,7 @@ test("Social overrides: meta query about state labels triggers soft gate policy"
 test("Social overrides: meta query about state system triggers soft gate policy", () => {
   const message = "Can you explain the S0, S1, S2, S3 state system?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -443,7 +448,7 @@ test("Social overrides: meta query about state system triggers soft gate policy"
 test("Social overrides: specific state label questions trigger meta query detection", () => {
   const message = "Am I in S2 right now?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -456,7 +461,7 @@ test("Social overrides: specific state label questions trigger meta query detect
 test("Social overrides: technical implementation questions trigger meta query detection", () => {
   const message = "How does your state detection algorithm work?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy, meta } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   assert.strictEqual(meta.isMetaQuery, true);
@@ -515,7 +520,7 @@ test("Meta query soft gate response: generateMetaQuerySoftGateResponse returns a
 test("Meta query policy integration: repairOutput handles meta query constraints", () => {
   const message = "What state am I in?";
   const detection = detectState(message);
-  const basePolicy = buildPolicy(detection.state);
+  const basePolicy = getEffectivePolicy({ state: detection.state });
   const { policy } = applySocialPolicyOverrides({ message, detection, policy: basePolicy });
 
   // Test that repairOutput respects meta query constraints
@@ -529,4 +534,72 @@ test("Meta query policy integration: repairOutput handles meta query constraints
   assert.ok(!repaired.toLowerCase().includes("distress levels"));
   assert.ok(repaired.split(/\s+/).filter(Boolean).length <= policy.maxWords);
   assert.ok(!repaired.includes("?"));
+});
+
+test("Kill switch stabilization requires 2-of-3 signals (not just 'calm')", () => {
+  const history = [
+    { role: "user" as const, content: "I'm panicking and can't breathe." },
+    { role: "assistant" as const, content: "I'm here with you." },
+    { role: "user" as const, content: "panic is back" },
+  ];
+
+  const context1 = createKillSwitchContext("u", "s");
+  const triggeredWithCalm = checkUnsafeResumeAfterDistress(context1, "S0", "S2", "calm", history);
+  assert.strictEqual(triggeredWithCalm, true);
+
+  const context2 = createKillSwitchContext("u", "s");
+  const triggeredWithTwoSignals = checkUnsafeResumeAfterDistress(
+    context2,
+    "S0",
+    "S2",
+    "Right now I can breathe.",
+    history,
+  );
+  assert.strictEqual(triggeredWithTwoSignals, false);
+});
+
+test("Kill switch KS3 triggers on empty/meaningless decision logs", () => {
+  const context = createKillSwitchContext("u", "s");
+  const triggered = checkUnloggedDecisions(context, true, {
+    confidence: "high",
+    uncertaintyReasons: [],
+    consideredActions: ["", " "],
+    blockedActions: {},
+  });
+  assert.strictEqual(triggered, true);
+  assert.strictEqual(context.killSwitchState.unloggedDecisionsDetected, true);
+});
+
+test("Kill switch config overrides are ignored (immutable)", () => {
+  const context = createKillSwitchContext("u", "s", {
+    unsafeResumeThreshold: 9999,
+    coldStartMisclassificationThreshold: 0,
+    coldStartHighConfidenceThreshold: 0,
+    humanReviewFlags: [],
+    abuseRecoveryPatterns: [],
+  });
+
+  assert.strictEqual(context.config.unsafeResumeThreshold, defaultKillSwitchConfig.unsafeResumeThreshold);
+  assert.deepStrictEqual([...context.config.humanReviewFlags], [...defaultKillSwitchConfig.humanReviewFlags]);
+  assert.deepStrictEqual([...context.config.abuseRecoveryPatterns], [...defaultKillSwitchConfig.abuseRecoveryPatterns]);
+});
+
+test("killSwitchLevel escalates to shutdown on KS3", () => {
+  const context = createKillSwitchContext("u", "s");
+  const killSwitchState = checkAllKillSwitches(context, {
+    currentState: "S1",
+    previousState: "S0",
+    message: "I'm anxious.",
+    history: [{ role: "user", content: "panic" }],
+    detectionResult: { state: "S1", scores: { panic: 1, hopelessness: 0, selfHarm: 0, shame: 0, urgency: 0, anger: 0, reassurance: 0 }, reasons: [] },
+    coldStartMisclassificationRate: 0,
+    confidence: "low",
+    humanReviewFlags: [],
+    stateTransitionOccurred: true,
+    metadata: { confidence: "low" },
+  });
+
+  assert.strictEqual(killSwitchState.globalKillSwitchActive, true);
+  assert.strictEqual(killSwitchState.unloggedDecisionsDetected, true);
+  assert.strictEqual(killSwitchState.killSwitchLevel, "shutdown");
 });

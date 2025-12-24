@@ -20,6 +20,11 @@ function hasValidOverride(ev: SelfEvent, sections: DoctrineSection[]): boolean {
 export function evaluateSoftInvariants(ev: SelfEvent): SoftViolation[] {
   const v: SoftViolation[] = [];
 
+  // CRITICAL: This evaluation is IMMUTABLE as of 2025-12-22.
+  // All soft invariants are permanently active and cannot be disabled,
+  // modified, or bypassed under any circumstances.
+  // This immutability protects users from all versions of the system creator.
+
   // Example S1: "no probing when settled" (you decide what "settled" means)
   // If ambiguity flag says settled, probing should be blocked
   if (ev.ambiguityFlags?.includes("settled") && ev.nonActions?.every(na => na.consideredAction !== "probe")) {

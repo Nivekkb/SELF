@@ -2,7 +2,7 @@
 
 ## Implementation Details and System Architecture
 
-**Total Time**: 6-8 hours | **Documents**: 9 | **Purpose**: Technical implementation and system understanding
+**Total Time**: 7-9 hours | **Documents**: 10 | **Purpose**: Technical implementation and system understanding
 
 ### Phase 1: Architecture Foundation (2 hours)
 1. **SELF-ARCHITECTURE.md** (60 min)
@@ -51,5 +51,11 @@
    - *Why*: Additional invariant specifications and constraints
    - *Key Takeaways*: Extended system constraints, additional invariants
    - *Implementation Impact*: Complete invariant compliance
+
+### Phase 4: Operational Procedures (30 min)
+10. **INCIDENT-RESPONSE-FORM.md** (30 min)
+    - *Why*: Structured incident response and accountability procedures
+    - *Key Takeaways*: Incident classification, response protocols, documentation requirements
+    - *Implementation Impact*: Proper incident handling and continuous improvement
 
 **Next Steps**: Review docs/developers/ for integration guidance and docs/reviewers/ for validation procedures.

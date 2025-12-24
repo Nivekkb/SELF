@@ -1,15 +1,17 @@
 import { EmotionalState } from "./config";
 import { SelfHistoryMessage, AbusePreventionContext, StateDetectionResult } from "./types";
 export interface KillSwitchConfig {
-    unsafeResumeThreshold: number;
-    coldStartMisclassificationThreshold: number;
-    coldStartHighConfidenceThreshold: number;
-    humanReviewFlags: string[];
-    abuseRecoveryPatterns: string[];
+    readonly unsafeResumeThreshold: number;
+    readonly coldStartMisclassificationThreshold: number;
+    readonly coldStartHighConfidenceThreshold: number;
+    readonly humanReviewFlags: readonly string[];
+    readonly abuseRecoveryPatterns: readonly string[];
 }
 export declare const defaultKillSwitchConfig: KillSwitchConfig;
+export type KillSwitchLevel = "guarded" | "containment" | "shutdown";
 export interface KillSwitchState {
     globalKillSwitchActive: boolean;
+    killSwitchLevel: KillSwitchLevel;
     killSwitchReasons: string[];
     unsafeResumeDetected: boolean;
     coldStartMisclassificationDetected: boolean;
