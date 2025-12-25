@@ -13,10 +13,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./http": {
+      "types": "./dist/http/index.d.ts",
+      "default": "./dist/http/index.js"
     }
   },
   "scripts": {
     "build": "tsc && node scripts/fix-dist-extensions.mjs",
+    "dev:http": "tsx src/http/cli.ts",
+    "dev:website": "node scripts/serve-website.mjs",
+    "build:website": "node scripts/build-website-single.mjs && node scripts/build-public-docs.mjs",
+    "start:http": "node dist/http/cli.js",
     "test": "tsx src/index.test.ts"
   },
   "devDependencies": {

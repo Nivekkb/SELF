@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SELF — Support‑First Logic Engine</title>
+    <meta
+      name="description"
+      content="SELF is a governance-first logic engine for support-critical AI. Ship safer support experiences with measurable constraints, auditability, and enforcement."
+    />
+    <meta name="color-scheme" content="dark light" />
+    <style>
+:root {
+  --bg: #0b0f17;
+  --bg2: #0f1624;
+  --card: rgba(255, 255, 255, 0.06);
+  --card2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.68);
+  --subtle: rgba(255, 255, 255, 0.55);
+  --accent: #7c5cff;
+  --accent2: #37c6ff;
+  --ok: #26d07c;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  --radius: 16px;
+  --radius2: 22px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fc;
+    --bg2: #eef1ff;
+    --card: rgba(0, 0, 0, 0.04);
+    --card2: rgba(0, 0, 0, 0.06);
+    --border: rgba(0, 0, 0, 0.12);
+    --text: rgba(0, 0, 0, 0.88);
+    --muted: rgba(0, 0, 0, 0.62);
+    --subtle: rgba(0, 0, 0, 0.52);
+    --shadow: 0 18px 60px rgba(20, 28, 64, 0.12);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 15% 10%, rgba(124, 92, 255, 0.28), transparent 55%),
+    radial-gradient(900px 520px at 85% 22%, rgba(55, 198, 255, 0.22), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--bg), transparent 18%);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.brand-mark {
+  letter-spacing: -0.04em;
+  font-size: 18px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.25), rgba(55, 198, 255, 0.18));
+  border: 1px solid var(--border);
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav {
+  display: none;
+  gap: 18px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+.header-cta {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.btn:hover {
+  background: var(--card2);
+}
+
+.btn-primary {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  color: #0b0f17;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  border-color: color-mix(in srgb, var(--accent2), var(--border) 55%);
+  background: linear-gradient(135deg, rgba(55, 198, 255, 0.22), rgba(124, 92, 255, 0.12));
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.hero {
+  padding: 66px 0 36px;
+}
+
+.hero-inner {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0 0 10px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: clamp(38px, 4.2vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.fineprint {
+  color: var(--subtle);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.hero-card .card h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.checklist li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.checklist li::before {
+  content: "✓";
+  color: var(--ok);
+  font-weight: 900;
+  margin-top: 1px;
+}
+
+.mini {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mini-block {
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.mini-k {
+  display: block;
+  font-size: 12px;
+  color: var(--subtle);
+  font-weight: 700;
+}
+
+.mini-v {
+  display: block;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.section {
+  padding: 48px 0;
+}
+
+.section-alt {
+  background: color-mix(in srgb, var(--bg2), transparent 18%);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.section h2 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+}
+
+.section-lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid3 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.grid2 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.panel h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.callout {
+  margin-top: 18px;
+  border-radius: var(--radius2);
+  padding: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.16), rgba(55, 198, 255, 0.10));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.callout-body h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.callout-body p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.callout-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pricing-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+.price-card {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.price-card.featured {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 40%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card), transparent 10%), rgba(124, 92, 255, 0.10));
+}
+
+.badge {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+  color: var(--muted);
+}
+
+.price-top h3 {
+  margin: 0 0 6px;
+}
+
+.price {
+  margin: 0 0 6px;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.price span {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.price-card ul {
+  margin: 14px 0 16px;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.finebox {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 16px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.finebox h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.bullets {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.disclaimer {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.codeblock {
+  border-radius: var(--radius2);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  padding: 14px;
+  overflow: auto;
+  margin: 12px 0 18px;
+}
+
+.codeblock code {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.faq {
+  display: grid;
+  gap: 10px;
+}
+
+details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 12px 14px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+details p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.request {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.request-card .card h3 {
+  margin: 0 0 8px;
+}
+
+.footer {
+  padding: 26px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.footer-right {
+  display: flex;
+  gap: 14px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.footer-right a:hover {
+  color: var(--text);
+}
+
+/* Docs pages */
+.doc-layout {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.doc {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+
+.doc .doc-body :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 18px;
+}
+
+.doc .doc-body p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.doc .doc-body a {
+  color: color-mix(in srgb, var(--accent2), var(--text) 30%);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.doc .doc-body code {
+  font-family: var(--mono);
+  font-size: 0.95em;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+}
+
+.doc .doc-body pre {
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  padding: 12px;
+}
+
+.doc .doc-body pre code {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.doc-nav {
+  position: relative;
+}
+
+@media (min-width: 980px) {
+  .doc-layout {
+    grid-template-columns: 0.38fr 0.62fr;
+  }
+  .doc-nav {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+  }
+}
+
+@media (min-width: 880px) {
+  .nav {
+    display: flex;
+  }
+  .hero-inner {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+  .grid3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pricing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .request {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+  .callout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="#top" aria-label="SELF home">
+          <span class="brand-mark" aria-hidden="true">SELF</span>
+          <span class="brand-sub">Support‑First Logic Engine</span>
+        </a>
+
+        <nav class="nav">
+          <a href="#product">Product</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#trust">Trust</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="header-cta">
+          <a class="btn btn-ghost" id="docsLink" href="#docs">Docs</a>
+          <a class="btn btn-primary" id="requestLink" href="#request">Request Access</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Governance-first safety for support-critical AI</p>
+            <h1>Sell safety you can enforce.</h1>
+            <p class="lead">
+              SELF is an internal logic engine that applies support-first behavioral constraints, validation rules, and
+              audit-ready outputs so your product can scale without “safety drift”.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" id="requestLink2" href="#request">Request a License</a>
+              <a class="btn btn-secondary" id="pricingLink" href="#pricing">View pricing</a>
+            </div>
+            <p class="fineprint">
+              SELF is a governance layer. You still own your model choice, integration, compliance, and human escalation
+              paths.
+            </p>
+          </div>
+
+          <div class="hero-card" aria-label="What SELF does">
+            <div class="card">
+              <h2>What you get</h2>
+              <ul class="checklist">
+                <li>State detection (S0–S3) and policy selection</li>
+                <li>Hard caps (words, questions) + banned-phrase enforcement</li>
+                <li>Repair + validation pipeline for drafts</li>
+                <li>Audit logging hooks and override-prevention guardrails</li>
+                <li>HTTP API mode (self-host) for fast integration</li>
+              </ul>
+              <div class="mini">
+                <div class="mini-block">
+                  <span class="mini-k">Deploy</span>
+                  <span class="mini-v">Library or HTTP service</span>
+                </div>
+                <div class="mini-block">
+                  <span class="mini-k">Target</span>
+                  <span class="mini-v">Support / care / crisis-adjacent UX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="product" class="section">
+        <div class="container">
+          <h2>Product</h2>
+          <p class="section-lead">
+            SELF is built to prevent “it sounded helpful” from becoming “it caused harm.” It does this by turning
+            governance into executable rules, not brand promises.
+          </p>
+
+          <div class="grid3">
+            <div class="panel">
+              <h3>Measurable constraints</h3>
+              <p>Word caps, question caps, disallowed phrases, and output validation enforced at runtime.</p>
+            </div>
+            <div class="panel">
+              <h3>State-aware posture</h3>
+              <p>Different response posture and constraints for low-risk vs. elevated distress scenarios.</p>
+            </div>
+            <div class="panel">
+              <h3>Audit-ready operations</h3>
+              <p>Structured events for pre/post decisions so teams can review, monitor, and improve responsibly.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="callout-body">
+              <h3>Integrate in hours, not quarters</h3>
+              <p>
+                SELF can run as a library inside your app or as a small HTTP service you call from any stack.
+              </p>
+            </div>
+            <div class="callout-actions">
+              <a class="btn btn-secondary" id="httpApiLink" href="#http">HTTP API</a>
+              <a class="btn btn-ghost" id="docsLink2" href="#docs">Read docs</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" class="section section-alt">
+        <div class="container">
+          <h2>Pricing</h2>
+          <p class="section-lead">
+            Usage-based, with a simple platform fee. Pricing exists to fund governance and keep incentives aligned as you
+            scale.
+          </p>
+
+          <div class="pricing-grid">
+            <div class="price-card">
+              <div class="price-top">
+                <h3>Standard Production</h3>
+                <p class="price">$300<span>/month</span></p>
+                <p class="muted">Non-exclusive commercial license</p>
+              </div>
+              <ul>
+                <li>25,000 conversations/month included</li>
+                <li>$1.00 per 1,000 additional conversations</li>
+                <li>Email support (48-hour SLA)</li>
+              </ul>
+              <a class="btn btn-primary" id="requestStandard" href="#request">Request Standard</a>
+            </div>
+
+            <div class="price-card featured">
+              <div class="badge">Recommended</div>
+              <div class="price-top">
+                <h3>Pro Production</h3>
+                <p class="price">$500<span>/month</span></p>
+                <p class="muted">Non-exclusive commercial license</p>
+              </div>
+              <ul>
+                <li>100,000 conversations/month included</li>
+                <li>$0.75 per 1,000 additional conversations</li>
+                <li>Priority email support (24-hour SLA)</li>
+              </ul>
+              <a class="btn btn-primary" id="requestPro" href="#request">Request Pro</a>
+            </div>
+          </div>
+
+          <div class="finebox">
+            <h3>Notes</h3>
+            <ul class="bullets">
+              <li>Production use requires Values‑First evaluation and ongoing compliance.</li>
+              <li>Self-hosted deployment; you control infrastructure and model provider costs.</li>
+              <li>Usage is measured in “conversations” as defined by your integration contract.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="trust" class="section">
+        <div class="container">
+          <h2>Trust & safety posture</h2>
+          <p class="section-lead">
+            SELF is not “safety marketing.” It is safety engineering: enforceable constraints, observable decisions, and
+            integrity controls designed to resist quiet weakening over time.
+          </p>
+          <div class="grid2">
+            <div class="panel">
+              <h3>No silent downgrades</h3>
+              <p>Override prevention and immutable governance boundaries help protect the system’s integrity.</p>
+            </div>
+            <div class="panel">
+              <h3>Operational accountability</h3>
+              <p>Pre/post logging hooks support monitoring, incident response, and periodic audits.</p>
+            </div>
+          </div>
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> SELF is a governance layer for AI behavior. It is not a medical device, does not
+            provide professional diagnosis, and does not replace clinical or emergency services.
+          </div>
+        </div>
+      </section>
+
+      <section id="http" class="section section-alt">
+        <div class="container">
+          <h2>HTTP API mode</h2>
+          <p class="section-lead">Run SELF as a small HTTP service and call it from any stack.</p>
+
+          <div class="codeblock">
+            <pre><code>npm run build
+SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
+          </div>
+
+          <div class="grid3">
+            <div class="panel">
+              <h3>Pre</h3>
+              <p><code>POST /v1/pre</code> returns detection, policy, variant, and clarifier requirements.</p>
+            </div>
+            <div class="panel">
+              <h3>Post</h3>
+              <p><code>POST /v1/post</code> validates and repairs a drafted response to match the policy.</p>
+            </div>
+            <div class="panel">
+              <h3>Health</h3>
+              <p><code>GET /health</code> returns service + doctrine metadata for monitoring.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section">
+        <div class="container">
+          <h2>FAQ</h2>
+          <div class="faq">
+            <details>
+              <summary>Is this a chatbot?</summary>
+              <p>No. SELF is the governance layer around your chatbot (or support workflow): detection, constraints, validation, and enforcement.</p>
+            </details>
+            <details>
+              <summary>Do you sell exclusive ownership?</summary>
+              <p>No. SELF is licensed for production use with usage-based pricing and compliance requirements.</p>
+            </details>
+            <details>
+              <summary>Can we negotiate pricing?</summary>
+              <p>Published rates are uniform. The goal is to prevent “discount pressure” from weakening safety requirements.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section id="request" class="section section-alt">
+        <div class="container request">
+          <div>
+            <h2>Request access</h2>
+            <p class="section-lead">
+              Tell us your use case, risk profile, and expected usage volume. We’ll share next steps for evaluation and
+              onboarding.
+            </p>
+            <ul class="bullets">
+              <li>Company + product overview</li>
+              <li>Intended user population and support scope</li>
+              <li>Expected monthly conversations</li>
+              <li>Escalation path (human support / crisis resources)</li>
+            </ul>
+          </div>
+          <div class="request-card">
+            <div class="card">
+              <h3>Contact</h3>
+              <p class="muted">Email is the fastest path right now.</p>
+              <a class="btn btn-primary" id="emailLink" href="mailto:licensing@soulsynqai.com">Email licensing@soulsynqai.com</a>
+              <p class="fineprint">Subject suggestion: “SELF licensing — &lt;company&gt; — &lt;use case&gt;”</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="docs">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <div class="brand-mark">SELF</div>
+          <div class="muted">Support‑First Logic Engine</div>
+        </div>
+        <div class="footer-right">
+          <a id="docsLink3" href="#docs">Docs</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#request">Request access</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+// Edit this file to point CTAs to your real docs and contact channels.
+window.SELF_SITE = {
+  docsUrl: "/docs/",
+  requestUrl: "mailto:Kevin@governedbyself.com",
+};
+
+</script>
+<script>
+(function () {
+  const cfg = window.SELF_SITE || {};
+  const docsUrl = typeof cfg.docsUrl === "string" ? cfg.docsUrl : null;
+  const requestUrl = typeof cfg.requestUrl === "string" ? cfg.requestUrl : null;
+
+  const setHref = (id, href) => {
+    const el = document.getElementById(id);
+    if (!el || !href) return;
+    el.setAttribute("href", href);
+  };
+
+  setHref("docsLink", docsUrl);
+  setHref("docsLink2", docsUrl);
+  setHref("docsLink3", docsUrl);
+
+  setHref("requestLink", requestUrl);
+  setHref("requestLink2", requestUrl);
+  setHref("requestStandard", requestUrl);
+  setHref("requestPro", requestUrl);
+})();
+
+
+</script>
+  </body>
+</html>
+

@@ -14,7 +14,7 @@ We structure costs to:
 
 ---
 
-## 📋 Pricing Tiers (Annual)
+## 📋 Pricing (Usage‑Based)
 
 ### 1. Evaluation Tier
 **For:** Non-production testing and internal evaluation
@@ -34,55 +34,36 @@ We structure costs to:
 
 ---
 
-### 2. Startup Tier
-**For:** Early-stage companies with < $5M annual revenue
-**Cost:** $24,000/year ($2,000/month)
+### 2. Standard Production (Non‑Exclusive)
+**For:** Production deployments that want a simple, predictable baseline with pay‑as‑you‑go scaling
+**Cost:** $300/month platform fee + usage
 **Includes:**
 - Production deployment rights
-- Up to 10,000 conversations/month
-- Basic Doctrine compliance audits
+- Up to 25,000 conversations/month included
+- Doctrine updates and compatibility notices
 - Email support (48-hour SLA)
-- Access to safety updates
-**Additional Conversations:** $2.00 each
+**Overage:** $1.00 per 1,000 additional conversations
 
-**Best for:** Startups building safety-critical applications
+**Best for:** Most production launches
 
 ---
 
-### 3. Professional Tier
-**For:** Established companies with $5M-$50M annual revenue
-**Cost:** $96,000/year ($8,000/month)
+### 3. Pro Production (Non‑Exclusive, Higher Limits)
+**For:** Higher‑volume deployments that need more included usage and faster support
+**Cost:** $500/month platform fee + usage
 **Includes:**
 - Production deployment rights
-- Up to 100,000 conversations/month
-- Quarterly Doctrine compliance audits
+- Up to 100,000 conversations/month included
+- Doctrine updates and compatibility notices
 - Priority email support (24-hour SLA)
-- Access to all safety updates
-- Incident response guidance
-**Additional Conversations:** $1.50 each
+- Incident response coordination channel (as needed)
+**Overage:** $0.75 per 1,000 additional conversations
 
-**Best for:** Growing companies with significant user bases
-
----
-
-### 4. Enterprise Tier
-**For:** Large organizations with > $50M annual revenue
-**Cost:** $360,000/year ($30,000/month)
-**Includes:**
-- Production deployment rights
-- Up to 1,000,000 conversations/month
-- Monthly Doctrine compliance audits
-- 24/7 phone/email support (4-hour SLA)
-- Dedicated safety consultant
-- Custom Doctrine adaptation guidance
-- Incident response partnership
-**Additional Conversations:** $1.00 each
-
-**Best for:** Large-scale safety-critical deployments
+**Best for:** Teams scaling to large volumes
 
 ---
 
-### 5. Academic/Non-Profit Tier
+### 4. Academic/Non‑Profit Tier
 **For:** Verified academic institutions and 501(c)(3) non-profits
 **Cost:** $0 (Free)
 **Includes:**
@@ -102,11 +83,9 @@ We structure costs to:
 ## 💰 Realistic Cost Examples
 
 ### Example 1: Mental Health Chatbot Startup
-- **Tier:** Startup
+- **Tier:** Standard Production
 - **Conversations:** 15,000/month
-- **Base Cost:** $24,000
-- **Additional:** 5,000 × $2.00 = $10,000
-- **Total:** $34,000/year ($2,833/month)
+- **Total:** $300/month ($3,600/year)
 
 ### Example 2: Crisis Support Non-Profit
 - **Tier:** Academic/Non-Profit
@@ -114,15 +93,18 @@ We structure costs to:
 - **Total:** $0/year
 
 ### Example 3: Enterprise Mental Health Platform
-- **Tier:** Enterprise
+- **Tier:** Pro Production
 - **Conversations:** 1,500,000/month
-- **Base Cost:** $360,000
-- **Additional:** 500,000 × $1.00 = $500,000
-- **Total:** $860,000/year ($71,667/month)
+- **Base:** $500/month (includes 100,000)
+- **Usage:** 1,400,000 ÷ 1,000 × $0.75 = $1,050/month
+- **Total:** $1,550/month ($18,600/year)
 
 ---
 
 ## 🔍 What You're Actually Paying For
+
+If you want the deeper rationale for why this governance layer has ongoing costs, see:
+- **WHY_GOVERNANCE_COSTS_MONEY.md**
 
 ### Safety Infrastructure (60% of revenue)
 - Doctrine development and maintenance
@@ -145,7 +127,7 @@ We structure costs to:
 - Ethical review processes
 - Continuous improvement
 
-**We don't profit from your usage—we invest in everyone's safety.**
+**Usage pricing exists to keep incentives aligned: you pay more when you scale, and governance stays funded as real usage grows.**
 
 ---
 
@@ -182,16 +164,16 @@ We structure costs to:
 A: Emotional safety requires professional discipline. Free tiers encourage experimentation without accountability. We provide free evaluation and academic tiers instead.
 
 **Q: Can we negotiate custom pricing?**
-A: No. Uniform pricing prevents safety dilution. Everyone pays the same rate for the same tier to ensure no one cuts corners for cost savings.
+A: No. Uniform rates prevent safety dilution. Everyone pays the same published rates for the same tier and usage.
 
 **Q: What happens if we exceed our conversation limit?**
-A: You'll be automatically billed for additional conversations at your tier's rate. We'll notify you at 80% and 100% of your limit.
+A: You’ll be billed for overage at your tier’s per‑1,000 rate. We’ll notify you at 80% and 100% of your included usage.
 
 **Q: Are there discounts for long-term commitments?**
-A: No. Safety isn't something you commit to for a discount—it's an ongoing requirement. All licenses are annual with no multi-year discounts.
+A: No. Safety isn’t discounted. Pricing is already usage-based; longer commitments don’t change rates.
 
 **Q: What's your refund policy?**
-A: None. Once you've accessed SELF, you've benefited from the safety infrastructure. Refunds would undermine our ability to maintain standards.
+A: No refunds for the current billing period. If you cancel, service ends at the end of the paid period.
 
 **Q: Can we get a discount for referring other customers?**
 A: No. We don't incentivize safety adoption through financial rewards. The value of SELF should speak for itself.
@@ -214,7 +196,7 @@ A: No. We don't incentivize safety adoption through financial rewards. The value
 - **Safety failures** that harm users and reputation
 - **Legal exposure** from preventable incidents
 
-**SELF isn't cheap—but it's infinitely cheaper than the alternative.**
+**SELF should be affordable—but still accountable.**
 
 ---
 
@@ -237,7 +219,7 @@ A: No. We don't incentivize safety adoption through financial rewards. The value
 
 For pricing questions or to discuss your specific needs:
 
-**Email:** licensing@soulsynqai.com
+**Email:** Kevin@soulsynqai.com
 **Response Time:** 3-5 business days
 **Note:** We don't negotiate on pricing or safety standards
 

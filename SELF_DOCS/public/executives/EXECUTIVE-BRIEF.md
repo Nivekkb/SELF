@@ -90,32 +90,32 @@ The Values-First Sales Criteria establish mandatory requirements across nine cri
 ## BUY-SELL AGREEMENT STRUCTURE
 
 ### Pricing Tiers
-The agreement provides two distinct pricing and licensing models:
+The agreement provides two usage-based commercial licensing tiers:
 
-#### Tier 1: Non-Exclusive License ($800,000)
-**Target**: Organizations seeking commercial deployment while preserving creator rights
-- **Payment**: $800,000 upfront, no royalties
+#### Tier 1: Standard Production (Non-Exclusive)
+**Target**: Organizations seeking commercial deployment with predictable baseline costs
+- **Payment**: $300/month platform fee + usage (metered)
 - **Creator Rights**: Full retention of rights for personal and commercial use
-- **Buyer Rights**: Perpetual, worldwide, non-exclusive license
+- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
 - **Use Case**: Companies wanting to integrate SELF without exclusive control
 
-#### Tier 2: Exclusive Ownership ($1,500,000)
-**Target**: Organizations requiring complete control and market exclusivity
-- **Payment**: $1,500,000 upfront + 10% annual royalties for 5 years
-- **Creator Rights**: Limited to personal non-commercial use only (no non-compete unless separetly  negotiatd)
-- **Buyer Rights**: Complete IP transfer, worldwide exclusivity
-- **Use Case**: Companies planning extensive commercialization or ecosystem control
+#### Tier 2: Pro Production (Non-Exclusive, Higher Limits)
+**Target**: Organizations requiring higher included usage and faster support
+- **Payment**: $500/month platform fee + usage (metered)
+- **Creator Rights**: Full retention of rights for personal and commercial use
+- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
+- **Use Case**: Higher-volume deployments that need more included capacity
 
 ### Critical Preconditions
 **Values-First Evaluation**: Agreement execution contingent upon successful completion of the comprehensive Values-First Sales Criteria evaluation. No rights vest until positive determination received.
 
 ### Alignment Escrow Framework
-**Graduated Ownership Vesting**: Intellectual property rights held in neutral third-party escrow with 4-phase ownership progression:
+**Graduated Access Vesting**: License keys and usage limits governed by neutral third-party escrow with 4-phase progression:
 
-- **Phase 1 (Months 1-6)**: Limited evaluation license with full monitoring rights
-- **Phase 2 (Months 7-18)**: Conditional ownership with active clawback provisions
-- **Phase 3 (Months 19-36)**: Protected ownership with protective covenants
-- **Phase 4 (Month 37+)**: Permanent ownership transfer
+- **Phase 1 (Months 1-6)**: Limited production access + full monitoring rights
+- **Phase 2 (Months 7-18)**: Expanded usage limits + active clawback provisions
+- **Phase 3 (Months 19-36)**: Stable long-term license + protective covenants
+- **Phase 4 (Month 37+)**: Renewed long-term standing (subject to ongoing compliance)
 
 **Escrow Agent Authority**: Neutral custodian with binding dispute resolution power, continuous monitoring, and enforcement capabilities.
 
@@ -208,12 +208,10 @@ The agreement provides two distinct pricing and licensing models:
 ## FINANCIAL PROJECTIONS
 
 ### Revenue Model
-**Conservative Estimates**:
-- **Annual Acquisitions**: 2-4 qualified buyers per year
-- **Mix**: 70% Tier 1 ($800K), 30% Tier 2 ($1.5M upfront + royalties)
-- **Year 1 Revenue**: $2.96M upfront + $300K royalties = $3.26M
-- **Year 2 Revenue**: $4.9M upfront + $500K royalties = $5.4M
-- **Year 3 Revenue**: $6.72M upfront + $750K royalties = $7.47M
+SELF revenue is now primarily usage-based:
+- Monthly platform fees ($300 Standard / $500 Pro)
+- Metered usage billed per 1,000 conversations beyond included capacity
+- Forecasts depend on aggregate production conversation volume across licensees
 
 ### Cost Structure
 - **Legal/Compliance**: $150K/year (external counsel, audits)
@@ -223,16 +221,13 @@ The agreement provides two distinct pricing and licensing models:
 - **Total Annual Costs**: $500K/year
 
 ### Profitability Analysis
-- **Year 1 Margin**: $3.26M revenue - $500K costs = $2.76M profit
-- **Year 2 Margin**: $5.4M revenue - $500K costs = $4.9M profit
-- **Year 3 Margin**: $7.47M revenue - $500K costs = $6.97M profit
-- **ROI**: Strong positive returns with scalable model
+Profitability is driven by actual usage volume and the operating cost of governance; model this using expected conversation volume rather than upfront acquisition counts.
 
-### Risk-Adjusted Valuation
-- **Base Case**: 3 acquisitions/year at projected mix
-- **Conservative Case**: 2 acquisitions/year, higher scrutiny
-- **Optimistic Case**: 5 acquisitions/year, broader market acceptance
-- **Break-Even**: Achieved within first 6 months
+### Scenario Planning
+- **Base Case**: 10 active production licensees with moderate usage growth
+- **Conservative Case**: 5 production licensees with lower usage and higher screening friction
+- **Optimistic Case**: 25 production licensees with higher usage, strong retention, and steady onboarding
+- **Break-Even**: Determined by governance operating costs versus aggregate metered usage
 
 ---
 

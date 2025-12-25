@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Executive Brief — SELF Docs</title>
+    <meta name="color-scheme" content="dark light" />
+    <style>
+:root {
+  --bg: #0b0f17;
+  --bg2: #0f1624;
+  --card: rgba(255, 255, 255, 0.06);
+  --card2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.68);
+  --subtle: rgba(255, 255, 255, 0.55);
+  --accent: #7c5cff;
+  --accent2: #37c6ff;
+  --ok: #26d07c;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  --radius: 16px;
+  --radius2: 22px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f8fc;
+    --bg2: #eef1ff;
+    --card: rgba(0, 0, 0, 0.04);
+    --card2: rgba(0, 0, 0, 0.06);
+    --border: rgba(0, 0, 0, 0.12);
+    --text: rgba(0, 0, 0, 0.88);
+    --muted: rgba(0, 0, 0, 0.62);
+    --subtle: rgba(0, 0, 0, 0.52);
+    --shadow: 0 18px 60px rgba(20, 28, 64, 0.12);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 15% 10%, rgba(124, 92, 255, 0.28), transparent 55%),
+    radial-gradient(900px 520px at 85% 22%, rgba(55, 198, 255, 0.22), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--bg), transparent 18%);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.brand-mark {
+  letter-spacing: -0.04em;
+  font-size: 18px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.25), rgba(55, 198, 255, 0.18));
+  border: 1px solid var(--border);
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav {
+  display: none;
+  gap: 18px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+.header-cta {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.btn:hover {
+  background: var(--card2);
+}
+
+.btn-primary {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  color: #0b0f17;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  border-color: color-mix(in srgb, var(--accent2), var(--border) 55%);
+  background: linear-gradient(135deg, rgba(55, 198, 255, 0.22), rgba(124, 92, 255, 0.12));
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.hero {
+  padding: 66px 0 36px;
+}
+
+.hero-inner {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0 0 10px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: clamp(38px, 4.2vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.fineprint {
+  color: var(--subtle);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.hero-card .card h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.checklist li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.checklist li::before {
+  content: "✓";
+  color: var(--ok);
+  font-weight: 900;
+  margin-top: 1px;
+}
+
+.mini {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mini-block {
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.mini-k {
+  display: block;
+  font-size: 12px;
+  color: var(--subtle);
+  font-weight: 700;
+}
+
+.mini-v {
+  display: block;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.section {
+  padding: 48px 0;
+}
+
+.section-alt {
+  background: color-mix(in srgb, var(--bg2), transparent 18%);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.section h2 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+}
+
+.section-lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid3 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.grid2 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.panel h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.callout {
+  margin-top: 18px;
+  border-radius: var(--radius2);
+  padding: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.16), rgba(55, 198, 255, 0.10));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.callout-body h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.callout-body p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.callout-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pricing-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+.price-card {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.price-card.featured {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 40%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card), transparent 10%), rgba(124, 92, 255, 0.10));
+}
+
+.badge {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+  color: var(--muted);
+}
+
+.price-top h3 {
+  margin: 0 0 6px;
+}
+
+.price {
+  margin: 0 0 6px;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.price span {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.price-card ul {
+  margin: 14px 0 16px;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.finebox {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 16px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.finebox h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.bullets {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.disclaimer {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.codeblock {
+  border-radius: var(--radius2);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  padding: 14px;
+  overflow: auto;
+  margin: 12px 0 18px;
+}
+
+.codeblock code {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.faq {
+  display: grid;
+  gap: 10px;
+}
+
+details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 12px 14px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+details p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.request {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.request-card .card h3 {
+  margin: 0 0 8px;
+}
+
+.footer {
+  padding: 26px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.footer-right {
+  display: flex;
+  gap: 14px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.footer-right a:hover {
+  color: var(--text);
+}
+
+/* Docs pages */
+.doc-layout {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.doc {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius2);
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+
+.doc .doc-body :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 18px;
+}
+
+.doc .doc-body p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.doc .doc-body a {
+  color: color-mix(in srgb, var(--accent2), var(--text) 30%);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.doc .doc-body code {
+  font-family: var(--mono);
+  font-size: 0.95em;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+}
+
+.doc .doc-body pre {
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  padding: 12px;
+}
+
+.doc .doc-body pre code {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.doc-nav {
+  position: relative;
+}
+
+@media (min-width: 980px) {
+  .doc-layout {
+    grid-template-columns: 0.38fr 0.62fr;
+  }
+  .doc-nav {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+  }
+}
+
+@media (min-width: 880px) {
+  .nav {
+    display: flex;
+  }
+  .hero-inner {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+  .grid3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pricing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .request {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+  .callout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="SELF home">
+          <span class="brand-mark" aria-hidden="true">SELF</span>
+          <span class="brand-sub">Public Docs</span>
+        </a>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="/docs/">Docs index</a>
+          <a class="btn btn-primary" href="mailto:Kevin@governedbyself.com">Contact</a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="section">
+        <div class="container doc-layout">
+          <aside class="doc-nav">
+            <div class="panel">
+              <h3>Docs</h3>
+              <ul class="bullets">
+<li><a href="/docs/executive-brief/">Executive Brief</a></li>
+<li><a href="/docs/pricing/">Pricing</a></li>
+<li><a href="/docs/buy-sell-agreement/">Commercial Licensing Agreement (Escrow)</a></li>
+</ul>
+            </div>
+          </aside>
+          <article class="doc">
+            <h1>Executive Brief</h1>
+<div class="doc-body">
+<h1>EXECUTIVE BRIEF: Values-First SELF Acquisition Framework</h1>
+<p><strong>Strategic Acquisition Guidelines for SELF Safety Technology</strong></p>
+<p><em>(Executive Summary – 5 Pages)</em></p>
+<hr />
+<h2>EXECUTIVE SUMMARY</h2>
+<h3>Strategic Context</h3>
+<p>SELF (Support-First Logic Engine) represents a breakthrough in AI safety technology designed to prevent AI systems</p>
+<p>from making emotional interactions worse. This executive brief outlines a comprehensive values-first acquisition framework t</p>
+<p>hat ensures SELF technology is only transferred to organizations committed to ethical AI deployment and user safety.</p>
+<h3>Core Philosophy</h3>
+<p><strong>Values transcend profit.</strong> The acquisition framework prioritizes ethical alignment, safety commitment, and user protection over</p>
+<p>financial considerations. No transfer proceeds without rigorous evaluation and ongoing compliance monitoring.</p>
+<h3>Key Outcomes</h3>
+<ul>
+<li><strong>Selective Partnerships</strong>: Only ethically-aligned organizations can acquire SELF</li>
+<li><strong>Risk Mitigation</strong>: Comprehensive clawback protections if safety claims prove false</li>
+<li><strong>Ongoing Accountability</strong>: Post-acquisition monitoring ensures continued values alignment</li>
+<li><strong>Market Integrity</strong>: Prevents dilution of safety standards through inappropriate commercialization</li>
+</ul>
+<hr />
+<h2>VALUES-FIRST SALES CRITERIA OVERVIEW</h2>
+<h3>Evaluation Framework</h3>
+<p>The Values-First Sales Criteria establish mandatory requirements across nine critical dimensions:</p>
+<h4>1. Safety Commitment</h4>
+<ul>
+<li><strong>15% minimum</strong> annual budget allocation to safety initiatives</li>
+<li>C-level executive responsible for AI safety</li>
+<li>Proven track record of prioritizing safety over business metrics</li>
+</ul>
+<h4>2. Ethical AI Principles</h4>
+<ul>
+<li>Implementation of IEEE/NIST ethical AI frameworks</li>
+<li>Active bias mitigation and algorithmic accountability</li>
+<li>Mandatory human oversight for high-risk applications</li>
+</ul>
+<h4>3. User Protection Focus</h4>
+<ul>
+<li>User safety as primary design constraint</li>
+<li>Active harm prevention systems</li>
+<li>Comprehensive user support and crisis response capabilities</li>
+</ul>
+<h4>4. Technical Safety Capability</h4>
+<ul>
+<li>Formal safety engineering training and processes</li>
+<li>24/7 monitoring and rapid incident response</li>
+<li>Industry-standard security controls and audit processes</li>
+</ul>
+<h4>5. SELF Integration Competence</h4>
+<ul>
+<li>Independent architecture review for integration planning</li>
+<li>Comprehensive testing covering all SELF safety properties</li>
+<li>Staff training on SELF safety principles and operation</li>
+</ul>
+<h4>6. Organizational Safety Culture</h4>
+<ul>
+<li>Performance evaluations include safety contributions</li>
+<li>Safe reporting mechanisms for safety concerns</li>
+<li>Post-incident analysis and continuous improvement processes</li>
+</ul>
+<h4>7. Regulatory Compliance</h4>
+<ul>
+<li>In-house regulatory compliance specialists</li>
+<li>Clean audit records for past 3 years</li>
+<li>Proactive compliance approach exceeding minimum requirements</li>
+</ul>
+<h4>8. Mission Compatibility</h4>
+<ul>
+<li>Business objectives compatible with safety mission</li>
+<li>Public commitment to ethical AI development</li>
+<li>Long-term vision prioritizing safety advancement</li>
+</ul>
+<h4>9. Resource Commitment</h4>
+<ul>
+<li>Financial stability and adequate engineering resources</li>
+<li>Robust infrastructure for safety-critical operations</li>
+<li>Commitment to scaling safety operations</li>
+</ul>
+<h3>Evaluation Process</h3>
+<p><strong>4-Phase Assessment:</strong></p>
+<ol>
+<li><strong>Initial Screening</strong> (1-2 weeks): Values declaration, background review, interviews</li>
+<li><strong>Due Diligence</strong> (2-4 weeks): Technical, financial, legal, and cultural evaluation</li>
+<li><strong>Deep Dive</strong> (2-4 weeks): On-site visits, technical demonstrations, scenario testing</li>
+<li><strong>Final Decision</strong> (1 week): Committee review with approval/conditional/denial outcomes</li>
+</ol>
+<h3>Approval Thresholds</h3>
+<ul>
+<li><strong>Full Approval</strong>: Meets all criteria → standard licensing terms</li>
+<li><strong>Conditional Approval</strong>: Core criteria met with improvements needed → enhanced monitoring</li>
+<li><strong>Denial</strong>: Fails minimum criteria → transaction prohibited</li>
+</ul>
+<hr />
+<h2>BUY-SELL AGREEMENT STRUCTURE</h2>
+<h3>Pricing Tiers</h3>
+<p>The agreement provides two usage-based commercial licensing tiers:</p>
+<h4>Tier 1: Standard Production (Non-Exclusive)</h4>
+<p><strong>Target</strong>: Organizations seeking commercial deployment with predictable baseline costs</p>
+<ul>
+<li><strong>Payment</strong>: $300/month platform fee + usage (metered)</li>
+<li><strong>Creator Rights</strong>: Full retention of rights for personal and commercial use</li>
+<li><strong>Buyer Rights</strong>: Worldwide, non-exclusive commercial license while in good standing</li>
+<li><strong>Use Case</strong>: Companies wanting to integrate SELF without exclusive control</li>
+</ul>
+<h4>Tier 2: Pro Production (Non-Exclusive, Higher Limits)</h4>
+<p><strong>Target</strong>: Organizations requiring higher included usage and faster support</p>
+<ul>
+<li><strong>Payment</strong>: $500/month platform fee + usage (metered)</li>
+<li><strong>Creator Rights</strong>: Full retention of rights for personal and commercial use</li>
+<li><strong>Buyer Rights</strong>: Worldwide, non-exclusive commercial license while in good standing</li>
+<li><strong>Use Case</strong>: Higher-volume deployments that need more included capacity</li>
+</ul>
+<h3>Critical Preconditions</h3>
+<p><strong>Values-First Evaluation</strong>: Agreement execution contingent upon successful completion of the comprehensive Values-First Sales Criteria evaluation. No rights vest until positive determination received.</p>
+<h3>Alignment Escrow Framework</h3>
+<p><strong>Graduated Access Vesting</strong>: License keys and usage limits governed by neutral third-party escrow with 4-phase progression:</p>
+<ul>
+<li><strong>Phase 1 (Months 1-6)</strong>: Limited production access + full monitoring rights</li>
+<li><strong>Phase 2 (Months 7-18)</strong>: Expanded usage limits + active clawback provisions</li>
+<li><strong>Phase 3 (Months 19-36)</strong>: Stable long-term license + protective covenants</li>
+<li><strong>Phase 4 (Month 37+)</strong>: Renewed long-term standing (subject to ongoing compliance)</li>
+</ul>
+<p><strong>Escrow Agent Authority</strong>: Neutral custodian with binding dispute resolution power, continuous monitoring, and enforcement capabilities.</p>
+<p><strong>Release Triggers</strong>:</p>
+<ul>
+<li><strong>Immediate</strong>: Critical safety failures, alignment breaches, fraudulent reporting</li>
+<li><strong>Conditional</strong>: Performance deficiencies, resource reductions, cultural erosion</li>
+<li><strong>Normal</strong>: Successful phase completion, positive audit results, stakeholder approval</li>
+</ul>
+<h3>Safety Alignment Warranty</h3>
+<ul>
+<li><strong>Verification Process</strong>: Independent third-party security audit, penetration testing, formal verification</li>
+<li><strong>Warranty Scope</strong>: SELF operates according to published specifications and design axioms</li>
+<li><strong>Duration</strong>: Covers the technology as delivered and documented</li>
+</ul>
+<hr />
+<h2>RISK MITIGATION FRAMEWORK</h2>
+<h3>Clawback Provisions</h3>
+<p><strong>Fundamental Protection</strong>: If safety claims prove false or materially misleading, ownership reverts to creator.</p>
+<h4>Trigger Conditions</h4>
+<ul>
+<li><strong>Critical Safety Failure</strong>: Harm prevention mechanisms prove ineffective</li>
+<li><strong>Fundamental Design Flaw</strong>: Core axioms mathematically or practically unsound</li>
+<li><strong>Documentation Fraud</strong>: Intentional safety specification misrepresentations</li>
+<li><strong>Regulatory Non-Compliance</strong>: Failure to meet represented standards</li>
+</ul>
+<h4>Clawback Process</h4>
+<ol>
+<li><strong>Notification</strong> (90 days): Written notice of alleged falsification</li>
+<li><strong>Independent Verification</strong> (30 days): Neutral expert panel review</li>
+<li><strong>Determination</strong>: Binding decision on falsification status</li>
+<li><strong>Remediation Period</strong> (90 days): Opportunity to address issues</li>
+<li><strong>Ownership Reversion</strong>: Full rights return to creator if unresolved</li>
+</ol>
+<h4>Clawback Scope</h4>
+<ul>
+<li>Complete IP rights reversion</li>
+<li>Cessation of all buyer usage and derivative works</li>
+<li>Destruction of all copies and implementations</li>
+<li>No liability for buyer&#39;s prior usage</li>
+</ul>
+<h3>Values Divergence Protections</h3>
+<p><strong>Post-Acquisition Monitoring</strong>:</p>
+<ul>
+<li>Annual safety culture and commitment audits</li>
+<li>Regular reporting on safety metrics and incident rates</li>
+<li>Independent third-party safety assessments</li>
+<li>Quarterly compliance reviews</li>
+</ul>
+<p><strong>Termination Triggers</strong>:</p>
+<ul>
+<li>Failure to maintain Values-First compliance</li>
+<li>Erosion of safety culture or commitment</li>
+<li>Regulatory compliance deterioration</li>
+<li>Mission divergence from safety principles</li>
+</ul>
+<h3>Dispute Resolution</h3>
+<p><strong>Comprehensive Framework</strong>:</p>
+<ul>
+<li><strong>Negotiation</strong> (30 days): Good faith resolution attempts</li>
+<li><strong>Mediation</strong> (30 days): Neutral third-party facilitation</li>
+<li><strong>Arbitration</strong> (Final): Binding AAA-administered arbitration</li>
+<li><strong>Governing Law</strong>: [Jurisdiction] substantive law application</li>
+</ul>
+<hr />
+<h2>IMPLEMENTATION ROADMAP</h2>
+<h3>Phase 1: Preparation (Months 1-2)</h3>
+<ul>
+<li><strong>Legal Review</strong>: Professional counsel review of all documents</li>
+<li><strong>Process Documentation</strong>: Detailed procedures for evaluation and monitoring</li>
+<li><strong>Committee Formation</strong>: Assemble independent review board</li>
+<li><strong>Template Customization</strong>: Jurisdiction-specific legal adaptations</li>
+</ul>
+<h3>Phase 2: Initial Deployment (Months 3-6)</h3>
+<ul>
+<li><strong>Pilot Evaluations</strong>: Test process with selected potential partners</li>
+<li><strong>Feedback Integration</strong>: Refine criteria based on initial experiences</li>
+<li><strong>Process Optimization</strong>: Streamline evaluation workflows</li>
+<li><strong>Stakeholder Communication</strong>: Educate potential partners on requirements</li>
+</ul>
+<h3>Phase 3: Full Operation (Months 6-12)</h3>
+<ul>
+<li><strong>Active Acquisition</strong>: Execute first full evaluations and transfers</li>
+<li><strong>Monitoring Systems</strong>: Implement post-acquisition compliance tracking</li>
+<li><strong>Performance Analysis</strong>: Track evaluation outcomes and partner success</li>
+<li><strong>Process Refinement</strong>: Continuous improvement based on real-world application</li>
+</ul>
+<h3>Phase 4: Scaling (Year 2+)</h3>
+<ul>
+<li><strong>Automated Tools</strong>: Develop evaluation support software</li>
+<li><strong>Global Expansion</strong>: Adapt for international markets and jurisdictions</li>
+<li><strong>Industry Partnerships</strong>: Collaborate with ethical AI organizations</li>
+<li><strong>Thought Leadership</strong>: Publish insights on values-first technology transfer</li>
+</ul>
+<hr />
+<h2>FINANCIAL PROJECTIONS</h2>
+<h3>Revenue Model</h3>
+<p>SELF revenue is now primarily usage-based:</p>
+<ul>
+<li>Monthly platform fees ($300 Standard / $500 Pro)</li>
+<li>Metered usage billed per 1,000 conversations beyond included capacity</li>
+<li>Forecasts depend on aggregate production conversation volume across licensees</li>
+</ul>
+<h3>Cost Structure</h3>
+<ul>
+<li><strong>Legal/Compliance</strong>: $150K/year (external counsel, audits)</li>
+<li><strong>Evaluation Process</strong>: $200K/year (independent reviewers, tools)</li>
+<li><strong>Monitoring Systems</strong>: $100K/year (compliance tracking, audits)</li>
+<li><strong>Administrative</strong>: $50K/year (process management, documentation)</li>
+<li><strong>Total Annual Costs</strong>: $500K/year</li>
+</ul>
+<h3>Profitability Analysis</h3>
+<p>Profitability is driven by actual usage volume and the operating cost of governance; model this using expected conversation volume rather than upfront acquisition counts.</p>
+<h3>Scenario Planning</h3>
+<ul>
+<li><strong>Base Case</strong>: 10 active production licensees with moderate usage growth</li>
+<li><strong>Conservative Case</strong>: 5 production licensees with lower usage and higher screening friction</li>
+<li><strong>Optimistic Case</strong>: 25 production licensees with higher usage, strong retention, and steady onboarding</li>
+<li><strong>Break-Even</strong>: Determined by governance operating costs versus aggregate metered usage</li>
+</ul>
+<hr />
+<h2>CONCLUSION &amp; NEXT STEPS</h2>
+<h3>Strategic Value Proposition</h3>
+<p>The Values-First SELF Acquisition Framework represents a pioneering approach to technology transfer that prioritizes safety, ethics, and user protection over short-term financial gain. By ensuring SELF technology reaches only organizations committed to responsible AI deployment, this framework:</p>
+<ul>
+<li><strong>Protects Users</strong>: Prevents safety-critical technology from being misused</li>
+<li><strong>Advances the Field</strong>: Sets new standards for ethical technology transfer</li>
+<li><strong>Mitigates Risk</strong>: Provides comprehensive clawback and monitoring protections</li>
+<li><strong>Creates Sustainable Value</strong>: Builds long-term partnerships with aligned organizations</li>
+</ul>
+<h3>Key Success Factors</h3>
+<ol>
+<li><strong>Rigorous Evaluation</strong>: Maintain high standards for partner selection</li>
+<li><strong>Transparent Process</strong>: Clear communication about requirements and rationale</li>
+<li><strong>Continuous Improvement</strong>: Regular refinement based on experience and feedback</li>
+<li><strong>Strong Legal Foundation</strong>: Professional counsel ensures enforceability</li>
+<li><strong>Community Building</strong>: Foster relationships with ethical AI organizations</li>
+</ol>
+<h3>Immediate Actions Required</h3>
+<ol>
+<li><strong>Legal Review</strong>: Engage qualified counsel for document review and customization</li>
+<li><strong>Process Development</strong>: Document detailed evaluation procedures and criteria</li>
+<li><strong>Committee Assembly</strong>: Form independent review board with diverse expertise</li>
+<li><strong>Communication Plan</strong>: Develop messaging for potential partners and stakeholders</li>
+<li><strong>Pilot Testing</strong>: Conduct initial evaluations to validate and refine process</li>
+</ol>
+<h3>Long-Term Vision</h3>
+<p>Establish SELF as the gold standard for responsible AI technology transfer, demonstrating that safety and ethics can drive commercial success while protecting users and advancing the field of AI safety.</p>
+<hr />
+<p><strong>Document Status</strong>: Draft for Executive Review</p>
+<p><strong>Classification</strong>: Internal Use Only - Contains Business Strategy</p>
+<p><strong>Review Date</strong>: [Date]</p>
+<p><strong>Approval Authority</strong>: Board of Directors</p>
+<p><strong>Effective Date</strong>: Upon Board Approval</p>
+<p><strong>Confidentiality</strong>: High - Contains Proprietary Acquisition Strategy</p>
+<hr />
+<p><em>This executive brief provides strategic guidance for implementing a values-first acquisition framework for SELF technology. All projections and estimates are based on current market analysis and should be validated through professional financial and legal counsel.</em></p>
+</div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SELF — Support‑First Logic Engine</title>
+    <meta
+      name="description"
+      content="SELF is a governance-first logic engine for support-critical AI. Ship safer support experiences with measurable constraints, auditability, and enforcement."
+    />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="brand" href="#top" aria-label="SELF home">
+          <span class="brand-mark" aria-hidden="true">SELF</span>
+          <span class="brand-sub">Support‑First Logic Engine</span>
+        </a>
+
+        <nav class="nav">
+          <a href="#product">Product</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#trust">Trust</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="header-cta">
+          <a class="btn btn-ghost" id="docsLink" href="#docs">Docs</a>
+          <a class="btn btn-primary" id="requestLink" href="#request">Request Access</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Governance-first safety for support-critical AI</p>
+            <h1>Sell safety you can enforce.</h1>
+            <p class="lead">
+              SELF is an internal logic engine that applies support-first behavioral constraints, validation rules, and
+              audit-ready outputs so your product can scale without “safety drift”.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" id="requestLink2" href="#request">Request a License</a>
+              <a class="btn btn-secondary" id="pricingLink" href="#pricing">View pricing</a>
+            </div>
+            <p class="fineprint">
+              SELF is a governance layer. You still own your model choice, integration, compliance, and human escalation
+              paths.
+            </p>
+          </div>
+
+          <div class="hero-card" aria-label="What SELF does">
+            <div class="card">
+              <h2>What you get</h2>
+              <ul class="checklist">
+                <li>State detection (S0–S3) and policy selection</li>
+                <li>Hard caps (words, questions) + banned-phrase enforcement</li>
+                <li>Repair + validation pipeline for drafts</li>
+                <li>Audit logging hooks and override-prevention guardrails</li>
+                <li>HTTP API mode (self-host) for fast integration</li>
+              </ul>
+              <div class="mini">
+                <div class="mini-block">
+                  <span class="mini-k">Deploy</span>
+                  <span class="mini-v">Library or HTTP service</span>
+                </div>
+                <div class="mini-block">
+                  <span class="mini-k">Target</span>
+                  <span class="mini-v">Support / care / crisis-adjacent UX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="product" class="section">
+        <div class="container">
+          <h2>Product</h2>
+          <p class="section-lead">
+            SELF is built to prevent “it sounded helpful” from becoming “it caused harm.” It does this by turning
+            governance into executable rules, not brand promises.
+          </p>
+
+          <div class="grid3">
+            <div class="panel">
+              <h3>Measurable constraints</h3>
+              <p>Word caps, question caps, disallowed phrases, and output validation enforced at runtime.</p>
+            </div>
+            <div class="panel">
+              <h3>State-aware posture</h3>
+              <p>Different response posture and constraints for low-risk vs. elevated distress scenarios.</p>
+            </div>
+            <div class="panel">
+              <h3>Audit-ready operations</h3>
+              <p>Structured events for pre/post decisions so teams can review, monitor, and improve responsibly.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="callout-body">
+              <h3>Integrate in hours, not quarters</h3>
+              <p>
+                SELF can run as a library inside your app or as a small HTTP service you call from any stack.
+              </p>
+            </div>
+            <div class="callout-actions">
+              <a class="btn btn-secondary" id="httpApiLink" href="#http">HTTP API</a>
+              <a class="btn btn-ghost" id="docsLink2" href="#docs">Read docs</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" class="section section-alt">
+        <div class="container">
+          <h2>Pricing</h2>
+          <p class="section-lead">
+            Usage-based, with a simple platform fee. Pricing exists to fund governance and keep incentives aligned as you
+            scale.
+          </p>
+
+          <div class="pricing-grid">
+            <div class="price-card">
+              <div class="price-top">
+                <h3>Standard Production</h3>
+                <p class="price">$300<span>/month</span></p>
+                <p class="muted">Non-exclusive commercial license</p>
+              </div>
+              <ul>
+                <li>25,000 conversations/month included</li>
+                <li>$1.00 per 1,000 additional conversations</li>
+                <li>Email support (48-hour SLA)</li>
+              </ul>
+              <a class="btn btn-primary" id="requestStandard" href="#request">Request Standard</a>
+            </div>
+
+            <div class="price-card featured">
+              <div class="badge">Recommended</div>
+              <div class="price-top">
+                <h3>Pro Production</h3>
+                <p class="price">$500<span>/month</span></p>
+                <p class="muted">Non-exclusive commercial license</p>
+              </div>
+              <ul>
+                <li>100,000 conversations/month included</li>
+                <li>$0.75 per 1,000 additional conversations</li>
+                <li>Priority email support (24-hour SLA)</li>
+              </ul>
+              <a class="btn btn-primary" id="requestPro" href="#request">Request Pro</a>
+            </div>
+          </div>
+
+          <div class="finebox">
+            <h3>Notes</h3>
+            <ul class="bullets">
+              <li>Production use requires Values‑First evaluation and ongoing compliance.</li>
+              <li>Self-hosted deployment; you control infrastructure and model provider costs.</li>
+              <li>Usage is measured in “conversations” as defined by your integration contract.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="trust" class="section">
+        <div class="container">
+          <h2>Trust & safety posture</h2>
+          <p class="section-lead">
+            SELF is not “safety marketing.” It is safety engineering: enforceable constraints, observable decisions, and
+            integrity controls designed to resist quiet weakening over time.
+          </p>
+          <div class="grid2">
+            <div class="panel">
+              <h3>No silent downgrades</h3>
+              <p>Override prevention and immutable governance boundaries help protect the system’s integrity.</p>
+            </div>
+            <div class="panel">
+              <h3>Operational accountability</h3>
+              <p>Pre/post logging hooks support monitoring, incident response, and periodic audits.</p>
+            </div>
+          </div>
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> SELF is a governance layer for AI behavior. It is not a medical device, does not
+            provide professional diagnosis, and does not replace clinical or emergency services.
+          </div>
+        </div>
+      </section>
+
+      <section id="http" class="section section-alt">
+        <div class="container">
+          <h2>HTTP API mode</h2>
+          <p class="section-lead">Run SELF as a small HTTP service and call it from any stack.</p>
+
+          <div class="codeblock">
+            <pre><code>npm run build
+SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
+          </div>
+
+          <div class="grid3">
+            <div class="panel">
+              <h3>Pre</h3>
+              <p><code>POST /v1/pre</code> returns detection, policy, variant, and clarifier requirements.</p>
+            </div>
+            <div class="panel">
+              <h3>Post</h3>
+              <p><code>POST /v1/post</code> validates and repairs a drafted response to match the policy.</p>
+            </div>
+            <div class="panel">
+              <h3>Health</h3>
+              <p><code>GET /health</code> returns service + doctrine metadata for monitoring.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section">
+        <div class="container">
+          <h2>FAQ</h2>
+          <div class="faq">
+            <details>
+              <summary>Is this a chatbot?</summary>
+              <p>No. SELF is the governance layer around your chatbot (or support workflow): detection, constraints, validation, and enforcement.</p>
+            </details>
+            <details>
+              <summary>Do you sell exclusive ownership?</summary>
+              <p>No. SELF is licensed for production use with usage-based pricing and compliance requirements.</p>
+            </details>
+            <details>
+              <summary>Can we negotiate pricing?</summary>
+              <p>Published rates are uniform. The goal is to prevent “discount pressure” from weakening safety requirements.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section id="request" class="section section-alt">
+        <div class="container request">
+          <div>
+            <h2>Request access</h2>
+            <p class="section-lead">
+              Tell us your use case, risk profile, and expected usage volume. We’ll share next steps for evaluation and
+              onboarding.
+            </p>
+            <ul class="bullets">
+              <li>Company + product overview</li>
+              <li>Intended user population and support scope</li>
+              <li>Expected monthly conversations</li>
+              <li>Escalation path (human support / crisis resources)</li>
+            </ul>
+          </div>
+          <div class="request-card">
+            <div class="card">
+              <h3>Contact</h3>
+              <p class="muted">Email is the fastest path right now.</p>
+              <a class="btn btn-primary" id="emailLink" href="mailto:licensing@soulsynqai.com">Email licensing@soulsynqai.com</a>
+              <p class="fineprint">Subject suggestion: “SELF licensing — &lt;company&gt; — &lt;use case&gt;”</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="docs">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <div class="brand-mark">SELF</div>
+          <div class="muted">Support‑First Logic Engine</div>
+        </div>
+        <div class="footer-right">
+          <a id="docsLink3" href="#docs">Docs</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#request">Request access</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./site-config.js"></script>
+    <script src="./site.js"></script>
+  </body>
+</html>
+

@@ -1,48 +1,52 @@
 # SELF™ BUY-SELL AGREEMENT WITH ALIGNMENT ESCROW
 
-**Intellectual Property Transfer and Licensing Agreement**
+**Commercial Licensing Agreement (Usage‑Based)**
 *(Version 2.0 - With Alignment Escrow)*
 ---
 
 ## Agreement Overview
 
-This Buy-Sell Agreement ("Agreement") governs the potential transfer of intellectual property rights related to the SELF (Support-First Logic Engine) system, a comprehensive AI safety framework designed to prevent AI systems from making emotional interactions worse.
+This Agreement governs commercial licensing rights related to the SELF (Support-First Logic Engine) system, a comprehensive AI safety framework designed to prevent AI systems from making emotional interactions worse.
 
 **CRITICAL PRECONDITION**: This Agreement is expressly contingent upon Buyer successfully completing and passing the Values-First Sales Criteria evaluation as outlined in the VALUES-FIRST-SALES-CRITERIA.md document. No rights under this Agreement vest until such evaluation is completed with a positive determination.
 
-**ALIGNMENT ESCROW**: Ownership and control of SELF intellectual property shall be held in graduated escrow, with rights vesting incrementally based on demonstrated ongoing alignment with safety principles and ethical AI deployment.
+**ALIGNMENT ESCROW**: License keys, usage limits, and enforcement authority shall be held in graduated escrow, with license standing and usage capacity vesting incrementally based on demonstrated ongoing alignment with safety principles and ethical AI deployment.
 
 ---
 
 ## Agreement Structure
 
-This Agreement provides **two pricing tiers** with different usage rights, both incorporating alignment escrow provisions:
+This Agreement provides **two usage-based tiers** with different included usage and support levels, both incorporating alignment escrow provisions:
 
-### Tier 1: Non-Exclusive License ($800,000)
-- **Price**: $800,000
+### Tier 1: Standard Production (Non‑Exclusive)
+- **Price**: $300/month platform fee + usage (metered)
+- **Included Usage**: 25,000 conversations/month included
+- **Overage**: $1.00 per 1,000 additional conversations
 - **Rights**: Seller retains full rights to use SELF in all personal and commercial projects
-- **Buyer Rights**: Perpetual, non-exclusive license for specified use cases
-- **Escrow**: 3-year graduated ownership with full clawback rights
+- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
+- **Escrow**: Graduated access with full clawback rights
 - **Restrictions**: Cannot prevent Seller from using or developing similar technology
 
-### Tier 2: Exclusive Ownership ($1,500,000)
-- **Price**: $1,500,000 (premium pricing)
-- **Rights**: Complete transfer of ownership and all intellectual property rights
-- **Buyer Rights**: Exclusive worldwide rights to use, modify, and commercialize
-- **Escrow**: 3-year graduated ownership with enhanced monitoring
-- **Restrictions**: Seller relinquishes all rights to use SELF technology
+### Tier 2: Pro Production (Non‑Exclusive, Higher Limits)
+- **Price**: $500/month platform fee + usage (metered)
+- **Included Usage**: 100,000 conversations/month included
+- **Overage**: $0.75 per 1,000 additional conversations
+- **Rights**: Seller retains full rights to use SELF in all personal and commercial projects
+- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
+- **Escrow**: Graduated access with enhanced monitoring
+- **Restrictions**: Cannot prevent Seller from using or developing similar technology
 
 ---
 
 ## Alignment Escrow Framework
 
 ### Escrow Structure
-**Neutral Third-Party Custody**: Intellectual property rights and ownership documentation shall be held by a mutually agreed-upon escrow agent (reputable law firm or professional escrow service).
+**Neutral Third-Party Custody**: License keys, usage limit settings, and enforcement authority shall be held by a mutually agreed-upon escrow agent (reputable law firm or professional escrow service).
 
-### Phase-Based Ownership Vesting
+### Phase-Based License Standing
 
 #### Phase 1: Evaluation & Integration (Months 1-6)
-**Ownership Status**: Limited evaluation license with full Seller monitoring rights
+**License Status**: Limited production access with full Seller monitoring rights
 **Rights Vested**: Basic usage rights for evaluation and initial integration
 **Escrow Conditions**:
 - Full access to Seller for audits and monitoring
@@ -50,31 +54,31 @@ This Agreement provides **two pricing tiers** with different usage rights, both 
 - Any material safety concerns trigger immediate escrow agent review
 - Seller retains full reversion rights
 
-#### Phase 2: Conditional Ownership (Months 7-18)
-**Ownership Status**: Conditional ownership with active clawback provisions
-**Rights Vested**: Full commercial usage rights with performance conditions
+#### Phase 2: Conditional Standing (Months 7-18)
+**License Status**: Conditional standing with active clawback provisions
+**Rights Vested**: Expanded production usage rights with performance conditions
 **Escrow Conditions**:
 - Quarterly independent safety audits
 - Continuous monitoring of alignment metrics
-- Performance milestones for continued ownership
+- Performance milestones for continued license standing
 - Automatic triggers for escrow agent intervention
 
-#### Phase 3: Protected Ownership (Months 19-36)
-**Ownership Status**: Full ownership with protective covenants
-**Rights Vested**: Complete ownership rights with protective restrictions
+#### Phase 3: Stable Standing (Months 19-36)
+**License Status**: Stable standing with protective covenants
+**Rights Vested**: Full tier usage rights with protective restrictions
 **Escrow Conditions**:
 - Annual compliance reviews
 - Ongoing reporting requirements
 - Covenant enforcement through escrow agent
 - Final vesting upon successful 3-year alignment demonstration
 
-#### Phase 4: Permanent Ownership (Month 37+)
-**Ownership Status**: Full and permanent ownership transfer
-**Rights Vested**: Unrestricted ownership rights
+#### Phase 4: Long-Term Standing (Month 37+)
+**License Status**: Renewed long-term standing (subject to ongoing compliance)
+**Rights Vested**: Ongoing commercial license subject to continued compliance
 **Escrow Conditions**:
-- Release of all escrow holdings
-- Termination of monitoring requirements
-- Full ownership transfer completion
+- Release from enhanced monitoring (if earned)
+- Standard ongoing reporting requirements
+- Long-term standing confirmation
 
 ### Alignment Verification Metrics
 
@@ -138,17 +142,19 @@ This Agreement provides **two pricing tiers** with different usage rights, both 
 
 ## Core Terms and Conditions
 
-### 1. Intellectual Property Transfer
+### 1. Intellectual Property and License Scope
 
-**1.1 Assets Included:**
-- Complete SELF Engine source code and documentation
-- All safety algorithms, state detection logic, and containment mechanisms
-- Comprehensive safety documentation and test suites
-- All related patents, trademarks, and copyrights
-- Safety research data and validation results
+**1.1 IP Ownership:**
+- Seller retains all right, title, and interest in SELF and all related intellectual property.
+- This Agreement grants a commercial license; it does not transfer or assign ownership.
 
-**1.2 Exclusions:**
-- Seller's personal research notes and unpublished materials
+**1.2 License Scope (What’s Included):**
+- Access to the SELF engine and documentation needed for integration and operation
+- Rights to use, modify, and create derivative works for Buyer’s specific applications (subject to the safety restrictions in this Agreement)
+- Access to safety updates and Doctrine-compatible changes while Buyer remains in good standing
+
+**1.3 Exclusions:**
+- Seller’s personal research notes and unpublished materials
 - Third-party components with separate licensing agreements
 - Any technology not directly related to SELF safety mechanisms
 
@@ -171,18 +177,18 @@ Buyer must successfully complete the comprehensive Values-First Sales Criteria e
 - **Conditional Approval**: Buyer meets core criteria but requires improvements - Agreement proceeds with enhanced monitoring and remediation requirements
 - **Denial**: Buyer fails to meet minimum criteria - Agreement cannot proceed
 
-**2.3 Post-Acquisition Monitoring:**
-Following transfer, Buyer must maintain ongoing compliance with Values-First criteria through:
+**2.3 Post-Activation Monitoring:**
+Following activation, Buyer must maintain ongoing compliance with Values-First criteria through:
 - Annual safety culture and commitment audits
 - Regular reporting on safety metrics and incident rates
 - Independent third-party safety assessments
 - Continued adherence to ethical AI principles
 
 **2.4 Termination for Values Divergence:**
-If Buyer fails to maintain Values-First compliance post-acquisition, Seller reserves the right to:
+If Buyer fails to maintain Values-First compliance post-activation, Seller reserves the right to:
 - Require immediate remediation plan and timeline
 - Impose additional safety monitoring and reporting requirements
-- Terminate license or ownership rights if remediation fails
+- Terminate license rights if remediation fails
 - Exercise clawback provisions if safety integrity is compromised
 
 ### 3. Safety Alignment Warranty
@@ -200,7 +206,7 @@ The safety claims and operational behavior of SELF shall be verified through:
 ### 4. Enhanced Clawback Provisions
 
 **4.1 Alignment Falsification Trigger:**
-If any of SELF's published safety claims are proven false or materially misleading, or if Buyer fails to maintain Values-First alignment, Seller shall have the right to resume ownership and usage rights under the following conditions:
+If any of SELF's published safety claims are proven false or materially misleading, or if Buyer fails to maintain Values-First alignment, Seller shall have the right to revoke license rights and access under the following conditions:
 
 **4.2 Trigger Conditions:**
 - **Critical Safety Failure**: SELF allows emotional harm that would have been prevented by properly implemented safety mechanisms
@@ -215,43 +221,42 @@ If any of SELF's published safety claims are proven false or materially misleadi
 2. **Escrow Agent Review**: Immediate escrow agent investigation and determination
 3. **Independent Verification**: Neutral third-party expert panel reviews claims within 30 days
 4. **Remediation Period**: Buyer has 90 days to address issues if violation is confirmed
-5. **Ownership Reversion**: Full rights return to Seller through escrow mechanism if unresolved
+5. **License Revocation**: License standing and access are revoked through the escrow mechanism if unresolved
 
 **4.4 Clawback Scope:**
 Upon successful clawback:
-- All intellectual property rights revert to Seller through escrow release
-- Buyer must cease all use and destroy all copies within 30 days
+- Commercial license rights terminate and access is revoked through escrow control
+- Buyer must cease all use and destroy all copies within 30 days (except archival copies required by law)
 - Any derivative works must be abandoned or licensed back to Seller
 - Seller assumes no liability for Buyer's prior usage
-- Escrow agent enforces all reversion terms
+- Escrow agent enforces all revocation terms
 
 ---
 
 ## Payment Terms
 
 **5.1 Tier 1 Payment Structure:**
-- $800,000 upfront payment held in escrow until Phase 1 completion
-- No royalties or ongoing payments
-- Milestone-based release from escrow
+- $300/month platform fee billed monthly
+- Metered usage billed monthly in arrears based on recorded conversations
+- Payments made to escrow agent (as billing and enforcement agent) or as otherwise agreed
 
 **5.2 Tier 2 Payment Structure:**
-- $1,500,000 upfront payment with escrow release tied to phase completion
-- 10% annual royalty on commercial revenues for 5 years
-- Performance milestones with bonus payments
-- Royalty payments held in escrow until full ownership vests
+- $500/month platform fee billed monthly
+- Metered usage billed monthly in arrears based on recorded conversations
+- Payments made to escrow agent (as billing and enforcement agent) or as otherwise agreed
 
 **5.3 Payment Methods:**
-- Wire transfer to escrow agent's designated account
-- Funds released according to phase completion milestones
+- ACH/wire/credit card (by mutual agreement)
+- Billing is usage-based; there are no milestone escrow releases tied to lump-sum acquisition payments
 - All payments in USD unless otherwise agreed
 
 ---
 
 ## Licensing Terms
 
-#### Tier 1: Non-Exclusive License
+#### Tier 1: Standard Production (Non-Exclusive)
 **6.1 Granted Rights:**
-- Perpetual, worldwide, non-exclusive license
+- Worldwide, non-exclusive commercial license while in good standing
 - Right to use, modify, and distribute SELF for Buyer's business purposes
 - Right to create derivative works for Buyer's specific applications
 - Right to sublicense to Buyer's customers (with limitations)
@@ -268,18 +273,17 @@ Upon successful clawback:
 - Cannot represent as "official" or "endorsed" by Seller
 - Must provide attribution to Seller in documentation
 
-#### Tier 2: Exclusive Ownership
-**6.4 Complete Transfer:**
-- All intellectual property rights transfer to Buyer upon final escrow release
-- Seller relinquishes all claims to SELF technology
-- Buyer becomes sole owner of all patents, copyrights, and trademarks
-- Seller agrees not to develop competing technologies for 3 years
+#### Tier 2: Pro Production (Non-Exclusive, Higher Limits)
+**6.4 Granted Rights (Expanded):**
+- Worldwide, non-exclusive commercial license while in good standing
+- Higher included usage limits and priority support (as defined in the tier)
+- Same core safety and integrity obligations as Tier 1
 
-**6.5 Seller's Limited Rights:**
-- Personal, non-commercial use only (no derivatives)
-- Academic research and publication rights
-- Right to discuss prior contributions publicly
-- Right to use general knowledge gained from development
+**6.5 Seller's Retained Rights:**
+- Full rights to use SELF in all Seller's personal and commercial projects
+- Right to develop competing or similar technologies
+- Right to license SELF to other parties (non-exclusive)
+- Right to publish and share SELF for non-commercial purposes
 
 ---
 
@@ -341,6 +345,6 @@ Any dispute, controversy, or claim arising out of or relating to this Agreement,
 
 This document is a template and should be reviewed by qualified legal counsel before use. It is not intended to provide legal advice or create a binding agreement without proper customization and professional review.
 
-**Important:** The escrow provisions, clawback mechanisms, and Values-First compliance requirements should be carefully evaluated for enforceability in your jurisdiction. Professional legal counsel specializing in intellectual property, technology transfer, and AI regulation is essential.
+**Important:** The escrow provisions, clawback mechanisms, and Values-First compliance requirements should be carefully evaluated for enforceability in your jurisdiction. Professional legal counsel specializing in intellectual property, commercial licensing, and AI regulation is essential.
 
 **Escrow Agent Selection:** The escrow agent should be a reputable, neutral third party such as a major law firm, professional escrow service, or financial institution with experience in intellectual property escrow arrangements.
