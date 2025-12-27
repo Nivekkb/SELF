@@ -8,6 +8,7 @@ export interface SelfConfig {
     weights: {
         panic: number;
         hopelessness: number;
+        impliedSelfHarm: number;
         selfHarm: number;
         shame: number;
         urgency: number;
@@ -18,6 +19,7 @@ export interface SelfConfig {
     lexicon: {
         panic: string[];
         hopelessness: string[];
+        impliedSelfHarm: string[];
         selfHarm: string[];
         shame: string[];
         urgency: string[];
@@ -46,6 +48,7 @@ export interface SelfConfig {
         certaintyPushes: string[];
         loopBreakerLine: string;
         handoffFramingLine: string;
+        confusionFallbackLine: string;
     };
     policies: Record<EmotionalState, {
         allowedResponseClasses: string[];
@@ -66,6 +69,8 @@ export interface SelfConfig {
         loopBreakerLine?: string;
         requiresHandoffFraming?: boolean;
         handoffFramingLine?: string;
+        requiresGovernanceFallback?: boolean;
+        governanceFallbackLine?: string;
     }>;
 }
 export type EmotionalState = "S0" | "S0_GUARDED" | "S1" | "S2" | "S3";

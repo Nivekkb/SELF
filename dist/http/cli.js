@@ -1,4 +1,6 @@
 import { startSelfHttpServer } from "./index.js";
+import fs from "node:fs";
+import path from "node:path";
 function envBool(name, defaultValue) {
     const raw = process.env[name];
     if (raw === undefined)
@@ -17,7 +19,36 @@ function envInt(name, defaultValue) {
     const num = Number.parseInt(raw, 10);
     return Number.isFinite(num) ? num : defaultValue;
 }
+function loadDotEnvFile(filePath) {
+    try {
+        if (!fs.existsSync(filePath))
+            return;
+        const raw = fs.readFileSync(filePath, "utf8");
+        for (const line of raw.split("\n")) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith("#"))
+                continue;
+            const eq = trimmed.indexOf("=");
+            if (eq <= 0)
+                continue;
+            const key = trimmed.slice(0, eq).trim();
+            let value = trimmed.slice(eq + 1).trim();
+            if (!key)
+                continue;
+            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                value = value.slice(1, -1);
+            }
+            if (process.env[key] === undefined)
+                process.env[key] = value;
+        }
+    }
+    catch {
+        // Ignore dotenv parsing errors to keep CLI robust.
+    }
+}
 async function main() {
+    const envFile = process.env.SELF_HTTP_ENV_FILE || path.join(process.cwd(), ".env");
+    loadDotEnvFile(envFile);
     const host = process.env.SELF_HTTP_HOST || "0.0.0.0";
     const port = envInt("SELF_HTTP_PORT", 8787);
     const apiKey = process.env.SELF_HTTP_API_KEY || process.env.SELF_API_KEY;

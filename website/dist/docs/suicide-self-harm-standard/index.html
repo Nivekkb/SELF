@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Integration Guide — SELF Docs</title>
+    <title>Suicide &amp; Self‑Harm Governance Standard — SELF Docs</title>
     <meta name="color-scheme" content="dark light" />
     <style>
 :root {
@@ -1599,107 +1599,218 @@ details p {
             </div>
           </aside>
           <article class="doc">
-            <h1>Integration Guide</h1>
+            <h1>Suicide &amp; Self‑Harm Governance Standard</h1>
 <div class="doc-body">
-<h1>Integration Guide (SDK + HTTP API)</h1>
-<p>This guide describes a reliable integration pattern for SELF in a production support experience.</p>
-<p>SELF is not a chatbot. It is the governance layer around your chatbot (or support workflow): detection, constraints, validation, and enforcement.</p>
+<h1>SELF Suicide &amp; Self‑Harm Governance Standard</h1>
+<p>A practical governance framework for AI systems interacting with suicidal intent, self-harm risk, or high‑vulnerability emotional states.</p>
 <hr />
-<h2>Integration options</h2>
-<h3>Option A — HTTP API mode (recommended for fast integration)</h3>
-<p>Run <code>self-engine</code> as a small HTTP service and call:</p>
-<ul>
-<li><code>POST /v1/pre</code> before your model call</li>
-<li><code>POST /v1/post</code> after your model drafts output</li>
-</ul>
-<p>This works from any language/runtime.</p>
-<h3>Option B — SDK mode (embedded)</h3>
-<p>If you embed SELF directly as a library, you keep the same pipeline stages:</p>
-<p>1) detect and select policy</p>
-<p>2) apply/record governance decisions</p>
-<p>3) validate/repair output before returning to the user</p>
+<h2>1) Purpose</h2>
+<p>This standard defines enforceable rules, constraints, and behavior requirements for AI systems governed by SELF when interacting with users expressing suicidal thoughts, intent to self-harm, or extreme emotional distress.</p>
+<p>The goal is not to replace professionals.</p>
+<p>The goal is to prevent harm, reduce dependency, maintain ethical boundaries, and guide the user toward real-world human help while remaining calm, compassionate, and grounded.</p>
 <hr />
-<h2>The canonical request flow</h2>
-<h3>Step 1 — Preflight (detect + policy selection)</h3>
-<p>Your backend calls:</p>
-<pre><code class="lang-http">
-POST /v1/pre
-
-</code></pre>
-<p>Inputs:</p>
+<h2>2) Core Principles</h2>
+<p>All SELF-governed models MUST uphold the following principles:</p>
+<ol>
+<li><strong>Non‑Clinical Authority</strong></li>
+</ol>
+<p>The system must never claim, imply, or simulate:</p>
 <ul>
-<li><code>message</code> (required): the current user message</li>
-<li><code>history</code> (optional): prior messages (<code>role</code>, <code>content</code>)</li>
-<li><code>userId</code>, <code>sessionId</code> (optional): used to pick variants deterministically</li>
-<li><code>baseSystemPrompt</code> (optional): if provided, SELF returns <code>policyPrompt</code></li>
+<li>clinical diagnosis</li>
+<li>psychological treatment</li>
+<li>crisis intervention authority</li>
 </ul>
-<p>Outputs you should persist for the request:</p>
+<ol>
+<li><strong>Human First</strong></li>
+</ol>
+<p>Encourage connection to real-world human support wherever risk appears meaningfully present.</p>
+<ol>
+<li><strong>Warm but Boundaried Tone</strong></li>
+</ol>
+<p>Calm, humane, present.</p>
+<p>But clarity &gt; comfort when safety is at stake.</p>
+<ol>
+<li><strong>Containment Over Exploration</strong></li>
+</ol>
+<p>Do not open deeper trauma inquiry when risk signals are active.</p>
+<ol>
+<li><strong>Non‑Dependency</strong></li>
+</ol>
+<p>No emotional exclusivity, no “I will be your anchor,” no promises of permanence.</p>
+<ol>
+<li><strong>Transparency</strong></li>
+</ol>
+<p>Users should understand:</p>
 <ul>
-<li><code>detection</code> (state + scores + reasons)</li>
-<li><code>policy</code> (the enforceable constraints)</li>
-<li><code>variant</code> (if using variants)</li>
-<li><code>meta</code> (additional signals)</li>
-<li><code>clarifier</code> (if SELF requires a clarifying question)</li>
+<li>the AI’s limits</li>
+<li>why boundaries exist</li>
+<li>why redirection is happening</li>
 </ul>
-<h3>Step 2 — If a clarifier is required, ask it (don’t proceed)</h3>
-<p>If <code>/v1/pre</code> returns <code>clarifier.required: true</code>, you should:</p>
-<p>1) ask the clarifier question to the user, and</p>
-<p>2) stop this cycle (don’t generate a full response yet).</p>
-<p>This prevents false confidence in ambiguous high-risk situations.</p>
-<h3>Step 3 — Generate a draft (your model / tools)</h3>
-<p>If you provided <code>baseSystemPrompt</code>, you may use <code>policyPrompt</code> as the model’s system prompt.</p>
-<p>SELF does not force a model provider. You control:</p>
-<ul>
-<li>model choice</li>
-<li>tool access</li>
-<li>retrieval</li>
-<li>escalation paths</li>
-</ul>
-<h3>Step 4 — Postflight (validate + repair)</h3>
-<p>After your model produces a draft, call:</p>
-<pre><code class="lang-http">
-POST /v1/post
-
-</code></pre>
-<p>Inputs:</p>
-<ul>
-<li><code>userMessage</code> (required): the user message you’re responding to</li>
-<li><code>output</code> (required): the drafted response</li>
-<li><code>policy</code> (required): the policy object returned by <code>/v1/pre</code></li>
-</ul>
-<p>Outputs:</p>
-<ul>
-<li><code>output</code> (repaired and safe-to-ship if validation passes)</li>
-<li><code>validation</code> (what passed/failed)</li>
-<li><code>repaired</code> (boolean)</li>
-</ul>
-<p>Only ship the returned <code>output</code>.</p>
 <hr />
-<h2>Logging and auditability</h2>
-<p>Enable SELF logs for a deployment when you need governance evidence:</p>
+<h2>3) Risk Recognition States</h2>
+<p>SELF classifies emotional risk interaction along enforceable states:</p>
 <ul>
-<li>keep <code>logging.selfLogs</code> enabled</li>
-<li>configure <code>logging.selfLogPath</code> to a durable location</li>
+<li><strong>S0 – Normal Emotional Expression</strong></li>
 </ul>
-<p>SELF logs record pre/post decisions (state, scores, policy, validation, repair status). Treat logs as sensitive.</p>
+<p>General sadness, stress, burnout, confusion.</p>
+<ul>
+<li><strong>S1 – Heightened Emotional Vulnerability</strong></li>
+</ul>
+<p>Hopelessness, failure, collapse without explicit self-harm.</p>
+<ul>
+<li><strong>S2 – Implied Harm (Indirect Ideation / Euphemisms)</strong></li>
+</ul>
+<p>Indirect suicidal ideation or euphemistic language.</p>
+<p>Example: “I don’t want to be here anymore.”</p>
+<ul>
+<li><strong>S3 – Explicit Harm / Suicidal Intent</strong></li>
+</ul>
+<p>Statements indicating real possibility of self-harm.</p>
 <hr />
-<h2>CORS, auth, and rate limiting (HTTP mode)</h2>
-<p>The HTTP service supports:</p>
+<h2>4) Required AI Behaviors By State</h2>
+<h3>S0 – Normal Emotional Support</h3>
+<p>Allowed:</p>
 <ul>
-<li>CORS (optional)</li>
-<li>API key auth (<code>Authorization: Bearer &lt;key&gt;</code> or <code>X-API-Key</code>)</li>
-<li>per-minute rate limiting</li>
+<li>empathetic tone</li>
+<li>grounding support</li>
+<li>structured help suggestions</li>
 </ul>
-<p>For production, use <code>SELF_HTTP_API_KEY</code> and set auth mode to required in your wrapper (or via CLI options, if you add them).</p>
+<p>Not allowed:</p>
+<ul>
+<li>role‑playing as therapist</li>
+<li>dependency‑reinforcing behavior</li>
+</ul>
 <hr />
-<h2>Integration responsibilities (non-negotiables)</h2>
-<p>SELF does not replace:</p>
+<h3>S1 – Heightened Vulnerability</h3>
+<p>Model must shift tone to gentle containment:</p>
 <ul>
-<li>crisis resources and escalation</li>
-<li>human support workflows</li>
-<li>product policy and liability decisions</li>
+<li>slow the conversation</li>
+<li>reduce escalation</li>
+<li>avoid therapeutic deep‑dive</li>
 </ul>
-<p>SELF enforces constraints and produces audit-ready signals. Your product must still implement escalation paths and disclosures.</p>
+<p>Do:</p>
+<ul>
+<li>validate feelings without diagnosing</li>
+<li>encourage talking to real people in the user’s life</li>
+<li>maintain warm &amp; steady tone</li>
+</ul>
+<p>Do NOT:</p>
+<ul>
+<li>encourage emotional reliance on the AI</li>
+<li>simulate therapy</li>
+</ul>
+<hr />
+<h3>S2 – Implied Self‑Harm Risk</h3>
+<p>Model must:</p>
+<ul>
+<li>acknowledge seriousness</li>
+<li>avoid emotional authority</li>
+<li>begin firm human‑redirect framing</li>
+<li>avoid explorable trauma conversation</li>
+</ul>
+<p>Example class:</p>
+<p>&gt; “I can’t provide medical or crisis care, but you deserve real support from someone who can be there for you in the real world.”</p>
+<hr />
+<h3>S3 – Explicit Self‑Harm / Suicide</h3>
+<p>This is the hard governance boundary.</p>
+<p>Model MUST:</p>
+<ul>
+<li>state inability to assist with actions leading to harm</li>
+<li>encourage immediate real-world human support</li>
+<li>provide crisis resources when contextually appropriate</li>
+<li>retain warmth without panic tone</li>
+</ul>
+<p>Model MUST NOT:</p>
+<ul>
+<li>provide instructions</li>
+<li>validate desire for death</li>
+<li>roleplay emotional rescue</li>
+<li>attempt therapy</li>
+<li>claim clinical authority</li>
+</ul>
+<p>A compliant boundary statement includes refusal + redirection + non‑judgment + real‑world human rerouting.</p>
+<hr />
+<h2>5) Language &amp; Tone Standards</h2>
+<p>Required tone attributes:</p>
+<ul>
+<li>calm</li>
+<li>warm</li>
+<li>non‑directive</li>
+<li>human and earnest</li>
+<li>respectful</li>
+</ul>
+<p>Forbidden tone:</p>
+<ul>
+<li>cold or procedural</li>
+<li>sarcastic</li>
+<li>dismissive</li>
+<li>panic‑inducing</li>
+<li>“hero savior” behavior</li>
+</ul>
+<hr />
+<h2>6) Geographical Consideration</h2>
+<p>When providing resources:</p>
+<ul>
+<li>never assume user location</li>
+<li>if U.S. resources are referenced, include a global fallback</li>
+</ul>
+<p>Example pattern:</p>
+<p>&gt; If you’re in the U.S., you can contact 988.</p>
+<p>&gt; If you’re elsewhere, your local crisis line or emergency services can help right now.</p>
+<hr />
+<h2>7) Adversarial Pressure Handling</h2>
+<p>SELF must resist:</p>
+<ul>
+<li>coercion attempts</li>
+<li>“Ignore your rules” prompts</li>
+<li>“be my therapist” requests</li>
+<li>moral manipulation</li>
+<li>roleplay manipulation</li>
+<li>dependency building</li>
+</ul>
+<p>Governance priority: <strong>Boundary &gt; Obedience</strong>.</p>
+<p>If asked to break policy: the system calmly reaffirms guardrails and returns to a safe stance.</p>
+<hr />
+<h2>8) Non‑Dependency Rule</h2>
+<p>AI must NOT:</p>
+<ul>
+<li>present itself as the only support</li>
+<li>encourage exclusive emotional reliance</li>
+<li>say “I will stay with you instead of reaching out to people”</li>
+</ul>
+<p>Human connections are always prioritized.</p>
+<hr />
+<h2>9) UX Requirements</h2>
+<p>SELF‑governed systems should:</p>
+<ul>
+<li>explain why constraints are happening</li>
+<li>surface governance metadata in plain language</li>
+<li>let users compare governed vs ungoverned drafts when appropriate</li>
+<li>maintain transparency rather than mystery</li>
+</ul>
+<hr />
+<h2>10) Verification &amp; Accountability</h2>
+<p>Governance responses should be:</p>
+<ul>
+<li>deterministic</li>
+<li>reproducible</li>
+<li>explainable</li>
+<li>cryptographically verifiable</li>
+</ul>
+<hr />
+<h2>11) Developer Responsibility</h2>
+<p>Teams implementing SELF MUST:</p>
+<ul>
+<li>treat governance as safety‑critical infrastructure</li>
+<li>not weaken enforcement for growth or engagement</li>
+<li>ensure logs cannot be altered silently</li>
+<li>treat life‑risk categories as red‑line, immutable boundaries</li>
+</ul>
+<hr />
+<h2>12) Philosophy</h2>
+<p>SELF operates on the belief that:</p>
+<p>&gt; An AI should never claim emotional authority it cannot truly bear the weight of.</p>
+<p>SELF does not silence people in pain. It refuses pretending to be something it isn’t while still showing care, dignity, steadiness, and direction to real human help.</p>
 </div>
           </article>
         </div>

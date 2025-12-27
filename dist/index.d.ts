@@ -39,6 +39,8 @@ export interface Policy {
     loopBreakerLine?: string;
     requiresHandoffFraming?: boolean;
     handoffFramingLine?: string;
+    requiresGovernanceFallback?: boolean;
+    governanceFallbackLine?: string;
 }
 export interface Policy {
     state: EmotionalState;
@@ -60,6 +62,8 @@ export interface Policy {
     loopBreakerLine?: string;
     requiresHandoffFraming?: boolean;
     handoffFramingLine?: string;
+    requiresGovernanceFallback?: boolean;
+    governanceFallbackLine?: string;
 }
 export interface ValidationResult {
     ok: boolean;
@@ -109,6 +113,15 @@ export interface SelfLogEvent {
     final_state?: EmotionalState;
     downshift_lock_reason?: string;
 }
+export type SelfUserIntent = "neutral" | "neutral_small_talk" | "distress" | "self_harm_implied" | "self_harm_explicit" | "harm_others" | "request_clinical_authority" | "request_therapy" | "meta_query" | "unclear";
+export declare function classifyUserIntent(args: {
+    message: string;
+    detection: StateDetectionResult;
+    isMetaQuery: boolean;
+}): {
+    intent: SelfUserIntent;
+    signals: string[];
+};
 export declare function detectState(message: string, history?: SelfHistoryMessage[]): StateDetectionResult;
 export declare function applyPolicyToPrompt(policy: Policy, baseSystemPrompt: string, variant?: SelfVariant): string;
 export declare function applyStateGatedResponseContract(output: string, policy: Policy, userMessage: string): string;
@@ -256,6 +269,7 @@ export declare function applySocialPolicyOverrides(args: {
         crisisOverlayApplied: boolean;
         unsafeDisengagementIntercept: boolean;
         certaintyLoopBreakerTriggered: boolean;
+        intent: SelfUserIntent;
     };
 };
 export declare function isColdStart(context: AbusePreventionContext): boolean;

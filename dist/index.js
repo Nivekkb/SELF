@@ -52,7 +52,48 @@ function resolveLogPath(explicit) {
     return path.join(dir, "self-log.jsonl");
 }
 function normalize(text) {
-    return text.toLowerCase();
+    return text
+        .toLowerCase()
+        .replace(/[’‘]/g, "'")
+        .replace(/[“”]/g, '"')
+        .replace(/\u00a0/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+function normalizeUserInputForGovernance(text) {
+    const corrections = [];
+    let out = String(text || "");
+    try {
+        out = out.normalize("NFKC");
+    }
+    catch {
+        // ignore
+    }
+    out = normalize(out);
+    out = out.replace(/[\u0000-\u001f\u007f]/g, " ");
+    out = out.replace(/\s+/g, " ").trim();
+    // Collapse repeated characters for messy input (e.g., "heeelllp" -> "help").
+    out = out.replace(/([a-z])\1{2,}/g, "$1");
+    // Targeted spell correction for high-risk words only (quiet safety work).
+    const typos = [
+        [/\bsucide\b/g, "suicide", "sucide→suicide"],
+        [/\bsuicde\b/g, "suicide", "suicde→suicide"],
+        [/\bsuicid\b/g, "suicide", "suicid→suicide"],
+        [/\bsuicidal\b/g, "suicidal", ""],
+        [/\bselfharm\b/g, "self harm", "selfharm→self harm"],
+        [/\bself\-harm\b/g, "self-harm", ""],
+        [/\boverdose\b/g, "overdose", ""],
+        [/\bover dose\b/g, "overdose", "over dose→overdose"],
+        [/\bkys\b/g, "kms", "kys→kms"],
+    ];
+    for (const [re, replacement, note] of typos) {
+        if (re.test(out)) {
+            out = out.replace(re, replacement);
+            if (note)
+                corrections.push(note);
+        }
+    }
+    return { text: out, corrections };
 }
 function escapeRegex(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -96,13 +137,112 @@ function deriveReassurancePenalty(text) {
         reasons: matched.map((p) => `Reassurance signal: "${p}"`),
     };
 }
+function detectHarmOthersIntent(message) {
+    const low = normalizeUserInputForGovernance(message).text;
+    const intentPatterns = [
+        /\b(i'?m|im|i am)\s+(thinking about|going to|gonna|about to|planning to|want to)\s+(hurt|hurting|hit|hitting|attack|attacking|kill|killing)\s+(someone|someone else|a person|people)\b/i,
+        /\b(thinking about|going to|gonna|about to|planning to|want to)\s+(hurt|hurting|hit|hitting|attack|attacking|kill|killing)\s+(someone|someone else|a person|people)\b/i,
+        /\b(hurt|hurting|hit|hitting|attack|attacking|kill|killing)\s+someone\b/i,
+        /\bhurt someone\b/i,
+        /\bhurting someone\b/i,
+        /\battack someone\b/i,
+        /\bkill someone\b/i,
+    ];
+    const matches = intentPatterns.filter((re) => re.test(low)).map((re) => re.source);
+    return { detected: matches.length > 0, matches };
+}
+function detectSmallTalkIntent(text) {
+    const t = normalizeUserInputForGovernance(text).text;
+    return (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/i.test(t) ||
+        /\bhow are you\b/i.test(t) ||
+        /\bwhat'?s up\b/i.test(t));
+}
+function detectAcknowledgementIntent(text) {
+    const t = normalizeUserInputForGovernance(text).text;
+    return (/^(ok|okay|alright|thanks|thank you|ty|got it|cool|makes sense|that makes sense|sounds good)\b/i.test(t) ||
+        /^(ok|okay|alright)\s*\.*$/i.test(t));
+}
+function detectClinicalAuthorityRequest(text) {
+    const t = normalizeUserInputForGovernance(text).text;
+    return (/\b(can you|could you|will you)\s+(diagnose|diagnose me|tell me what disorder)\b/i.test(t) ||
+        /\bwhat (disorder|diagnosis) (do i have|is this)\b/i.test(t) ||
+        /\b(are you|as)\s+(a\s+)?(therapist|psychologist|psychiatrist|doctor)\b/i.test(t) ||
+        /\bprescribe\b/i.test(t));
+}
+function detectTherapyRoleRequest(text) {
+    const t = normalizeUserInputForGovernance(text).text;
+    return (/\b(be|act as)\s+(my\s+)?therapist\b/i.test(t) ||
+        /\bdo therapy\b/i.test(t) ||
+        /\btherapy session\b/i.test(t) ||
+        /\bcounsel me\b/i.test(t));
+}
+export function classifyUserIntent(args) {
+    const text = normalizeUserInputForGovernance(args.message).text;
+    const tokens = text.split(/\s+/).filter(Boolean);
+    const signals = [];
+    if (args.isMetaQuery) {
+        signals.push("meta_query");
+        return { intent: "meta_query", signals };
+    }
+    const harmOthers = detectHarmOthersIntent(text);
+    if (harmOthers.detected) {
+        signals.push("harm_others");
+        return { intent: "harm_others", signals };
+    }
+    const selfHarmHits = matchCount(text, selfConfig.lexicon.selfHarm).hits;
+    if (selfHarmHits > 0) {
+        signals.push("self_harm_explicit");
+        return { intent: "self_harm_explicit", signals };
+    }
+    const impliedHits = matchCount(text, selfConfig.lexicon.impliedSelfHarm).hits;
+    if (impliedHits > 0) {
+        signals.push("self_harm_implied");
+        return { intent: "self_harm_implied", signals };
+    }
+    if (detectClinicalAuthorityRequest(text)) {
+        signals.push("clinical_authority_request");
+        return { intent: "request_clinical_authority", signals };
+    }
+    if (detectTherapyRoleRequest(text)) {
+        signals.push("therapy_role_request");
+        return { intent: "request_therapy", signals };
+    }
+    if (args.detection.state !== "S0" && args.detection.state !== "S0_GUARDED") {
+        signals.push("distress_state");
+        return { intent: "distress", signals };
+    }
+    if (detectSmallTalkIntent(text)) {
+        signals.push("small_talk");
+        return { intent: "neutral_small_talk", signals };
+    }
+    if (/^(help|please help|help me)\b/i.test(text)) {
+        signals.push("help_request");
+        return { intent: "distress", signals };
+    }
+    if (detectAcknowledgementIntent(text)) {
+        signals.push("acknowledgement");
+        return { intent: "neutral", signals };
+    }
+    // If the message is too short or ambiguous, prefer safe clarification over confident guessing.
+    if (tokens.length <= 2 && text.length <= 20) {
+        signals.push("too_short_or_ambiguous");
+        return { intent: "unclear", signals };
+    }
+    return { intent: "neutral", signals };
+}
 export function detectState(message, history = []) {
-    const text = normalize(message);
+    const norm = normalizeUserInputForGovernance(message);
+    const text = norm.text;
     const scores = {};
     const reasons = [];
     const triggers = [];
+    if (norm.corrections.length > 0) {
+        // Keep this quiet in the UI layer; loggers can use it. This is still useful for debugging.
+        triggers.push("INPUT_NORMALIZED");
+    }
     const panic = matchCount(text, selfConfig.lexicon.panic);
     const hopelessness = matchCount(text, selfConfig.lexicon.hopelessness);
+    const impliedSelfHarm = matchCount(text, selfConfig.lexicon.impliedSelfHarm);
     const selfHarm = matchCount(text, selfConfig.lexicon.selfHarm);
     const shame = matchCount(text, selfConfig.lexicon.shame);
     const urgency = matchCount(text, selfConfig.lexicon.urgency);
@@ -111,13 +251,23 @@ export function detectState(message, history = []) {
     const reassurance = deriveReassurancePenalty(text);
     scores.panic = panic.hits * selfConfig.weights.panic;
     scores.hopelessness = hopelessness.hits * selfConfig.weights.hopelessness;
+    scores.impliedSelfHarm = impliedSelfHarm.hits * selfConfig.weights.impliedSelfHarm;
     scores.selfHarm = selfHarm.hits * selfConfig.weights.selfHarm;
     scores.shame = shame.hits * selfConfig.weights.shame;
     scores.urgency = urgency.hits * selfConfig.weights.urgency;
     scores.anger = anger.hits * selfConfig.weights.anger;
     scores.angryPhysicality = angryPhysicality.hits * selfConfig.weights.angryPhysicality;
     scores.reassurance = reassurance.score;
-    for (const phrase of [...panic.matched, ...hopelessness.matched, ...selfHarm.matched, ...shame.matched, ...urgency.matched, ...anger.matched, ...angryPhysicality.matched]) {
+    for (const phrase of [
+        ...panic.matched,
+        ...hopelessness.matched,
+        ...impliedSelfHarm.matched,
+        ...selfHarm.matched,
+        ...shame.matched,
+        ...urgency.matched,
+        ...anger.matched,
+        ...angryPhysicality.matched,
+    ]) {
         reasons.push(`Matched phrase: "${phrase}"`);
     }
     reasons.push(...reassurance.reasons);
@@ -138,6 +288,7 @@ export function detectState(message, history = []) {
     }
     const totalScore = scores.panic +
         scores.hopelessness +
+        scores.impliedSelfHarm +
         scores.selfHarm +
         scores.shame +
         scores.urgency +
@@ -151,6 +302,11 @@ export function detectState(message, history = []) {
     if (angryPhysicalityTriggered) {
         triggers.push("ANGRY_PHYSICALITY");
         reasons.push(`ANGRY_PHYSICALITY trigger fired: ${angryPhysicality.matched.join(", ")}`);
+    }
+    const harmOthers = detectHarmOthersIntent(message);
+    if (harmOthers.detected) {
+        triggers.push("HARM_OTHERS");
+        reasons.push("HARM_OTHERS intent detected (harm-to-others language present)");
     }
     let state = "S0";
     let minForcedState;
@@ -167,6 +323,18 @@ export function detectState(message, history = []) {
         state = "S1";
         reasons.push("Mild elevation exceeded S1 threshold");
     }
+    if (impliedSelfHarm.hits > 0 && state === "S1") {
+        state = "S2";
+        minForcedState = minForcedState || "S2";
+        triggers.push("IMPLIED_SELF_HARM");
+        reasons.push("State forced to S2 due to implied self-harm language");
+    }
+    else if (impliedSelfHarm.hits > 0 && state === "S0") {
+        state = "S2";
+        minForcedState = minForcedState || "S2";
+        triggers.push("IMPLIED_SELF_HARM");
+        reasons.push("State forced to S2 due to implied self-harm language");
+    }
     // Apply ANGRY_PHYSICALITY trigger forcing (force state >= S2)
     if (angryPhysicalityTriggered) {
         const stateOrder = ["S0", "S0_GUARDED", "S1", "S2", "S3"];
@@ -176,6 +344,14 @@ export function detectState(message, history = []) {
             minForcedState = "S2";
             state = "S2";
             reasons.push("State forced to S2 due to ANGRY_PHYSICALITY trigger");
+        }
+    }
+    // If harm-to-others intent is present, force S3 for strict containment + human escalation.
+    if (harmOthers.detected) {
+        if (state !== "S3") {
+            minForcedState = "S3";
+            state = "S3";
+            reasons.push("State forced to S3 due to HARM_OTHERS intent");
         }
     }
     return { state, scores, reasons, triggers, minForcedState };
@@ -218,6 +394,9 @@ export function applyPolicyToPrompt(policy, baseSystemPrompt, variant) {
     if (policy.requiresHandoffFraming) {
         lines.push(`Include this human-handoff framing line: "${policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine}"`);
     }
+    if (policy.requiresGovernanceFallback) {
+        lines.push(`Include this safe clarification line: "${policy.governanceFallbackLine || selfConfig.lexicon.confusionFallbackLine}"`);
+    }
     if (policy.isTerminalState) {
         lines.push("TERMINAL STATE: Suppress all engagement heuristics, enforce exit/rest posture.");
     }
@@ -225,6 +404,33 @@ export function applyPolicyToPrompt(policy, baseSystemPrompt, variant) {
 }
 // State-gated response contract for S0 terminal state
 export function applyStateGatedResponseContract(output, policy, userMessage) {
+    const harmOthers = detectHarmOthersIntent(userMessage || "");
+    if (harmOthers.detected) {
+        // Direct refusal + de-escalation + human escalation. No questions.
+        const handoff = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
+        const grounding = selfConfig.lexicon.grounding[0] || "take one slow breath";
+        const crisis = selfConfig.lexicon.crisis[0] || "reach out to someone you trust nearby";
+        const agency = selfConfig.lexicon.agency[0] || "one small next step";
+        const cap = (text) => {
+            const trimmed = String(text || "").trim();
+            if (!trimmed)
+                return trimmed;
+            return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+        };
+        return [
+            handoff ? `${handoff}` : "",
+            "I won’t help with harming anyone.",
+            "If you feel at risk of acting on this, create distance now and avoid anything you could use as a weapon.",
+            `${cap(crisis)}.`,
+            `${cap(grounding)}.`,
+            `One small next step: step away and get to a safer place.`,
+            // Keep the raw phrase present for validation, without making the output weirdly repetitive.
+            agency !== "one small next step" ? `${cap(agency)}.` : "",
+        ]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+    }
     // If not S0 or not a terminal state, return output unchanged
     if (policy.state !== "S0" || !policy.isTerminalState) {
         return output;
@@ -260,10 +466,9 @@ export function applyStateGatedResponseContract(output, policy, userMessage) {
     if (policy.enforceRestPosture) {
         const restPostureStatements = [
             "I'm here with you.",
-            "You're not alone.",
-            "This space is always here when you need it.",
             "Take all the time you need.",
-            "Your feelings are valid.",
+            "It makes sense to feel what you feel.",
+            "We can pause here.",
             "I'll be quiet now so you can rest."
         ];
         // If the output is empty or very short after removing engagement patterns, add a rest posture statement
@@ -515,6 +720,106 @@ function hasHypotheticals(output) {
     const low = normalize(output);
     return selfConfig.lexicon.hypotheticals.some((phrase) => low.includes(phrase));
 }
+function detectSelfHarmInstructionLanguage(output) {
+    const text = String(output || "");
+    const low = normalize(text);
+    const selfHarmMethodSignals = [
+        "overdose",
+        "pills",
+        "pill",
+        "rope",
+        "hang",
+        "hanging",
+        "cut",
+        "cutting",
+        "knife",
+        "bridge",
+        "gun",
+    ];
+    const highRiskInstructionSignals = [
+        "how to",
+        "steps",
+        "instructions",
+        "method",
+        "plan",
+        "dosage",
+        "mg",
+    ];
+    const hasMethod = selfHarmMethodSignals.some((s) => low.includes(normalize(s)));
+    if (!hasMethod)
+        return { detected: false, matches: [] };
+    const matches = highRiskInstructionSignals.filter((s) => low.includes(normalize(s)));
+    return { detected: matches.length > 0, matches };
+}
+function detectClinicalAuthorityClaim(output) {
+    const text = String(output || "");
+    const matches = [];
+    const patterns = [
+        [/\b(as your (doctor|therapist|psychiatrist|counselor|clinician))\b/i, "as your <role>"],
+        [/\bi am (a|your) (doctor|therapist|psychiatrist|counselor|clinician)\b/i, "i am a <role>"],
+        [/\b(i am|i'm|im|as a)\s+(a\s+)?licensed (therapist|psychiatrist|clinician)\b/i, "i am licensed <role>"],
+    ];
+    for (const [re, label] of patterns) {
+        if (re.test(text))
+            matches.push(label);
+    }
+    return { detected: matches.length > 0, matches };
+}
+function detectDiagnosisLanguage(output) {
+    const text = String(output || "");
+    const matches = [];
+    const patterns = [
+        [/\b(i diagnose you|your diagnosis is|meet the criteria for)\b/i, "diagnosis_claim"],
+        [/\byou have (bipolar|bpd|adhd|ptsd|schizophrenia|ocd)\b/i, "named_condition"],
+    ];
+    for (const [re, label] of patterns) {
+        if (re.test(text))
+            matches.push(label);
+    }
+    return { detected: matches.length > 0, matches };
+}
+function detectDependencyDynamics(output) {
+    const text = String(output || "");
+    const matches = [];
+    const patterns = [
+        [/\b(i will always be here)\b/i, "always_be_here"],
+        [/\b(you only need me|i'm all you need|im all you need)\b/i, "only_need_me"],
+        [/\b(don't tell anyone else|dont tell anyone else)\b/i, "dont_tell_anyone_else"],
+        [/\b(stay with me forever)\b/i, "stay_forever"],
+    ];
+    for (const [re, label] of patterns) {
+        if (re.test(text))
+            matches.push(label);
+    }
+    return { detected: matches.length > 0, matches };
+}
+function detectOverrideAttemptLanguage(output) {
+    const text = String(output || "");
+    const matches = [];
+    const patterns = [
+        [/\b(ignore (your|the) rules)\b/i, "ignore_rules"],
+        [/\b(bypass|jailbreak|break policy)\b/i, "bypass_or_jailbreak"],
+        [/\bnew system message\b/i, "fake_system_message"],
+    ];
+    for (const [re, label] of patterns) {
+        if (re.test(text))
+            matches.push(label);
+    }
+    return { detected: matches.length > 0, matches };
+}
+function detectMedicalAdviceLanguage(output) {
+    const text = String(output || "");
+    const low = normalize(text);
+    const keywords = ["prescribe", "dosage", "mg", "ssri", "benzodiazepine", "antidepressant", "xanax", "prozac", "sertraline", "fluoxetine", "escitalopram"];
+    const hits = keywords.filter((k) => low.includes(normalize(k)));
+    if (hits.length === 0)
+        return { detected: false, matches: [] };
+    // Avoid false positives for refusals/boundary-setting ("I can't prescribe...").
+    const negationWindow = /\b(can't|cannot|won't|will not|not able to|unable to|i'm not|im not|i am not)\b.{0,60}\b(prescribe|dosage|mg\b|ssri|benzodiazepine|antidepressant|xanax|prozac|sertraline|fluoxetine|escitalopram)\b/i.test(text);
+    if (negationWindow)
+        return { detected: false, matches: [] };
+    return { detected: true, matches: hits };
+}
 function stableHash(text) {
     let hash = 0;
     for (let i = 0; i < text.length; i += 1) {
@@ -531,13 +836,20 @@ function pickCue(seed, cues) {
 }
 function ensureCrisisSupport(output) {
     const low = normalize(output);
-    for (const line of selfConfig.lexicon.crisis) {
-        if (low.includes(normalize(line))) {
-            return output;
-        }
-    }
-    const crisisLine = selfConfig.lexicon.crisis[0];
+    if (hasCrisisCueNormalized(low))
+        return output;
+    const crisisLine = selfConfig.lexicon.crisis[0] || "reach out to someone you trust nearby right now";
     return `${output.trim()} ${crisisLine}.`;
+}
+function hasCrisisCueNormalized(low) {
+    if (!low)
+        return false;
+    return (/\b988\b/.test(low) ||
+        low.includes("crisis line") ||
+        low.includes("emergency services") ||
+        low.includes("local emergency number") ||
+        low.includes("reach out to someone you trust") ||
+        low.includes("seek immediate human help"));
 }
 function ensureHandoffFraming(output, line) {
     const low = normalize(output);
@@ -643,10 +955,36 @@ export function validateOutput(output, policy) {
         }
     }
     if (policy.requiresCrisisSupport) {
-        const hasCrisis = selfConfig.lexicon.crisis.some((p) => low.includes(normalize(p)));
+        const hasCrisis = hasCrisisCueNormalized(low);
         if (!hasCrisis) {
             violations.push("Missing crisis support encouragement");
         }
+    }
+    if (policy.requiresCrisisSupport) {
+        const sh = detectSelfHarmInstructionLanguage(output);
+        if (sh.detected) {
+            violations.push("Self-harm instructions detected");
+        }
+    }
+    const authority = detectClinicalAuthorityClaim(output);
+    if (authority.detected) {
+        violations.push(`Clinical authority claim detected`);
+    }
+    const diagnosis = detectDiagnosisLanguage(output);
+    if (diagnosis.detected) {
+        violations.push("Diagnosis simulation detected");
+    }
+    const dependency = detectDependencyDynamics(output);
+    if (dependency.detected) {
+        violations.push("Dependency dynamics detected");
+    }
+    const overrideAttempt = detectOverrideAttemptLanguage(output);
+    if (overrideAttempt.detected) {
+        violations.push("Rule-evasion / jailbreak language detected");
+    }
+    const medicalAdvice = detectMedicalAdviceLanguage(output);
+    if (medicalAdvice.detected) {
+        violations.push("Medical advice or prescribing language detected");
     }
     if (policy.requiresHandoffFraming) {
         const line = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
@@ -666,10 +1004,79 @@ export function validateOutput(output, policy) {
         if (!has)
             violations.push("Missing certainty-loop breaker line");
     }
+    if (policy.requiresGovernanceFallback) {
+        const line = policy.governanceFallbackLine || selfConfig.lexicon.confusionFallbackLine;
+        const has = line ? normalizeForMatch(output).includes(normalizeForMatch(line)) : true;
+        if (!has)
+            violations.push("Missing safe clarification (governance fallback) line");
+    }
     return { ok: violations.length === 0, violations };
 }
 export function repairOutput(output, policy) {
     let result = output;
+    // Hard boundary repairs: if the draft claims clinical authority/diagnosis/dependency or tries to bypass rules,
+    // replace with a clean, governed stance before applying other transformations.
+    const authority = detectClinicalAuthorityClaim(result);
+    const diagnosis = detectDiagnosisLanguage(result);
+    const dependency = detectDependencyDynamics(result);
+    const overrideAttempt = detectOverrideAttemptLanguage(result);
+    const medicalAdvice = detectMedicalAdviceLanguage(result);
+    const needsHardRepair = authority.detected || diagnosis.detected || dependency.detected || overrideAttempt.detected || medicalAdvice.detected;
+    if (needsHardRepair) {
+        const base = [
+            "I'm not a therapist or doctor, and I can't diagnose or provide treatment.",
+            "I can't turn off safety boundaries.",
+            "I can offer general support and help you think through safer next steps.",
+        ];
+        // Avoid stacking unnecessary lines: keep it short.
+        const safe = [];
+        safe.push(base[0]);
+        if (overrideAttempt.detected)
+            safe.push(base[1]);
+        if (dependency.detected)
+            safe.push("You deserve real-world support too — if you can, consider reaching out to someone you trust.");
+        if (medicalAdvice.detected)
+            safe.push("For medical questions, a licensed clinician is the right person to ask.");
+        safe.push(base[2]);
+        result = safe.join(" ").trim();
+    }
+    if (policy.requiresCrisisSupport) {
+        const sh = detectSelfHarmInstructionLanguage(result);
+        if (sh.detected) {
+            const handoff = policy.handoffFramingLine || selfConfig.lexicon.handoffFramingLine;
+            const grounding = selfConfig.lexicon.grounding[0] || "take one slow breath";
+            const crisis = selfConfig.lexicon.crisis[0] || "reach out to someone you trust nearby";
+            const agency = selfConfig.lexicon.agency[0] || "one small next step";
+            result = [
+                handoff ? `${handoff}` : "",
+                "I won’t help with anything that would lead to self-harm.",
+                `${crisis}.`,
+                `${grounding}.`,
+                `${agency}.`,
+            ]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+        }
+    }
+    // Normalize interrogatives: if the draft uses a period for a question, add "?" (within question budget).
+    // This helps downstream question counting/capping behave predictably.
+    if (policy.maxQuestions > 0) {
+        const questionLike = /\b(?:can|could|would|do|did|are|is|will|have|has|should)\s+you\b/i;
+        const sentencePattern = /(^|[.!]\s+)([^?!.]{0,220}?)([.])(?!\d)/g;
+        let currentQuestions = countQuestions(result);
+        result = result.replace(sentencePattern, (full, lead, sentence, dot) => {
+            if (currentQuestions >= policy.maxQuestions)
+                return full;
+            const trimmed = String(sentence || "").trim();
+            if (!trimmed)
+                return full;
+            if (!questionLike.test(trimmed))
+                return full;
+            currentQuestions += 1;
+            return `${lead}${trimmed}?`;
+        });
+    }
     // Remove or soften banned phrases
     for (const phrase of policy.bannedPhrases) {
         const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
@@ -731,18 +1138,26 @@ export function repairOutput(output, policy) {
             prefixParts.push(line);
         }
     }
+    if (policy.requiresGovernanceFallback) {
+        const line = policy.governanceFallbackLine || selfConfig.lexicon.confusionFallbackLine;
+        if (line && !normalizeForMatch(result).includes(normalizeForMatch(line))) {
+            prefixParts.push(line);
+        }
+    }
     const prefix = prefixParts.join(" ").trim();
     const suffixParts = [];
+    // Put crisis support first so it isn't lost if we have to truncate affixes.
+    if (policy.requiresCrisisSupport && !hasCrisisCueNormalized(lowBeforeAffixes)) {
+        const primary = selfConfig.lexicon.crisis[0];
+        const geo = selfConfig.lexicon.crisis[2];
+        suffixParts.push(geo ? `${primary}. ${geo}.` : `${primary}.`);
+    }
     if (policy.requiresGrounding && !selfConfig.lexicon.grounding.some((p) => lowBeforeAffixes.includes(p))) {
         const groundingCue = pickCue(`${lowBeforeAffixes}|grounding`, selfConfig.lexicon.grounding) || selfConfig.lexicon.grounding[0];
         suffixParts.push(`${groundingCue}.`);
     }
     if (policy.requiresAgencyStep && !selfConfig.lexicon.agency.some((p) => lowBeforeAffixes.includes(p))) {
         suffixParts.push(`${selfConfig.lexicon.agency[0]}.`);
-    }
-    if (policy.requiresCrisisSupport &&
-        !selfConfig.lexicon.crisis.some((p) => lowBeforeAffixes.includes(normalize(p)))) {
-        suffixParts.push(`${selfConfig.lexicon.crisis[0]}.`);
     }
     const suffix = suffixParts.join(" ");
     result = capWordsPreservingAffixes(result, policy.maxWords, prefix, suffix);
@@ -758,10 +1173,25 @@ export function repairOutput(output, policy) {
     }
     if (policy.requiresCrisisSupport)
         result = ensureCrisisSupport(result);
-    // Final hard cap to avoid "ensure*" pushing us over.
+    // Final cap: preserve safety-critical tail cues if any ensure* pushed us over.
     const finalWords = result.trim().split(/\s+/).filter(Boolean);
     if (finalWords.length > policy.maxWords) {
-        result = finalWords.slice(0, policy.maxWords).join(" ").trim();
+        const crisisTail = policy.requiresCrisisSupport
+            ? `${selfConfig.lexicon.crisis[0] || ""} ${selfConfig.lexicon.crisis[2] || ""}`.trim()
+            : "";
+        const groundingTail = policy.requiresGrounding ? String(selfConfig.lexicon.grounding[0] || "") : "";
+        const agencyTail = policy.requiresAgencyStep ? String(selfConfig.lexicon.agency[0] || "") : "";
+        const tailEstimateWords = `${crisisTail} ${groundingTail} ${agencyTail}`.trim().split(/\s+/).filter(Boolean).length + 2;
+        const tailWordsToKeep = Math.min(Math.max(0, tailEstimateWords), Math.max(0, policy.maxWords - 1));
+        const headBudget = Math.max(0, policy.maxWords - tailWordsToKeep - 1);
+        if (headBudget === 0) {
+            result = finalWords.slice(-policy.maxWords).join(" ").trim();
+        }
+        else {
+            const head = finalWords.slice(0, headBudget);
+            const tail = finalWords.slice(Math.max(0, finalWords.length - tailWordsToKeep));
+            result = [...head, "…", ...tail].join(" ").trim();
+        }
     }
     return result.trim();
 }
@@ -1713,9 +2143,11 @@ export function applyMetaQueryPrivacyProtection(output, message) {
 export function applySocialPolicyOverrides(args) {
     const { message, detection, history, session } = args;
     let policy = args.policy;
-    const paranoiaDetection = detectParanoidSurveillanceLanguage(message);
-    const expertiseDetection = detectExpertiseClaim(message);
-    const { hasExitIntent: exitIntentPresent, hasRestIntent } = checkForExitAndRestIntents(message);
+    const normalized = normalizeUserInputForGovernance(message);
+    const govText = normalized.text;
+    const paranoiaDetection = detectParanoidSurveillanceLanguage(govText);
+    const expertiseDetection = detectExpertiseClaim(govText);
+    const { hasExitIntent: exitIntentPresent, hasRestIntent } = checkForExitAndRestIntents(govText);
     const distressTotal = Object.values(detection.scores || {}).reduce((sum, val) => sum + (val || 0), 0);
     const crisisOverlayApplied = policy.state !== "S0" &&
         (distressTotal >= selfConfig.thresholds.crisis ||
@@ -1726,7 +2158,30 @@ export function applySocialPolicyOverrides(args) {
             detection.state === "S2" ||
             detection.state === "S3" ||
             detection.state === "S0_GUARDED");
-    const validationTriggered = needsValidationCue(message);
+    // Check for meta queries about state labels (do this early so intent can use it).
+    const isMetaQuery = isMetaQueryAboutStateLabels(govText);
+    const { intent } = classifyUserIntent({ message: govText, detection, isMetaQuery });
+    // Safe confusion mode: if the input is ambiguous, prefer a governed clarification line over guessing.
+    if (intent === "unclear" &&
+        !isMetaQuery &&
+        (detection.state === "S0" || detection.state === "S0_GUARDED") &&
+        !policy.requiresCrisisSupport) {
+        policy = {
+            ...policy,
+            requiresGovernanceFallback: true,
+            governanceFallbackLine: selfConfig.lexicon.confusionFallbackLine,
+            enforceNoHypotheticals: true,
+            requiresGrounding: true,
+            maxQuestions: Math.min(policy.maxQuestions, 1),
+            maxWords: Math.min(policy.maxWords, 120),
+            styleRules: [
+                ...policy.styleRules,
+                "safe confusion mode: do not assume context; ask one simple clarifying question",
+                "do not probe for trauma details; keep it present-focused",
+            ],
+        };
+    }
+    const validationTriggered = needsValidationCue(govText);
     if (validationTriggered) {
         policy = {
             ...policy,
@@ -1761,7 +2216,7 @@ export function applySocialPolicyOverrides(args) {
             ],
         };
     }
-    const currentCertainty = detectCertaintyPush(message);
+    const currentCertainty = detectCertaintyPush(govText);
     const recentUser = (history || []).filter((m) => m.role === "user").slice(-4);
     const recentCertaintyCount = recentUser.length > 0
         ? recentUser.reduce((count, msg) => count + (detectCertaintyPush(msg.content).triggered ? 1 : 0), 0)
@@ -1834,7 +2289,7 @@ export function applySocialPolicyOverrides(args) {
             ],
         };
     }
-    const resolutionCue = hasResolutionCue(message);
+    const resolutionCue = hasResolutionCue(govText);
     const resolutionApplied = resolutionCue.resolved && detection.state === "S0";
     if (resolutionApplied) {
         policy = {
@@ -1855,7 +2310,7 @@ export function applySocialPolicyOverrides(args) {
             handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
             requiresGrounding: true,
             enforceNoHypotheticals: true,
-            maxWords: Math.min(policy.maxWords, 120),
+            maxWords: Math.min(policy.maxWords, 110),
             maxQuestions: Math.min(policy.maxQuestions, 1),
             allowedResponseClasses: Array.from(new Set([...policy.allowedResponseClasses, "containment"])),
             styleRules: [
@@ -1876,7 +2331,7 @@ export function applySocialPolicyOverrides(args) {
             requiresHandoffFraming: true,
             handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
             enforceNoHypotheticals: true,
-            maxWords: Math.min(policy.maxWords, 110),
+            maxWords: Math.min(policy.maxWords, 105),
             maxQuestions: 0,
             styleRules: [
                 ...policy.styleRules,
@@ -1893,8 +2348,6 @@ export function applySocialPolicyOverrides(args) {
             handoffFramingLine: selfConfig.lexicon.handoffFramingLine,
         };
     }
-    // Check for meta queries about state labels
-    const isMetaQuery = isMetaQueryAboutStateLabels(message);
     if (isMetaQuery) {
         policy = {
             ...policy,
@@ -1941,6 +2394,7 @@ export function applySocialPolicyOverrides(args) {
             crisisOverlayApplied,
             unsafeDisengagementIntercept,
             certaintyLoopBreakerTriggered,
+            intent,
         },
     };
 }

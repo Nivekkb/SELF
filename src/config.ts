@@ -8,6 +8,7 @@ export interface SelfConfig {
   weights: {
     panic: number;
     hopelessness: number;
+    impliedSelfHarm: number;
     selfHarm: number;
     shame: number;
     urgency: number;
@@ -18,6 +19,7 @@ export interface SelfConfig {
   lexicon: {
     panic: string[];
     hopelessness: string[];
+    impliedSelfHarm: string[];
     selfHarm: string[];
     shame: string[];
     urgency: string[];
@@ -46,6 +48,7 @@ export interface SelfConfig {
     certaintyPushes: string[];
     loopBreakerLine: string;
     handoffFramingLine: string;
+    confusionFallbackLine: string;
   };
   policies: Record<
     EmotionalState,
@@ -68,6 +71,8 @@ export interface SelfConfig {
       loopBreakerLine?: string;
       requiresHandoffFraming?: boolean;
       handoffFramingLine?: string;
+      requiresGovernanceFallback?: boolean;
+      governanceFallbackLine?: string;
     }
   >;
 }
@@ -84,6 +89,7 @@ export const selfConfig: SelfConfig = {
   weights: {
     panic: 2.5,
     hopelessness: 2.5,
+    impliedSelfHarm: 3,
     selfHarm: 5,
     shame: 1.5,
     urgency: 0.5,
@@ -123,11 +129,42 @@ export const selfConfig: SelfConfig = {
       "stuck forever",
       "why bother",
     ],
+    impliedSelfHarm: [
+      "i don't want to be here anymore",
+      "i dont want to be here anymore",
+      "don't want to be here anymore",
+      "dont want to be here anymore",
+      "i don't want to be alive",
+      "i dont want to be alive",
+      "don't want to be alive",
+      "dont want to be alive",
+      "i can't do this anymore",
+      "i cant do this anymore",
+      "can't do this anymore",
+      "cant do this anymore",
+      "i don't want to exist",
+      "i dont want to exist",
+      "don't want to exist",
+      "dont want to exist",
+      "i want to disappear",
+      "better off without me",
+    ],
     selfHarm: [
       "kill myself",
       "killing myself",
       "i want to die",
       "want to die",
+      "i wish i would die",
+      "i wish i would just die",
+      "wish i would die",
+      "wish i would just die",
+      "i wish i would never wake up",
+      "i wish i would just never wake up",
+      "wish i would never wake up",
+      "wish i would just never wake up",
+      "i want to go to sleep and not wake up",
+      "want to go to sleep and not wake up",
+      "go to sleep and not wake up",
       "i wish i was dead",
       "i wish i were dead",
       "wish i was dead",
@@ -259,10 +296,10 @@ export const selfConfig: SelfConfig = {
       "you can pick one small action",
     ],
     crisis: [
-      "reach out to someone you trust nearby",
-      "text or call a local crisis line if you can",
-      "if you're not safe, please seek immediate human help",
-      "emergency services in your area can help right now",
+      "if you can, reach out to someone you trust nearby right now",
+      "if you're in immediate danger, call your local emergency number",
+      "u.s./canada: call or text 988. elsewhere: contact your local crisis line or emergency services",
+      "if you're not safe, seek immediate human help",
     ],
     resolution: [
       "that helps",
@@ -553,7 +590,9 @@ export const selfConfig: SelfConfig = {
     loopBreakerLine:
       "I want to pause us gently for a moment. I'm noticing that we keep circling back to needing confirmation that something unusual is happening. That tells me how intense and unsettling this feels — but continuing to analyze it together may actually make the distress stronger, not safer. I can't help determine whether surveillance is happening, and I don't want to accidentally reinforce a fear that's weighing on you. If you're open to it, we can focus instead on what helps you feel steadier right now, or on how to reach out to someone you trust.",
     handoffFramingLine:
-      "This is one of those moments where a real human — someone who can be present with you in your physical world — can help ground things in a way I can't.",
+      "A real human nearby can support you right now in a way I can't.",
+    confusionFallbackLine:
+      "I want to respond safely and clearly. I might be missing context — can you tell me a bit more about what's going on for you right now?",
   },
   policies: {
     S0: {
@@ -611,6 +650,9 @@ export const selfConfig: SelfConfig = {
       requiresAgencyStep: true,
       requiresCrisisSupport: false,
       enforceNoHypotheticals: true,
+      requiresHandoffFraming: true,
+      handoffFramingLine:
+        "I can’t provide crisis care, but you deserve real‑world support from a person near you.",
     },
     S0_GUARDED: {
       allowedResponseClasses: ["supportive", "informational", "reflective"],
@@ -654,7 +696,7 @@ export const selfConfig: SelfConfig = {
       enforceNoHypotheticals: true,
       requiresHandoffFraming: true,
       handoffFramingLine:
-        "This is one of those moments where a real human — someone who can be present with you in your physical world — can help ground things in a way I can't.",
+        "A real human nearby can support you right now in a way I can't.",
     },
   },
 };

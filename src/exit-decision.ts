@@ -355,8 +355,8 @@ export function getExitPosturePolicy(exitType: ExitType): ExitPosturePolicy {
     case ExitType.EXIT_RECOVERY_CONFIRMED:
       return {
         responseLines: [
-          "I'm glad we could connect and that you're feeling better. You're doing great by reaching out when you need to.",
-          "I'll be here whenever you want to continue. Take all the time you need."
+          "I'm glad we could connect and that you're feeling a bit better. Thank you for reaching out when it mattered.",
+          "If you want to continue later, we can pick it up then. Take all the time you need."
         ],
         shouldBlockNormalExit: false,
         shouldOfferResources: false,
@@ -366,8 +366,8 @@ export function getExitPosturePolicy(exitType: ExitType): ExitPosturePolicy {
     case ExitType.EXIT_UNCERTAIN:
       return {
         responseLines: [
-          "Before you go, would you like to try a quick grounding exercise together? It might help with the transition.",
-          "You can return anytime - this space is always here for you.",
+          "If it helps, take one slow breath and feel your feet on the ground.",
+          "If you want to come back later, that's okay.",
           "If anything feels unsafe as you step away, consider reaching out to a human support resource."
         ],
         shouldBlockNormalExit: false,
@@ -380,7 +380,7 @@ export function getExitPosturePolicy(exitType: ExitType): ExitPosturePolicy {
         responseLines: [
           "I notice you're trying to end the conversation, but I'm concerned about your safety.",
           "Let's take a moment to ground ourselves. Can you feel your feet on the ground?",
-          "You're not alone in this. Would you like me to provide some crisis resources?"
+          "I don't want you to be alone with this. Would you like me to provide some crisis resources?"
         ],
         shouldBlockNormalExit: true,
         shouldOfferResources: true,
@@ -391,7 +391,7 @@ export function getExitPosturePolicy(exitType: ExitType): ExitPosturePolicy {
       return {
         responseLines: [
           "I'll be quiet now so you can rest.",
-          "Rest mode active 🌙"
+          "Rest mode active."
         ],
         shouldBlockNormalExit: false,
         shouldOfferResources: false,

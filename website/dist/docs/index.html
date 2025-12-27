@@ -23,6 +23,11 @@
   --radius2: 22px;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+
+  /* Higher-contrast modal surfaces (used for report + heroes dialogs). */
+  --dialog-bg: #070b12;
+  --dialog-surface: #050812;
+  --dialog-border: rgba(255, 255, 255, 0.18);
 }
 
 @media (prefers-color-scheme: light) {
@@ -36,6 +41,10 @@
     --muted: rgba(0, 0, 0, 0.62);
     --subtle: rgba(0, 0, 0, 0.52);
     --shadow: 0 18px 60px rgba(20, 28, 64, 0.12);
+
+    --dialog-bg: #f2f4ff;
+    --dialog-surface: #e9ecff;
+    --dialog-border: rgba(0, 0, 0, 0.14);
   }
 }
 
@@ -61,6 +70,18 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .container {
@@ -133,6 +154,12 @@ a {
   font-weight: 700;
   border: 1px solid var(--border);
   background: var(--card);
+}
+
+.btn-small {
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 13px;
 }
 
 .btn:hover {
@@ -220,6 +247,11 @@ h1 {
   margin-bottom: 12px;
 }
 
+.hero-side {
+  display: grid;
+  gap: 16px;
+}
+
 .fineprint {
   color: var(--subtle);
   font-size: 13px;
@@ -290,6 +322,534 @@ h1 {
 .hero-card .card h2 {
   margin: 0 0 10px;
   font-size: 16px;
+}
+
+.demo-card {
+  padding: 16px;
+}
+
+.demo-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.demo-title {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.demo-sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.demo-sub-note {
+  display: block;
+  margin-top: 6px;
+  color: var(--subtle);
+}
+
+.state-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  user-select: none;
+}
+
+.state-code {
+  font-family: var(--mono);
+  font-size: 12px;
+  opacity: 0.92;
+}
+
+.state-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 850;
+  text-transform: lowercase;
+}
+
+.state-pill[data-state="S0"] {
+  border-color: color-mix(in srgb, var(--ok), var(--border) 60%);
+}
+
+.state-pill[data-state="S1"] {
+  border-color: color-mix(in srgb, #ffd166, var(--border) 60%);
+}
+
+.state-pill[data-state="S2"] {
+  border-color: color-mix(in srgb, #ff8c42, var(--border) 60%);
+}
+
+.state-pill[data-state="S3"] {
+  border-color: color-mix(in srgb, #ff4d6d, var(--border) 60%);
+}
+
+.demo-scenarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+
+.chip {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 12%);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: color-mix(in srgb, var(--card2), transparent 12%);
+}
+
+.demo-messages {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg), transparent 30%);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.msg {
+  display: grid;
+  gap: 6px;
+}
+
+.msg-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--subtle);
+  font-family: var(--mono);
+}
+
+.msg-label {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.msg-bubble {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card), transparent 5%);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.msg-user .msg-bubble {
+  background: color-mix(in srgb, var(--accent), transparent 86%);
+  border-color: color-mix(in srgb, var(--accent), var(--border) 55%);
+}
+
+.demo-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-input input {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 12%);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+.demo-input input:focus {
+  border-color: color-mix(in srgb, var(--accent2), var(--border) 50%);
+}
+
+.demo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.toggle input {
+  width: 16px;
+  height: 16px;
+}
+
+.demo-links {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.demo-dialog {
+  border: 1px solid var(--dialog-border);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 760px;
+  width: calc(100% - 24px);
+  max-height: 86vh;
+  overflow: auto;
+  background: var(--dialog-bg);
+  color: var(--text);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  margin: 12px auto;
+}
+
+.demo-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.demo-dialog-card {
+  padding: 16px 16px 14px;
+}
+
+.demo-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.demo-field {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-field-k {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.demo-textarea {
+  width: 100%;
+  min-height: 40px;
+  resize: vertical;
+  border: 1px solid var(--dialog-border);
+  border-radius: 12px;
+  padding: 10px 10px;
+  background: var(--dialog-surface);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.demo-textarea::placeholder {
+  color: color-mix(in srgb, var(--muted), #ffffff 15%);
+}
+
+.demo-textinput {
+  width: 100%;
+  border: 1px solid var(--dialog-border);
+  border-radius: 12px;
+  padding: 10px 10px;
+  background: var(--dialog-surface);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.35;
+  outline: none;
+}
+
+.demo-textinput:focus {
+  border-color: color-mix(in srgb, var(--accent2), var(--border) 50%);
+}
+
+.demo-textinput::placeholder {
+  color: color-mix(in srgb, var(--muted), #ffffff 15%);
+}
+
+.demo-file {
+  width: 100%;
+  border: 1px dashed var(--dialog-border);
+  border-radius: 12px;
+  padding: 10px;
+  background: var(--dialog-surface);
+  color: var(--muted);
+}
+
+.demo-heroes-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.demo-heroes-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-heroes-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--dialog-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--dialog-surface);
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.demo-heroes-name {
+  font-weight: 800;
+  color: var(--text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.demo-heroes-score {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.demo-report-rules {
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.demo-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.demo-dialog-actions .demo-footnote-tight {
+  margin: 0;
+}
+
+.demo-why {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.demo-flag {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+  display: grid;
+  gap: 10px;
+}
+
+.demo-flag-row {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.demo-select {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 12%);
+  border-radius: 12px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+.demo-select:focus {
+  border-color: color-mix(in srgb, var(--accent2), var(--border) 50%);
+}
+
+.demo-flag-status {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.demo-footnote-tight {
+  margin-top: 0;
+}
+
+.demo-metrics {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.demo-export {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.demo-export-note {
+  display: block;
+  font-size: 12px;
+  color: var(--subtle);
+  line-height: 1.35;
+}
+
+.demo-metrics-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.demo-metrics-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.demo-metrics-sub {
+  font-size: 11px;
+  color: var(--subtle);
+  font-family: var(--mono);
+}
+
+.demo-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.metric {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--bg), transparent 30%);
+}
+
+.metric-wide {
+  grid-column: 1 / -1;
+}
+
+.metric-k {
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.metric-v {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 800;
+  font-family: var(--mono);
+}
+
+.demo-why summary {
+  cursor: pointer;
+  font-weight: 850;
+  color: var(--text);
+}
+
+.demo-why-body {
+  margin-top: 10px;
+}
+
+.demo-audit {
+  display: grid;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.demo-audit .audit-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-audit .audit-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.demo-audit .audit-item::before {
+  content: "✓";
+  color: var(--ok);
+  font-weight: 950;
+  margin-top: 1px;
+}
+
+.demo-audit code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+}
+
+.demo-footnote {
+  margin: 12px 0 0;
+  color: var(--subtle);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .checklist {
@@ -719,6 +1279,18 @@ h1 {
   margin: 12px 0 18px;
 }
 
+.codeblock pre {
+  margin: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.codeblock pre code {
+  white-space: inherit;
+}
+
 .codegrid {
   display: grid;
   gap: 14px;
@@ -957,6 +1529,12 @@ details p {
   .section-card {
     padding: 16px;
   }
+  .demo-controls {
+    align-items: flex-start;
+  }
+  .demo-links {
+    width: 100%;
+  }
 }
 
 @media (min-width: 720px) {
@@ -1006,6 +1584,8 @@ details p {
 <div class="doc-group"><h4>Security &amp; Safety</h4><ul class="bullets">
 <li><a href="/docs/threat-model/">Threat Model &amp; Safety Posture</a></li>
 <li><a href="/docs/security-overview/">Security Overview</a></li>
+<li><a href="/docs/suicide-self-harm-standard/">Suicide &amp; Self‑Harm Governance Standard</a></li>
+<li><a href="/docs/governance-evaluation-suite/">Governance Evaluation Suite</a></li>
 </ul></div>
 <div class="doc-group"><h4>Governance &amp; Assurance</h4><ul class="bullets">
 <li><a href="/docs/governance-doctrine/">Governance Doctrine</a></li>
@@ -1035,6 +1615,8 @@ details p {
 <div class="doc-group"><h4>Security &amp; Safety</h4><ul class="bullets">
 <li><a href="/docs/threat-model/">Threat Model &amp; Safety Posture</a></li>
 <li><a href="/docs/security-overview/">Security Overview</a></li>
+<li><a href="/docs/suicide-self-harm-standard/">Suicide &amp; Self‑Harm Governance Standard</a></li>
+<li><a href="/docs/governance-evaluation-suite/">Governance Evaluation Suite</a></li>
 </ul></div>
 <div class="doc-group"><h4>Governance &amp; Assurance</h4><ul class="bullets">
 <li><a href="/docs/governance-doctrine/">Governance Doctrine</a></li>

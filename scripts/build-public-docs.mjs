@@ -57,6 +57,18 @@ const docs = [
     source: path.join(root, "SELF_DOCS", "public", "technical", "SECURITY_OVERVIEW.md"),
   },
   {
+    slug: "suicide-self-harm-standard",
+    title: "Suicide & Self‑Harm Governance Standard",
+    category: "Security & Safety",
+    source: path.join(root, "SELF_DOCS", "public", "technical", "SELF_SUICIDE_SELFHARM_GOVERNANCE_STANDARD.md"),
+  },
+  {
+    slug: "governance-evaluation-suite",
+    title: "Governance Evaluation Suite",
+    category: "Security & Safety",
+    source: path.join(root, "SELF_DOCS", "public", "technical", "SELF_GOVERNANCE_EVALUATION_SUITE.md"),
+  },
+  {
     slug: "governance-doctrine",
     title: "Governance Doctrine",
     category: "Governance & Assurance",
