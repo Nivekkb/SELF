@@ -23,7 +23,7 @@
     "build": "tsc && node scripts/fix-dist-extensions.mjs",
     "dev:http": "tsx src/http/cli.ts",
     "dev:website": "node scripts/serve-website.mjs",
-    "build:website": "node scripts/build-website-single.mjs && node scripts/build-public-docs.mjs",
+    "build:website": "node scripts/build-website-single.mjs && node scripts/build-public-docs.mjs && node scripts/build-website-sitemap.mjs",
     "start:http": "node dist/http/cli.js",
     "test": "tsx src/index.test.ts"
   },

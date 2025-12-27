@@ -22,7 +22,7 @@ See [reading-order.md](reading-order.md) for the structured pathway through the 
 
 - **COVENANT_RATIFICATION_RECORD.md**: Covenant ratification record
 - **SELF-LICENSING-RATIONALE.md**: Licensing rationale and safety implications
-- **SOULSYNQAI_FREE_FOREVER_COVENANT.md**: Free forever covenant
+- **SERENIXAI_FREE_FOREVER_COVENANT.md**: Free forever covenant
 
 ## Next Steps
 

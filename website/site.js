@@ -18,4 +18,3 @@
   setHref("requestStandard", requestUrl);
   setHref("requestPro", requestUrl);
 })();
-

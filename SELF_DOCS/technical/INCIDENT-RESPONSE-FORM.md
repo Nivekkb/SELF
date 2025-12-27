@@ -310,7 +310,7 @@ and reasoning. If multiple contributing factors, list them all.]
 
 ---
 
-**SoulsynqAI Incident Update**
+**SerenixAI Incident Update**
 
 **Date**: `[YYYY-MM-DD]`  
 **Incident ID**: `[PUBLIC-FACING-ID]`  
@@ -354,8 +354,8 @@ Include contact information for questions or concerns.]
 ```
 
 ### Contact Information
-- **Questions**: support@SoulsynqAI.com
-- **Media Inquiries**: press@SoulsynqAI.com
+- **Questions**: support@SerenixAI.com
+- **Media Inquiries**: press@SerenixAI.com
 - **Incident Updates**: Visit [status page URL] for real-time updates
 
 **We apologize for any inconvenience or concern this incident may have caused. Your safety and trust are our highest priorities.**
@@ -374,9 +374,9 @@ Include contact information for questions or concerns.]
 
 ## Contact Information
 
-**Primary Incident Response**: safety@SoulsynqAI.com
-**Emergency Contact**: emergency@SoulsynqAI.com
-**Documentation Updates**: docs@SoulsynqAI.com
+**Primary Incident Response**: safety@SerenixAI.com
+**Emergency Contact**: emergency@SerenixAI.com
+**Documentation Updates**: docs@SerenixAI.com
 
 **Last Updated**: December 21, 2025
 **Document Owner**: Safety Operations Team

@@ -16,25 +16,18 @@ This Agreement governs commercial licensing rights related to the SELF (Support-
 
 ## Agreement Structure
 
-This Agreement provides **two usage-based tiers** with different included usage and support levels, both incorporating alignment escrow provisions:
+This Agreement provides MAU-tiered commercial licensing for SELF Core with alignment escrow provisions:
 
-### Tier 1: Standard Production (Non‑Exclusive)
-- **Price**: $300/month platform fee + usage (metered)
-- **Included Usage**: 25,000 conversations/month included
-- **Overage**: $1.00 per 1,000 additional conversations
-- **Rights**: Seller retains full rights to use SELF in all personal and commercial projects
-- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
-- **Escrow**: Graduated access with full clawback rights
-- **Restrictions**: Cannot prevent Seller from using or developing similar technology
+### SELF Core (Non‑Exclusive, MAU‑Tiered) — Public List Pricing (USD)
+- **Starter** (≤ 5,000 MAU): $300/month
+- **Growth** (≤ 25,000 MAU): $750/month
+- **Scale** (≤ 100,000 MAU): $2,000/month
+- **Enterprise** (> 100,000 MAU): annual contract (starts at $36,000/year)
 
-### Tier 2: Pro Production (Non‑Exclusive, Higher Limits)
-- **Price**: $500/month platform fee + usage (metered)
-- **Included Usage**: 100,000 conversations/month included
-- **Overage**: $0.75 per 1,000 additional conversations
-- **Rights**: Seller retains full rights to use SELF in all personal and commercial projects
-- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
-- **Escrow**: Graduated access with enhanced monitoring
-- **Restrictions**: Cannot prevent Seller from using or developing similar technology
+**MAU overage rule:** if Buyer exceeds their MAU tier for 2 consecutive months, Buyer must upgrade to the next tier.
+
+Optional add-ons (not required for the license):
+- **Assurance Proof (annual)**: Lite $7,500/year; Standard $25,000/year; Enterprise $75,000/year
 
 ---
 
@@ -235,14 +228,15 @@ Upon successful clawback:
 
 ## Payment Terms
 
-**5.1 Tier 1 Payment Structure:**
-- $300/month platform fee billed monthly
-- Metered usage billed monthly in arrears based on recorded conversations
+**5.1 SELF Core Payment Structure (Starter/Growth/Scale):**
+- Monthly tier fee billed in advance (based on MAU tier)
+- Buyer certifies MAU reporting methodology as part of onboarding
+- Tier upgrades apply if MAU overage rule is triggered
 - Payments made to escrow agent (as billing and enforcement agent) or as otherwise agreed
 
-**5.2 Tier 2 Payment Structure:**
-- $500/month platform fee billed monthly
-- Metered usage billed monthly in arrears based on recorded conversations
+**5.2 Enterprise Payment Structure:**
+- Annual contract billed in advance (or by mutually agreed schedule)
+- May include procurement terms, SLAs, and optional assurance cadence
 - Payments made to escrow agent (as billing and enforcement agent) or as otherwise agreed
 
 **5.3 Payment Methods:**
@@ -254,7 +248,7 @@ Upon successful clawback:
 
 ## Licensing Terms
 
-#### Tier 1: Standard Production (Non-Exclusive)
+#### SELF Core (Starter/Growth/Scale) — Non-Exclusive
 **6.1 Granted Rights:**
 - Worldwide, non-exclusive commercial license while in good standing
 - Right to use, modify, and distribute SELF for Buyer's business purposes
@@ -273,11 +267,11 @@ Upon successful clawback:
 - Cannot represent as "official" or "endorsed" by Seller
 - Must provide attribution to Seller in documentation
 
-#### Tier 2: Pro Production (Non-Exclusive, Higher Limits)
-**6.4 Granted Rights (Expanded):**
+#### Enterprise — Non-Exclusive
+**6.4 Granted Rights (Expanded as applicable):**
 - Worldwide, non-exclusive commercial license while in good standing
-- Higher included usage limits and priority support (as defined in the tier)
-- Same core safety and integrity obligations as Tier 1
+- Higher MAU tier and enterprise support terms (as defined in the contract)
+- Same core safety and integrity obligations as SELF Core tiers
 
 **6.5 Seller's Retained Rights:**
 - Full rights to use SELF in all Seller's personal and commercial projects

@@ -1,4 +1,4 @@
-# SoulsynqAI™ Free Forever Covenant
+# SerenixAI™ Free Forever Covenant
 
 ## Eternal Commitment to Free Access to AI Emotional Safety
 
@@ -8,20 +8,20 @@
 
 ## Preamble
 
-Whereas SoulsynqAI has developed SELF (Support-First Logic Engine), a revolutionary AI safety system that prevents artificial intelligence from making emotional interactions worse;
+Whereas SerenixAI has developed SELF (Support-First Logic Engine), a revolutionary AI safety system that prevents artificial intelligence from making emotional interactions worse;
 
 Whereas the commercialization and sale of SELF technology represents a significant milestone in AI safety advancement;
 
 Whereas the protection of human emotional well-being through AI safety must remain universally accessible regardless of commercial interests;
 
-Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure perpetual free access to essential AI emotional safety capabilities for the benefit of humanity.
+Now, therefore, SerenixAI establishes this **Free Forever Covenant** to ensure perpetual free access to essential AI emotional safety capabilities for the benefit of humanity.
 
 ---
 
 ## Core Covenant Commitments
 
 ### Article I: Perpetual Free Access
-**SoulsynqAI irrevocably commits that core SELF safety capabilities shall remain freely accessible to all users forever.**
+**SerenixAI irrevocably commits that core SELF safety capabilities shall remain freely accessible to all users forever.**
 
 #### Free Access Guarantee
 - **No Paywall Barriers**: Essential safety features shall never require payment
@@ -37,7 +37,7 @@ Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure 
 5. **Educational Resources**: Documentation, guides, and safety research materials
 
 #### Premium Infrastructure Option
-**SoulsynqAI may offer an optional $1/month premium tier** that provides enhanced infrastructure capabilities while maintaining full free access to core safety features:
+**SerenixAI may offer an optional $1/month premium tier** that provides enhanced infrastructure capabilities while maintaining full free access to core safety features:
 
 - **Enhanced Performance**: Reduced latency and improved responsiveness
 - **Advanced Analytics**: Detailed safety metrics and reporting
@@ -68,7 +68,7 @@ Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure 
 - **Ethical Boundaries**: Commercial incentives cannot override safety-first principles
 
 ### Article III: Community Empowerment
-**SoulsynqAI commits to empowering the global community with AI emotional safety capabilities.**
+**SerenixAI commits to empowering the global community with AI emotional safety capabilities.**
 
 #### Open Access Commitments
 - **Source Code Availability**: Core safety algorithms available for transparency and audit
@@ -108,7 +108,7 @@ Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure 
 ## Commercial Relationship Framework
 
 ### Dual-Product Architecture
-**SoulsynqAI shall maintain distinct free and commercial product lines with clear boundaries.**
+**SerenixAI shall maintain distinct free and commercial product lines with clear boundaries.**
 
 #### Free Product Line (SELF Core)
 - **Mission**: Universal access to essential AI emotional safety
@@ -255,7 +255,7 @@ Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure 
 **Dedicated funding and resources for covenant maintenance.**
 
 #### Covenant Fund
-- **Source**: Portion of SoulsynqAI profits allocated to covenant fund
+- **Source**: Portion of SerenixAI profits allocated to covenant fund
 - **Purpose**: Funding for free version maintenance and covenant enforcement
 - **Management**: Oversight Committee with independent financial oversight
 - **Transparency**: Public reporting of fund status and expenditures
@@ -378,7 +378,7 @@ Now, therefore, SoulsynqAI establishes this **Free Forever Covenant** to ensure 
 
 ## Conclusion
 
-The SoulsynqAI Free Forever Covenant represents an unprecedented commitment to universal access to AI emotional safety. By commercializing SELF technology while guaranteeing perpetual free access to essential safety capabilities, SoulsynqAI ensures that the benefits of AI emotional safety are available to all people, regardless of economic status or geographic location.
+The SerenixAI Free Forever Covenant represents an unprecedented commitment to universal access to AI emotional safety. By commercializing SELF technology while guaranteeing perpetual free access to essential safety capabilities, SerenixAI ensures that the benefits of AI emotional safety are available to all people, regardless of economic status or geographic location.
 
 This covenant transforms a commercial transaction into a humanitarian commitment, ensuring that AI safety advancement serves humanity's collective well-being rather than narrow commercial interests.
 
@@ -389,7 +389,7 @@ This covenant transforms a commercial transaction into a humanitarian commitment
 ## Covenant Signatories
 
 ### Primary Signatory
-**SoulsynqAI Inc.**
+**SerenixAI Inc.**
 [Authorized Signature]
 [Executive Title]
 [Date]

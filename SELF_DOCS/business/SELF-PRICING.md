@@ -1,4 +1,4 @@
-# SELF™ Pricing: Realistic Costs for Responsible Implementation
+# SELF™ Pricing: MAU Tiers + Assurance + Enterprise (Draft)
 
 ## 🎯 Our Pricing Philosophy
 
@@ -14,7 +14,20 @@ We structure costs to:
 
 ---
 
-## 📋 Pricing (Usage‑Based)
+## 📋 Pricing Model (How It Actually Works)
+
+SELF is an SDK. Most customers will **self-host** and pay for:
+
+1) **SELF Core SDK license** (priced by **MAU** tiers)  
+2) optional **Assurance Proof** (priced by risk level + review cadence)  
+3) optional **Enterprise** contract terms (SLA, security review, procurement needs)  
+4) optional **Usage billing** only when you choose a **managed** service component (e.g., managed evaluation runs, hosted assurance telemetry, or other add-ons)
+
+### Definitions
+
+- **MAU (Monthly Active Users):** unique end users interacting with an experience protected by SELF within a calendar month.
+- **Protected surface:** a user-facing feature where SELF is applied (chat, support, group facilitation, etc.).
+- **Assurance Proof:** evidence + review outputs that support procurement, compliance, and defensible safety claims.
 
 ### 1. Evaluation Tier
 **For:** Non-production testing and internal evaluation
@@ -34,41 +47,97 @@ We structure costs to:
 
 ---
 
-### 2. Standard Production (Non‑Exclusive)
-**For:** Production deployments that want a simple, predictable baseline with pay‑as‑you‑go scaling
-**Cost:** $300/month platform fee + usage
-**Includes:**
-- Production deployment rights
-- Up to 25,000 conversations/month included
-- Doctrine updates and compatibility notices
-- Email support (48-hour SLA)
-**Overage:** $1.00 per 1,000 additional conversations
+### 2. SELF Core — Production (Non‑Exclusive, MAU‑Tiered)
+
+**For:** Production deployments that want predictable licensing aligned to adoption (users), not message volume.
+
+**Cost:** MAU-tier license (monthly or annual). Public list pricing (USD):
+
+- **Starter:** up to **5,000 MAU** — **$300 / month**
+- **Growth:** up to **25,000 MAU** — **$750 / month**
+- **Scale:** up to **100,000 MAU** — **$2,000 / month**
+- **Enterprise:** **>100,000 MAU** — annual contract (**starts at $36,000 / year**)
+
+**Includes (all MAU tiers):**
+- production deployment rights (non-exclusive)
+- SELF updates (policy + enforcement improvements)
+- compatibility notes and migration guidance
+- standard support channel
+
+**Included support (typical):**
+- Starter: email support (48h)
+- Growth: priority email (24–48h)
+- Scale: priority + scheduled office hours
+
+**Overages:** if you exceed your MAU tier for **2 consecutive months**, you move up a tier (no punitive per-message bills).
 
 **Best for:** Most production launches
 
 ---
 
-### 3. Pro Production (Non‑Exclusive, Higher Limits)
-**For:** Higher‑volume deployments that need more included usage and faster support
-**Cost:** $500/month platform fee + usage
-**Includes:**
-- Production deployment rights
-- Up to 100,000 conversations/month included
-- Doctrine updates and compatibility notices
-- Priority email support (24-hour SLA)
-- Incident response coordination channel (as needed)
-**Overage:** $0.75 per 1,000 additional conversations
+### 3. Assurance Proof (Add‑On)
 
-**Best for:** Teams scaling to large volumes
+**For:** Teams that need evidence (procurement, safety committees, partners, regulators) beyond “we use a safety prompt.”
+
+Assurance Proof is priced by **risk level** and **review cadence**, not MAU alone.
+
+Example packages:
+
+- **Assurance Lite (annual):** **$7,500 / year**  
+  Includes: baseline integration review, guarantee-matrix mapping, release-note monitoring, and a quarterly check-in.
+
+- **Assurance Standard (annual):** **$25,000 / year**  
+  Includes: deeper integration audit, regression pack aligned to your use case, incident-response playbook review, and monthly review cadence.
+
+- **Assurance Enterprise (annual):** **$75,000 / year**  
+  Includes: security questionnaire support, audit exports alignment, executive briefings, and defined response windows for critical safety regressions.
+
+**Assurance deliverables are “proof,” not a rubber stamp:** if the integration fails required properties, the proof deliverable is withheld until corrected.
+
+**Best for:** enterprise procurement, high-liability products, and anyone making public safety claims
 
 ---
 
-### 4. Academic/Non‑Profit Tier
+### 4. Enterprise Contracting (Terms, Not Just Price)
+
+**For:** orgs needing SLAs, security/compliance reviews, or procurement support.
+
+Enterprise contracting may include:
+- annual invoicing and procurement terms
+- security + privacy review support
+- designated technical contact + defined response windows
+- optional on-site / workshop deliverables
+- optional custom policy profile constraints (within doctrine)
+
+Pricing is typically:
+- **Annual license** (MAU band) + **Assurance Proof** + optional services.
+
+---
+
+### 5. Optional Usage Billing (Only for Managed Add‑Ons)
+
+SELF Core is an SDK and is MAU-tiered. Usage billing applies only if you elect managed add-ons, for example:
+- managed evaluation runs / continuous regression execution
+- hosted assurance telemetry ingestion and dashboards
+
+Example metering units:
+- per evaluation run (or per 1,000 evaluated turns)
+- per GB of audit logs processed
+
+If you don’t use managed add-ons, you don’t get usage billing.
+
+Public list pricing for managed add-ons (USD, optional):
+- **Managed Evaluation Runner:** $500 / month includes 100,000 evaluated turns; $3.00 per 1,000 evaluated turns overage
+- **Hosted Assurance Telemetry:** $500 / month includes 10,000,000 audit events; $0.05 per 1,000 events overage
+
+---
+
+### 6. Academic/Non‑Profit Tier
 **For:** Verified academic institutions and 501(c)(3) non-profits
 **Cost:** $0 (Free)
 **Includes:**
 - Full SELF engine access
-- Up to 5,000 conversations/month
+- Up to **10,000 MAU** (or equivalent usage for research)
 - Basic support (72-hour SLA)
 - Research collaboration opportunities
 **Requirements:**
@@ -82,22 +151,21 @@ We structure costs to:
 
 ## 💰 Realistic Cost Examples
 
-### Example 1: Mental Health Chatbot Startup
-- **Tier:** Standard Production
-- **Conversations:** 15,000/month
-- **Total:** $300/month ($3,600/year)
+### Example 1: Startup Launch
+- **Tier:** Starter (≤ 5,000 MAU)
+- **License:** $300 / month
+- **Assurance:** optional
+- **Total:** $300 / month (+ any selected add-ons)
 
 ### Example 2: Crisis Support Non-Profit
 - **Tier:** Academic/Non-Profit
-- **Conversations:** 3,000/month
+- **MAU:** 3,000 / month
 - **Total:** $0/year
 
-### Example 3: Enterprise Mental Health Platform
-- **Tier:** Pro Production
-- **Conversations:** 1,500,000/month
-- **Base:** $500/month (includes 100,000)
-- **Usage:** 1,400,000 ÷ 1,000 × $0.75 = $1,050/month
-- **Total:** $1,550/month ($18,600/year)
+### Example 3: Enterprise Procurement
+- **Tier:** Enterprise (annual MAU band)
+- **Assurance Proof:** Standard or Enterprise
+- **Total:** annual contract (license + assurance + any services)
 
 ---
 
@@ -127,7 +195,7 @@ If you want the deeper rationale for why this governance layer has ongoing costs
 - Ethical review processes
 - Continuous improvement
 
-**Usage pricing exists to keep incentives aligned: you pay more when you scale, and governance stays funded as real usage grows.**
+**MAU-tier pricing exists to keep incentives aligned: you pay more as your user impact grows, and governance stays funded as adoption increases.**
 
 ---
 
@@ -164,13 +232,13 @@ If you want the deeper rationale for why this governance layer has ongoing costs
 A: Emotional safety requires professional discipline. Free tiers encourage experimentation without accountability. We provide free evaluation and academic tiers instead.
 
 **Q: Can we negotiate custom pricing?**
-A: No. Uniform rates prevent safety dilution. Everyone pays the same published rates for the same tier and usage.
+A: Enterprise contracts can vary in terms (procurement, SLA, review cadence). The core principle remains: pricing cannot be reduced in ways that undermine safety operations or assurance integrity.
 
-**Q: What happens if we exceed our conversation limit?**
-A: You’ll be billed for overage at your tier’s per‑1,000 rate. We’ll notify you at 80% and 100% of your included usage.
+**Q: What happens if we exceed our MAU tier?**
+A: If you exceed your MAU tier for 2 consecutive months, you move to the next tier. We’ll notify you when you approach your tier boundary.
 
 **Q: Are there discounts for long-term commitments?**
-A: No. Safety isn’t discounted. Pricing is already usage-based; longer commitments don’t change rates.
+A: No. Safety isn’t discounted. Pricing is tiered to real-world impact (MAU) and assurance scope; longer commitments don’t change rates.
 
 **Q: What's your refund policy?**
 A: No refunds for the current billing period. If you cancel, service ends at the end of the paid period.
@@ -219,7 +287,7 @@ A: No. We don't incentivize safety adoption through financial rewards. The value
 
 For pricing questions or to discuss your specific needs:
 
-**Email:** Kevin@soulsynqai.com
+**Email:** Kevin@serenixai.com
 **Response Time:** 3-5 business days
 **Note:** We don't negotiate on pricing or safety standards
 

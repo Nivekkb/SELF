@@ -183,6 +183,29 @@ h1 {
   letter-spacing: -0.04em;
 }
 
+.hero-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 12px;
+}
+
+.hero-title h1 {
+  margin: 0;
+}
+
+.hero-logo {
+  width: min(220px, 56vw);
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: 26px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+  box-shadow: var(--shadow);
+  flex: 0 0 auto;
+}
+
 .lead {
   margin: 0 0 18px;
   color: var(--muted);
@@ -202,6 +225,58 @@ h1 {
   font-size: 13px;
   line-height: 1.5;
   margin: 0;
+}
+
+.tldr {
+  margin: 16px 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 16px;
+  background: color-mix(in srgb, var(--card), transparent 8%);
+}
+
+.tldr-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tldr-kicker {
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tldr-sub {
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--subtle);
+}
+
+.tldr-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.tldr-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.checklist.checklist-compact {
+  gap: 8px;
+  font-size: 13px;
+}
+
+.checklist.checklist-compact li::before {
+  margin-top: 2px;
 }
 
 .card {
@@ -272,6 +347,17 @@ h1 {
   padding: 48px 0;
 }
 
+.section-card {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 8%);
+  border-radius: var(--radius2);
+  padding: 20px;
+}
+
+.section-alt .section-card {
+  background: color-mix(in srgb, var(--card), transparent 2%);
+}
+
 .section-alt {
   background: color-mix(in srgb, var(--bg2), transparent 18%);
   border-top: 1px solid var(--border);
@@ -300,6 +386,132 @@ h1 {
   display: grid;
   gap: 14px;
   grid-template-columns: 1fr;
+}
+
+.diagram-grid {
+  margin-top: 16px;
+}
+
+.diagram-card h3 {
+  margin-bottom: 10px;
+}
+
+.diagram-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.diagram-box {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 8%);
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.diagram-box-accent {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  color: #0b0f17;
+}
+
+.diagram-logo {
+  padding: 8px 10px;
+}
+
+.diagram-logo-img {
+  width: 46px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, #0b0f17, transparent 70%);
+  background: color-mix(in srgb, rgba(255, 255, 255, 0.08), transparent 10%);
+}
+
+.diagram-arrow {
+  color: var(--subtle);
+  font-weight: 900;
+}
+
+.diagram-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--subtle);
+  line-height: 1.5;
+}
+
+.state-flow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.state-k {
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.state-v {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--text);
+}
+
+.state-s0 {
+  background: color-mix(in srgb, rgba(38, 208, 124, 0.14), var(--card) 70%);
+}
+
+.state-s1 {
+  background: color-mix(in srgb, rgba(55, 198, 255, 0.14), var(--card) 70%);
+}
+
+.state-s2 {
+  background: color-mix(in srgb, rgba(124, 92, 255, 0.16), var(--card) 70%);
+}
+
+.state-s3 {
+  background: color-mix(in srgb, rgba(255, 133, 82, 0.16), var(--card) 70%);
+}
+
+.kv {
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.kv dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+.kv dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+  font-weight: 650;
 }
 
 .panel {
@@ -411,6 +623,63 @@ h1 {
   line-height: 1.6;
 }
 
+.tier-table {
+  margin: 14px 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--card2), transparent 6%);
+}
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 0.95fr 0.85fr 1.2fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tier-row:first-child {
+  border-top: 0;
+}
+
+.tier-head {
+  background: color-mix(in srgb, var(--card), transparent 6%);
+}
+
+.tier-head .tier-cell {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.tier-cell {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text);
+}
+
+.tier-row:not(.tier-head) .tier-cell {
+  color: var(--muted);
+}
+
+.tier-row:not(.tier-head) .tier-cell:first-child {
+  color: var(--text);
+  font-weight: 850;
+}
+
+.tier-row:not(.tier-head) .tier-cell:last-child {
+  text-align: right;
+  color: var(--text);
+  font-weight: 850;
+}
+
+.tier-head .tier-cell:last-child {
+  text-align: right;
+}
+
 .finebox {
   margin-top: 18px;
   border: 1px solid var(--border);
@@ -448,6 +717,49 @@ h1 {
   padding: 14px;
   overflow: auto;
   margin: 12px 0 18px;
+}
+
+.codegrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+
+.codeblock-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.steps {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  border: 1px solid var(--border);
+  color: #0b0f17;
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  margin-bottom: 10px;
+}
+
+.cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 10px;
 }
 
 .codeblock code {
@@ -571,6 +883,19 @@ details p {
   position: relative;
 }
 
+.doc-nav .doc-group + .doc-group {
+  margin-top: 14px;
+}
+
+.doc-nav h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 @media (min-width: 980px) {
   .doc-layout {
     grid-template-columns: 0.38fr 0.62fr;
@@ -589,6 +914,10 @@ details p {
   .hero-inner {
     grid-template-columns: 1.15fr 0.85fr;
   }
+  .hero-logo {
+    width: 240px;
+    border-radius: 30px;
+  }
   .grid3 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -606,6 +935,41 @@ details p {
     align-items: center;
     justify-content: space-between;
   }
+  .tldr-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .codegrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-logo {
+    width: min(200px, 68vw);
+  }
+  .section-card {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 720px) {
+  .state-flow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .kv {
+    grid-template-columns: 120px 1fr;
+    gap: 10px 12px;
+  }
+  .kv dt {
+    margin-top: 0;
+  }
 }
 
     </style>
@@ -619,7 +983,7 @@ details p {
         </a>
         <div class="header-cta">
           <a class="btn btn-ghost" href="/docs/">Docs index</a>
-          <a class="btn btn-primary" href="mailto:Kevin@governedbyself.com">Contact</a>
+          <a class="btn btn-primary" href="mailto:Kevin@GovernedBySELF.com">Contact</a>
         </div>
       </div>
     </header>
@@ -629,11 +993,29 @@ details p {
           <aside class="doc-nav">
             <div class="panel">
               <h3>Docs</h3>
-              <ul class="bullets">
+              <div class="doc-group"><h4>Overview</h4><ul class="bullets">
+<li><a href="/docs/product-overview/">Product Overview</a></li>
 <li><a href="/docs/executive-brief/">Executive Brief</a></li>
+<li><a href="/docs/case-studies/">Case Studies</a></li>
+</ul></div>
+<div class="doc-group"><h4>Developers</h4><ul class="bullets">
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/integration-guide/">Integration Guide</a></li>
+<li><a href="/docs/api-reference/">HTTP API Reference</a></li>
+</ul></div>
+<div class="doc-group"><h4>Security &amp; Safety</h4><ul class="bullets">
+<li><a href="/docs/threat-model/">Threat Model &amp; Safety Posture</a></li>
+<li><a href="/docs/security-overview/">Security Overview</a></li>
+</ul></div>
+<div class="doc-group"><h4>Governance &amp; Assurance</h4><ul class="bullets">
+<li><a href="/docs/governance-doctrine/">Governance Doctrine</a></li>
+<li><a href="/docs/assurance-program/">Assurance Program</a></li>
+</ul></div>
+<div class="doc-group"><h4>Commercial &amp; Legal</h4><ul class="bullets">
 <li><a href="/docs/pricing/">Pricing</a></li>
+<li><a href="/docs/legal-docs/">Legal Docs</a></li>
 <li><a href="/docs/buy-sell-agreement/">Commercial Licensing Agreement (Escrow)</a></li>
-</ul>
+</ul></div>
             </div>
           </aside>
           <article class="doc">
@@ -733,23 +1115,21 @@ details p {
 <hr />
 <h2>BUY-SELL AGREEMENT STRUCTURE</h2>
 <h3>Pricing Tiers</h3>
-<p>The agreement provides two usage-based commercial licensing tiers:</p>
-<h4>Tier 1: Standard Production (Non-Exclusive)</h4>
-<p><strong>Target</strong>: Organizations seeking commercial deployment with predictable baseline costs</p>
+<p>The agreement provides MAU-tiered commercial licensing for SELF Core, with optional Assurance Proof add-ons:</p>
+<h4>SELF Core (Non‑Exclusive, MAU‑Tiered) — Public List Pricing (USD)</h4>
 <ul>
-<li><strong>Payment</strong>: $300/month platform fee + usage (metered)</li>
-<li><strong>Creator Rights</strong>: Full retention of rights for personal and commercial use</li>
-<li><strong>Buyer Rights</strong>: Worldwide, non-exclusive commercial license while in good standing</li>
-<li><strong>Use Case</strong>: Companies wanting to integrate SELF without exclusive control</li>
+<li><strong>Starter</strong> (≤ 5,000 MAU): $300/month</li>
+<li><strong>Growth</strong> (≤ 25,000 MAU): $750/month</li>
+<li><strong>Scale</strong> (≤ 100,000 MAU): $2,000/month</li>
+<li><strong>Enterprise</strong> (&gt; 100,000 MAU): annual contract (starts at $36,000/year)</li>
 </ul>
-<h4>Tier 2: Pro Production (Non-Exclusive, Higher Limits)</h4>
-<p><strong>Target</strong>: Organizations requiring higher included usage and faster support</p>
+<h4>Assurance Proof (Optional Add‑On, Annual)</h4>
 <ul>
-<li><strong>Payment</strong>: $500/month platform fee + usage (metered)</li>
-<li><strong>Creator Rights</strong>: Full retention of rights for personal and commercial use</li>
-<li><strong>Buyer Rights</strong>: Worldwide, non-exclusive commercial license while in good standing</li>
-<li><strong>Use Case</strong>: Higher-volume deployments that need more included capacity</li>
+<li><strong>Lite</strong>: $7,500/year</li>
+<li><strong>Standard</strong>: $25,000/year</li>
+<li><strong>Enterprise</strong>: $75,000/year</li>
 </ul>
+<p>This structure separates <strong>license</strong> (impact/MAU) from <strong>proof</strong> (review cadence and risk), so pricing cannot be “discounted” by quietly weakening safety operations.</p>
 <h3>Critical Preconditions</h3>
 <p><strong>Values-First Evaluation</strong>: Agreement execution contingent upon successful completion of the comprehensive Values-First Sales Criteria evaluation. No rights vest until positive determination received.</p>
 <h3>Alignment Escrow Framework</h3>

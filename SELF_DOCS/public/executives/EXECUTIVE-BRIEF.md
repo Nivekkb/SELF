@@ -90,21 +90,20 @@ The Values-First Sales Criteria establish mandatory requirements across nine cri
 ## BUY-SELL AGREEMENT STRUCTURE
 
 ### Pricing Tiers
-The agreement provides two usage-based commercial licensing tiers:
+The agreement provides MAU-tiered commercial licensing for SELF Core, with optional Assurance Proof add-ons:
 
-#### Tier 1: Standard Production (Non-Exclusive)
-**Target**: Organizations seeking commercial deployment with predictable baseline costs
-- **Payment**: $300/month platform fee + usage (metered)
-- **Creator Rights**: Full retention of rights for personal and commercial use
-- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
-- **Use Case**: Companies wanting to integrate SELF without exclusive control
+#### SELF Core (Non‑Exclusive, MAU‑Tiered) — Public List Pricing (USD)
+- **Starter** (≤ 5,000 MAU): $300/month
+- **Growth** (≤ 25,000 MAU): $750/month
+- **Scale** (≤ 100,000 MAU): $2,000/month
+- **Enterprise** (> 100,000 MAU): annual contract (starts at $36,000/year)
 
-#### Tier 2: Pro Production (Non-Exclusive, Higher Limits)
-**Target**: Organizations requiring higher included usage and faster support
-- **Payment**: $500/month platform fee + usage (metered)
-- **Creator Rights**: Full retention of rights for personal and commercial use
-- **Buyer Rights**: Worldwide, non-exclusive commercial license while in good standing
-- **Use Case**: Higher-volume deployments that need more included capacity
+#### Assurance Proof (Optional Add‑On, Annual)
+- **Lite**: $7,500/year
+- **Standard**: $25,000/year
+- **Enterprise**: $75,000/year
+
+This structure separates **license** (impact/MAU) from **proof** (review cadence and risk), so pricing cannot be “discounted” by quietly weakening safety operations.
 
 ### Critical Preconditions
 **Values-First Evaluation**: Agreement execution contingent upon successful completion of the comprehensive Values-First Sales Criteria evaluation. No rights vest until positive determination received.

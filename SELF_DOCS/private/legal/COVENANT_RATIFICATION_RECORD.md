@@ -11,7 +11,7 @@
 
 ## Ratification Overview
 
-This record documents the establishment and ratification of the SoulsynqAI Free Forever Covenant, ensuring perpetual free access to AI emotional safety capabilities following the commercialization of SELF technology.
+This record documents the establishment and ratification of the SerenixAI Free Forever Covenant, ensuring perpetual free access to AI emotional safety capabilities following the commercialization of SELF technology.
 
 ### Ratification Timeline
 1. **Covenant Drafting**: [Start Date] - [End Date]
@@ -142,7 +142,7 @@ This record documents the establishment and ratification of the SoulsynqAI Free 
 
 ### Primary Signatories
 
-#### SoulsynqAI Inc.
+#### SerenixAI Inc.
 - **Authorized Representative**: [Name], [Title]
 - **Commitment**: Full compliance with covenant terms and perpetual maintenance of free access
 - **Oversight**: Accepts Oversight Committee authority and regular audits
@@ -167,7 +167,7 @@ This record documents the establishment and ratification of the SoulsynqAI Free 
 
 #### Covenant Fund
 - **Initial Allocation**: [Amount] from SELF commercialization proceeds
-- **Annual Allocation**: [Percentage] of SoulsynqAI profits
+- **Annual Allocation**: [Percentage] of SerenixAI profits
 - **Management**: Oversight Committee with independent financial oversight
 - **Purpose**: Free version maintenance, enforcement, and community programs
 
@@ -274,13 +274,13 @@ This covenant establishes a new model for ethical commercialization of safety-cr
 
 ## Certification
 
-This Covenant Ratification Record certifies that the SoulsynqAI Free Forever Covenant has been properly established through transparent, inclusive, and legally sound processes.
+This Covenant Ratification Record certifies that the SerenixAI Free Forever Covenant has been properly established through transparent, inclusive, and legally sound processes.
 
 **Ratification Date**: [Date]
 
 **Oversight Committee Chair**: ___________________________
 
-**SoulsynqAI CEO**: ___________________________
+**SerenixAI CEO**: ___________________________
 
 **Community Representatives**: ___________________________
 

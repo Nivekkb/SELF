@@ -108,7 +108,7 @@ Yes. SELF offers enterprise solutions with:
 
 ### How does SELF handle intellectual property?
 - **User ownership**: Users retain ownership of their personal content
-- **SELF ownership**: Platform technology and AI-generated content owned by SoulsynqAI
+- **SELF ownership**: Platform technology and AI-generated content owned by SerenixAI
 - **Research use**: Anonymized data may be used for safety research improvements
 - **Licensing**: Clear licensing terms for all components
 
@@ -197,9 +197,9 @@ SELF approaches sensitive topics with care:
 ### How do I get help with SELF?
 Multiple support channels are available:
 - **In-app support**: Direct access to help and resources
-- **Email support**: support@SoulsynqAI.com (24-48 hour response)
-- **Safety concerns**: safety@SoulsynqAI.com (immediate response)
-- **Technical issues**: technical@SoulsynqAI.com
+- **Email support**: support@SerenixAI.com (24-48 hour response)
+- **Safety concerns**: safety@SerenixAI.com (immediate response)
+- **Technical issues**: technical@SerenixAI.com
 
 ### What are SELF's support hours?
 - **Safety support**: 24/7 availability for safety concerns

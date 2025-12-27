@@ -18,6 +18,10 @@ See [reading-order.md](reading-order.md) for the structured pathway through the 
 - **SELF-KEY-GENERATION.md**: Key generation and distribution mechanisms
 - **ASSURANCE-BOUNTY.md**: Community-driven safety assurance program
 - **ASSURANCE-STATUS.md**: Current program status and transparency metrics
+- **SELF_BUSINESS_PLAN.md**: Investor-facing business plan (draft template)
+- **SELF_PRESEED_EQUITY_OFFERING_MEMORANDUM.md**: Equity offering memorandum (pre-seed template)
+- **SELF_DATA_ROOM_INDEX.md**: Pre-seed data room checklist/index
+- **SELF_INVESTOR_ONE_PAGER.md**: 1-page investor summary (pre-seed)
 
 ## Next Steps
 

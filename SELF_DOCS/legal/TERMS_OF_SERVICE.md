@@ -3,7 +3,7 @@
 ## Agreement Overview
 
 These Terms of Service ("Terms") govern your use of SELF (Support-First Logic Engine), an AI-powered mental health and emotional 
-support platform developed by SoulsynqAI. By accessing or using SELF, you agree to be bound by these Terms.
+support platform developed by SerenixAI. By accessing or using SELF, you agree to be bound by these Terms.
 
 **Effective Date**: December 21, 2025
 **Governing Law**: Province of Ontario, Canada
@@ -127,7 +127,7 @@ WE SHALL NOT BE LIABLE FOR:
 ## Intellectual Property
 
 ### SELF Ownership
-- **Platform**: SoulsynqAI owns all rights to the SELF platform and technology
+- **Platform**: SerenixAI owns all rights to the SELF platform and technology
 - **Content**: We own AI-generated content and platform features
 - **Improvements**: User feedback may be used to improve the service
 
@@ -189,17 +189,17 @@ WE SHALL NOT BE LIABLE FOR:
 ## Contact Information
 
 ### General Inquiries
-- **Email**: legal@SoulsynqAI.com
+- **Email**: legal@SerenixAI.com
 - **Response Time**: Within 5 business days
 - **Support Hours**: Monday-Friday, 9 AM - 5 PM EST
 
 ### Urgent Matters
-- **Safety Concerns**: safety@SoulsynqAI.com (24/7)
-- **Legal Emergencies**: legal-emergency@SoulsynqAI.com
-- **Technical Issues**: support@SoulsynqAI.com
+- **Safety Concerns**: safety@SerenixAI.com (24/7)
+- **Legal Emergencies**: legal-emergency@SerenixAI.com
+- **Technical Issues**: support@SerenixAI.com
 
 ### Privacy Officer
-- **Contact**: privacy@SoulsynqAI.com
+- **Contact**: privacy@SerenixAI.com
 - **Role**: Oversees privacy and data protection compliance
 - **Independence**: Independent from business operations
 

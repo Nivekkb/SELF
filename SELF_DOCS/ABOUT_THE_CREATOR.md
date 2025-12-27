@@ -142,10 +142,10 @@ To contribute to a future where AI enhances human potential while protecting hum
 ## How to Connect
 
 ### Professional Contact
-- **Email**: [Kevin@SoulsynqAI.com
+- **Email**: [Kevin@SerenixAI.com
 - **LinkedIn**: Kevin Boutilier
 - **GitHub**: Nivekkb
-- **Website**: Https://SoulsynqAI.com
+- **Website**: Https://SerenixAI.com
 
 ### Collaboration Opportunities
 - **Research Partnerships**: Open to academic and industry collaboration

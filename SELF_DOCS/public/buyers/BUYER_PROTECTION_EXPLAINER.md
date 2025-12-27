@@ -30,7 +30,7 @@
 - **Generational Security**: Protection extends beyond individual contracts or company changes
 
 ### Real-World Impact
-*"We invested $2.5M in SELF technology. The Free Forever Covenant ensures our safety infrastructure remains viable even if SoulsynqAI faces business challenges."*
+*"We invested $2.5M in SELF technology. The Free Forever Covenant ensures our safety infrastructure remains viable even if SerenixAI faces business challenges."*
 — Enterprise AI Safety Director
 
 ---
@@ -101,7 +101,7 @@
 - **9 Members**: AI safety experts, legal specialists, community representatives, ethicists
 - **Formation Trigger**: Covenant ratification with >75% community approval
 - **Powers**: Binding dispute resolution, compliance monitoring, amendment approval
-- **Independence**: No SoulsynqAI employees or financial interests
+- **Independence**: No SerenixAI employees or financial interests
 
 ### Buyer Rights in Oversight
 - **Direct Access**: Buyers can petition oversight committee for disputes
@@ -239,7 +239,7 @@
 — Chief AI Officer, Fortune 500 Company
 
 ### Startup Deployment
-*"As a small company, the Free Forever Covenant was crucial. We knew our safety infrastructure would remain viable regardless of SoulsynqAI's business evolution."*
+*"As a small company, the Free Forever Covenant was crucial. We knew our safety infrastructure would remain viable regardless of SerenixAI's business evolution."*
 — AI Safety Startup Founder
 
 ### Research Institution
@@ -287,16 +287,16 @@
 ## Contact Information
 
 **Business Development Team**
-- **Email**: business@soulsynq.ai
+- **Email**: business@serenix.ai
 - **Phone**: [Business Development Line]
 - **Portal**: [Buyer Portal URL]
 
 **Legal and Compliance**
-- **Email**: legal@soulsynq.ai
+- **Email**: legal@serenix.ai
 - **Documentation**: [Legal Resources Portal]
 
 **Oversight Committee**
-- **Email**: oversight@soulsynq.ai
+- **Email**: oversight@serenix.ai
 - **Public Records**: [Covenant Status Portal]
 
 ---

@@ -9,18 +9,81 @@ const css = fs.readFileSync(stylesPath, "utf8");
 
 const docs = [
   {
+    slug: "product-overview",
+    title: "Product Overview",
+    category: "Overview",
+    source: path.join(root, "SELF_DOCS", "public", "executives", "SELF_PRODUCT_OVERVIEW.md"),
+  },
+  {
     slug: "executive-brief",
     title: "Executive Brief",
+    category: "Overview",
     source: path.join(root, "SELF_DOCS", "public", "executives", "EXECUTIVE-BRIEF.md"),
+  },
+  {
+    slug: "case-studies",
+    title: "Case Studies",
+    category: "Overview",
+    source: path.join(root, "SELF_DOCS", "public", "business", "CASE_STUDIES.md"),
+  },
+  {
+    slug: "quick-start",
+    title: "Quick Start",
+    category: "Developers",
+    source: path.join(root, "SELF_DOCS", "public", "developers", "QUICK_START.md"),
+  },
+  {
+    slug: "integration-guide",
+    title: "Integration Guide",
+    category: "Developers",
+    source: path.join(root, "SELF_DOCS", "public", "developers", "INTEGRATION_GUIDE.md"),
+  },
+  {
+    slug: "api-reference",
+    title: "HTTP API Reference",
+    category: "Developers",
+    source: path.join(root, "SELF_DOCS", "public", "API_DOCUMENTATION.md"),
+  },
+  {
+    slug: "threat-model",
+    title: "Threat Model & Safety Posture",
+    category: "Security & Safety",
+    source: path.join(root, "SELF_DOCS", "public", "technical", "THREAT_MODEL_AND_SAFETY_POSTURE.md"),
+  },
+  {
+    slug: "security-overview",
+    title: "Security Overview",
+    category: "Security & Safety",
+    source: path.join(root, "SELF_DOCS", "public", "technical", "SECURITY_OVERVIEW.md"),
+  },
+  {
+    slug: "governance-doctrine",
+    title: "Governance Doctrine",
+    category: "Governance & Assurance",
+    source: path.join(root, "SELF_DOCS", "public", "GOVERNANCE_DOCTRINE.md"),
+  },
+  {
+    slug: "assurance-program",
+    title: "Assurance Program",
+    category: "Governance & Assurance",
+    source: path.join(root, "SELF_DOCS", "public", "business", "ASSURANCE_PROGRAM.md"),
   },
   {
     slug: "pricing",
     title: "Pricing",
+    category: "Commercial & Legal",
     source: path.join(root, "SELF_DOCS", "public", "business", "SELF-PRICING.md"),
+  },
+  {
+    slug: "legal-docs",
+    title: "Legal Docs",
+    category: "Commercial & Legal",
+    source: path.join(root, "SELF_DOCS", "public", "buyers", "LEGAL_DOCS.md"),
   },
   {
     slug: "buy-sell-agreement",
     title: "Commercial Licensing Agreement (Escrow)",
+    category: "Commercial & Legal",
     source: path.join(root, "SELF_DOCS", "public", "buyers", "BUY-SELL-AGREEMENT-ESCROW.md"),
   },
 ];
@@ -196,7 +259,7 @@ ${css}
         </a>
         <div class="header-cta">
           <a class="btn btn-ghost" href="/docs/">Docs index</a>
-          <a class="btn btn-primary" href="mailto:Kevin@governedbyself.com">Contact</a>
+          <a class="btn btn-primary" href="mailto:Kevin@GovernedBySELF.com">Contact</a>
         </div>
       </div>
     </header>
@@ -228,15 +291,32 @@ function writeFileSafe(fp, text) {
   fs.writeFileSync(fp, text, "utf8");
 }
 
-const nav = `<ul class="bullets">
-${docs
-  .map((d) => `<li><a href="/docs/${d.slug}/">${escapeHtml(d.title)}</a></li>`)
-  .join("\n")}
-</ul>`;
+const categoryOrder = ["Overview", "Developers", "Security & Safety", "Governance & Assurance", "Commercial & Legal"];
+const docsByCategory = new Map();
+for (const doc of docs) {
+  const category = typeof doc.category === "string" ? doc.category : "Docs";
+  if (!docsByCategory.has(category)) docsByCategory.set(category, []);
+  docsByCategory.get(category).push(doc);
+}
+
+const orderedCategories = [
+  ...categoryOrder.filter((c) => docsByCategory.has(c)),
+  ...Array.from(docsByCategory.keys()).filter((c) => !categoryOrder.includes(c)),
+];
+
+const nav = orderedCategories
+  .map((category) => {
+    const items = docsByCategory
+      .get(category)
+      .map((d) => `<li><a href="/docs/${d.slug}/">${escapeHtml(d.title)}</a></li>`)
+      .join("\n");
+    return `<div class="doc-group"><h4>${escapeHtml(category)}</h4><ul class="bullets">\n${items}\n</ul></div>`;
+  })
+  .join("\n");
 
 const indexContent = `
 <h1>SELF Public Docs</h1>
-<p class="muted">Read the public-facing docs for pricing, licensing, and executive overview.</p>
+<p class="muted">Public-facing documentation for evaluation, integration, security posture, governance, and commercial terms.</p>
 ${nav}
 `;
 
@@ -253,4 +333,3 @@ for (const doc of docs) {
 }
 
 console.log(`[build-public-docs] wrote ${docs.length + 1} pages under website/dist/docs/`);
-

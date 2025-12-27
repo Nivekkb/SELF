@@ -2,7 +2,7 @@
 
 ## Protecting Human Emotions in the Age of Artificial Intelligence
 
-**SoulsynqAI** | **2024**
+**SerenixAI** | **2024**
 
 ---
 
@@ -94,7 +94,7 @@ Writing assistants that avoid emotionally harmful suggestions or topics.
 
 ## The Free Forever Commitment
 
-**SoulsynqAI guarantees perpetual free access to essential SELF safety capabilities.**
+**SerenixAI guarantees perpetual free access to essential SELF safety capabilities.**
 
 - **No Paywalls**: Core safety features remain free forever
 - **Global Access**: Available worldwide regardless of economic status
@@ -146,11 +146,11 @@ commitment to ensuring that technological progress enhances, rather than diminis
 
 ## Contact Information
 
-- **Website**: SoulsynqAI.com
-- **Documentation**: Docs@SoulsynqAI.com
-- **Community**: Kevin@SoulsynqAI.com
-- **Research**: Research@SoulsynqAI.com
+- **Website**: SerenixAI.com
+- **Documentation**: Docs@SerenixAI.com
+- **Community**: Kevin@SerenixAI.com
+- **Research**: Research@SerenixAI.com
 
 ---
 
-**© 2025 SoulsynqAI. Emotional safety is a human right.**
+**© 2025 SerenixAI. Emotional safety is a human right.**

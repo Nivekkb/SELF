@@ -206,7 +206,7 @@ Consequences:
 - Third offense: License termination
 
 Documentation: https://self.engine/override-justification
-Support: compliance@soulsynqai.com
+Support: compliance@serenixai.com
 ```
 
 ---
@@ -370,7 +370,7 @@ A: All API keys are immediately revoked. You must cease all SELF usage. Data is 
 
 For enforcement questions or to report violations:
 
-**Email:** compliance@soulsynqai.com
+**Email:** compliance@serenixai.com
 **Response Time:** 24-48 hours for legitimate inquiries
 **Note:** We don't negotiate on enforcement—standards are uniform
 

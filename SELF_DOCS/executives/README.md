@@ -144,7 +144,7 @@ Host apps should persist these per-user (or per-session) fields in a session sto
 
 SELF itself is pure/stateless; your app persists these and feeds them back each turn.
 
-Repo note (SoulsynqAI):
+Repo note (SerenixAI):
 - This repo persists the session fields in Postgres via `self_session_state` and stores per-message metadata in `messages.self_meta`. After pulling changes, run `npm run db:push` to apply the schema updates.
 
 ### Abuse Prevention Pipeline

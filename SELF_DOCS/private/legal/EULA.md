@@ -4,7 +4,7 @@
 
 **Last Updated: December 22, 2025**
 
-This End User License Agreement ("Agreement") is a legal agreement between you ("User" or "you") and SoulsynqAI ("Licensor" or "we") 
+This End User License Agreement ("Agreement") is a legal agreement between you ("User" or "you") and SerenixAI ("Licensor" or "we") 
 for the use of the SELF Engine technology ("Software").
 
 ## 1. GRANT OF LICENSE
@@ -91,7 +91,7 @@ Upon termination:
 ## 8. DATA PROTECTION AND PRIVACY
 
 ### 8.1 Privacy Policy Compliance
-You agree to comply with our comprehensive Privacy Policy, which governs all data handling practices related to the SELF Engine. The Privacy Policy is incorporated by reference into this Agreement and can be accessed at: [privacy@SoulsynqAI.com](mailto:privacy@SoulsynqAI.com)
+You agree to comply with our comprehensive Privacy Policy, which governs all data handling practices related to the SELF Engine. The Privacy Policy is incorporated by reference into this Agreement and can be accessed at: [privacy@SerenixAI.com](mailto:privacy@SerenixAI.com)
 
 ### 8.2 User Data Responsibilities
 You are responsible for compliance with all applicable data protection laws regarding user data processed through the SELF Engine, including but not limited to:
@@ -160,9 +160,9 @@ You agree to comply with all applicable laws, regulations, and ethical guideline
 
 For questions about this EULA or the SELF Engine:
 
-**SoulsynqAI**  
-Email: Kevin@soulsynqai.com  
-Website: https://soulsynqai.com  
+**SerenixAI**  
+Email: Kevin@serenixai.com  
+Website: https://serenixai.com  
 
 ## 13. ACCEPTANCE
 
@@ -170,6 +170,6 @@ By using the SELF Engine, you acknowledge that you have read, understood, and ag
 
 ---
 
-**© 2025 SoulsynqAI. All rights reserved.**
+**© 2025 SerenixAI. All rights reserved.**
 
 *This EULA is designed to protect both users and implementers of emotional support technology while ensuring responsible and ethical use of the SELF Engine.*

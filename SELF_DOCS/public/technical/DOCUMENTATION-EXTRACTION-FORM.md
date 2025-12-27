@@ -166,14 +166,14 @@ ____________________________________________________________
 ## 7. EMERGENCY CONTACTS
 
 ### Documentation Governance Committee
-- **Primary Contact**: legal@soulsynqai.com
-- **Emergency Contact**: security@soulsynqai.com
+- **Primary Contact**: legal@serenixai.com
+- **Emergency Contact**: security@serenixai.com
 - **Phone**: (Emergency situations only)
 
 ### Incident Response
 If you suspect unauthorized access or security breach:
 1. Immediately stop all access
-2. Contact security@soulsynqai.com
+2. Contact security@serenixai.com
 3. Preserve all logs and evidence
 4. Do not attempt to resolve independently
 
@@ -182,13 +182,13 @@ If you suspect unauthorized access or security breach:
 ## 8. TERMS AND CONDITIONS
 
 ### General Terms
-1. This form and all associated documentation remain property of SoulsynqAI
+1. This form and all associated documentation remain property of SerenixAI
 2. Access is granted for the specific purpose stated and may not be used for other purposes
 3. All access is monitored and logged for security purposes
 4. Violation of terms may result in immediate access revocation and legal action
 
 ### Intellectual Property
-1. Documentation content remains copyrighted by SoulsynqAI
+1. Documentation content remains copyrighted by SerenixAI
 2. No derivative works may be created without explicit written permission
 3. Attribution requirements apply to all extracted materials
 4. Commercial use requires separate licensing agreement
@@ -201,6 +201,6 @@ If you suspect unauthorized access or security breach:
 ---
 
 **CONFIDENTIAL - SELF Engine Documentation Access Form**
-**© 2025 SoulsynqAI. All rights reserved.**
+**© 2025 SerenixAI. All rights reserved.**
 
 *This form ensures responsible and secure access to SELF Engine documentation while protecting intellectual property and maintaining security standards.*

@@ -468,17 +468,17 @@ between AI models and user interfaces. It enforces immutable safety principles t
 **A**: Contact information for different types of inquiries:
 
 **Legal Questions**:
-- Email: legal@soulsynqai.com
+- Email: legal@serenixai.com
 - Response time: 3-5 business days
 - Available for: Licensing, compliance, liability questions
 
 **Regulatory Questions**:
-- Email: regulatory@soulsynqai.com
+- Email: regulatory@serenixai.com
 - Response time: 5-7 business days
 - Available for: Compliance, standards, policy questions
 
 **Technical Questions**:
-- Email: technical@soulsynqai.com
+- Email: technical@serenixai.com
 - Response time: 24-48 hours
 - Available for: Implementation, integration, security questions
 
@@ -492,4 +492,4 @@ between AI models and user interfaces. It enforces immutable safety principles t
 **FAQ Version**: 1.0  
 **Last Updated**: December 22, 2025  
 **Next Review**: June 2026  
-**Contact**: For questions not addressed here, please contact our legal team at legal@soulsynqai.com
+**Contact**: For questions not addressed here, please contact our legal team at legal@serenixai.com

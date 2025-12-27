@@ -21,8 +21,10 @@
 
         <nav class="nav">
           <a href="#product">Product</a>
+          <a href="#examples">Examples</a>
           <a href="#pricing">Pricing</a>
           <a href="#trust">Trust</a>
+          <a href="#http">API</a>
           <a href="#faq">FAQ</a>
         </nav>
 
@@ -38,14 +40,46 @@
         <div class="container hero-inner">
           <div class="hero-copy">
             <p class="eyebrow">Governance-first safety for support-critical AI</p>
-            <h1>Sell safety you can enforce.</h1>
+            <div class="hero-title">
+              <img class="hero-logo" src="./SELF.png" alt="SELF logo" decoding="async" />
+              <h1>Sell safety you can enforce.</h1>
+            </div>
             <p class="lead">
-              SELF is an internal logic engine that applies support-first behavioral constraints, validation rules, and
-              audit-ready outputs so your product can scale without “safety drift”.
+              SELF is a runtime governance engine that prevents emotional-harm failures in AI systems. It applies
+              support-first behavioral constraints, validation rules, and audit-ready outputs so your product can scale
+              without “safety drift”.
             </p>
+            <div class="tldr">
+              <div class="tldr-head">
+                <span class="tldr-kicker">TL;DR</span>
+                <span class="tldr-sub">Who SELF is for and what it does in practice</span>
+              </div>
+              <div class="tldr-grid">
+                <div>
+                  <h2 class="tldr-title">Who SELF is for</h2>
+                  <ul class="checklist checklist-compact">
+                    <li>Support/care experiences where mistakes create real harm</li>
+                    <li>Products that must behave reliably under emotional load</li>
+                    <li>Support-critical AI surfaces that can’t drift quietly</li>
+                    <li>Teams that need auditability for enterprise/procurement</li>
+                    <li>Builders who want governance as runtime reality, not paperwork</li>
+                  </ul>
+                </div>
+                <div>
+                  <h2 class="tldr-title">What you get</h2>
+                  <ul class="checklist checklist-compact">
+                    <li>S0–S3 posture selection + enforceable constraints</li>
+                    <li>Draft validation/repair before anything reaches users</li>
+                    <li>Immutable logging hooks for review and incident response</li>
+                    <li>Integration as SDK or self-hosted HTTP service</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             <div class="hero-actions">
               <a class="btn btn-primary" id="requestLink2" href="#request">Request a License</a>
-              <a class="btn btn-secondary" id="pricingLink" href="#pricing">View pricing</a>
+              <a class="btn btn-secondary" id="requestAssuranceTop" href="#request">Request assurance</a>
+              <a class="btn btn-ghost" id="pricingLink" href="#pricing">View pricing</a>
             </div>
             <p class="fineprint">
               SELF is a governance layer. You still own your model choice, integration, compliance, and human escalation
@@ -80,37 +114,122 @@
 
       <section id="product" class="section">
         <div class="container">
-          <h2>Product</h2>
-          <p class="section-lead">
-            SELF is built to prevent “it sounded helpful” from becoming “it caused harm.” It does this by turning
-            governance into executable rules, not brand promises.
-          </p>
+          <div class="section-card">
+            <h2>Product</h2>
+            <p class="section-lead">
+              SELF is built to prevent “it sounded helpful” from becoming “it caused harm.” It does this by turning
+              governance into executable rules, not brand promises. SELF makes your “safety policy” something the system
+              has to obey, not something written in a PDF.
+            </p>
 
-          <div class="grid3">
-            <div class="panel">
-              <h3>Measurable constraints</h3>
-              <p>Word caps, question caps, disallowed phrases, and output validation enforced at runtime.</p>
+            <div class="grid3">
+              <div class="panel">
+                <h3>Measurable constraints</h3>
+                <p>Word caps, question caps, disallowed phrases, and output validation enforced at runtime.</p>
+              </div>
+              <div class="panel">
+                <h3>State-aware posture</h3>
+                <p>Different response posture and constraints for low-risk vs. elevated distress scenarios.</p>
+              </div>
+              <div class="panel">
+                <h3>Audit-ready operations</h3>
+                <p>Structured events for pre/post decisions so teams can review, monitor, and improve responsibly.</p>
+              </div>
             </div>
-            <div class="panel">
-              <h3>State-aware posture</h3>
-              <p>Different response posture and constraints for low-risk vs. elevated distress scenarios.</p>
+
+            <div class="grid2 diagram-grid" aria-label="SELF diagrams">
+              <div class="panel diagram-card">
+                <h3>Where SELF sits in your stack</h3>
+                <div class="diagram diagram-stack" role="img" aria-label="Your app calls SELF, SELF enforces governance, then you call your model">
+                  <div class="diagram-row">
+                    <div class="diagram-box">Support surface</div>
+                    <div class="diagram-arrow" aria-hidden="true">→</div>
+                    <div class="diagram-box diagram-box-accent diagram-logo">
+                      <img class="diagram-logo-img" src="./SELF.png" alt="SELF" decoding="async" />
+                    </div>
+                    <div class="diagram-arrow" aria-hidden="true">→</div>
+                    <div class="diagram-box">Your model/tools</div>
+                    <div class="diagram-arrow" aria-hidden="true">→</div>
+                    <div class="diagram-box">User</div>
+                  </div>
+                </div>
+                <p class="diagram-note">SELF makes governance observable and enforceable before responses ship.</p>
+              </div>
+
+              <div class="panel diagram-card">
+                <h3>S0–S3 posture flow</h3>
+                <div class="diagram diagram-flow" role="img" aria-label="S0 to S3 states increasing in risk">
+                  <div class="state-flow">
+                    <div class="state state-s0">
+                      <div class="state-k">S0</div>
+                      <div class="state-v">Normal</div>
+                    </div>
+                    <div class="state state-s1">
+                      <div class="state-k">S1</div>
+                      <div class="state-v">Tense</div>
+                    </div>
+                    <div class="state state-s2">
+                      <div class="state-k">S2</div>
+                      <div class="state-v">Distress</div>
+                    </div>
+                    <div class="state state-s3">
+                      <div class="state-k">S3</div>
+                      <div class="state-v">Crisis‑adjacent</div>
+                    </div>
+                  </div>
+                </div>
+                <p class="diagram-note">As risk rises, SELF tightens constraints and escalates to required safety behaviors.</p>
+              </div>
             </div>
-            <div class="panel">
-              <h3>Audit-ready operations</h3>
-              <p>Structured events for pre/post decisions so teams can review, monitor, and improve responsibly.</p>
+
+            <div class="callout">
+              <div class="callout-body">
+                <h3>Integrate in hours, not quarters</h3>
+                <p>SELF can run as a library inside your app or as a small HTTP service you call from any stack.</p>
+              </div>
+              <div class="callout-actions">
+                <a class="btn btn-secondary" id="httpApiLink" href="#http">HTTP API</a>
+                <a class="btn btn-ghost" id="docsLink2" href="#docs">Read docs</a>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="callout">
-            <div class="callout-body">
-              <h3>Integrate in hours, not quarters</h3>
-              <p>
-                SELF can run as a library inside your app or as a small HTTP service you call from any stack.
-              </p>
-            </div>
-            <div class="callout-actions">
-              <a class="btn btn-secondary" id="httpApiLink" href="#http">HTTP API</a>
-              <a class="btn btn-ghost" id="docsLink2" href="#docs">Read docs</a>
+      <section id="examples" class="section">
+        <div class="container">
+          <div class="section-card">
+            <h2>In practice</h2>
+            <p class="section-lead">
+              Two anonymized examples showing how constraints and state posture turn into real behavior.
+            </p>
+            <div class="grid2">
+              <div class="panel scenario">
+                <h3>B2B SaaS support assistant</h3>
+                <dl class="kv">
+                  <dt>Surface</dt>
+                  <dd>Billing/account support inside your product.</dd>
+                  <dt>Risk</dt>
+                  <dd>Hallucinated policy promises, inconsistent refunds, escalation gaps.</dd>
+                  <dt>SELF enforces</dt>
+                  <dd>Policy‑bound wording, required evidence before claims, caps + validation, audit logs.</dd>
+                  <dt>Result</dt>
+                  <dd>Fewer “helpful” promises that become liabilities; procurement-ready traceability.</dd>
+                </dl>
+              </div>
+              <div class="panel scenario">
+                <h3>Youth wellbeing check‑in</h3>
+                <dl class="kv">
+                  <dt>Surface</dt>
+                  <dd>Daily check-ins and emotional support prompts.</dd>
+                  <dt>Risk</dt>
+                  <dd>Distress escalation, boundary drift, responses that feel confident but unsafe.</dd>
+                  <dt>SELF enforces</dt>
+                  <dd>State posture (S2/S3), required crisis resources, strict question caps, no unsafe content.</dd>
+                  <dt>Result</dt>
+                  <dd>Reliable behavior under emotional load; governance is enforceable, not aspirational.</dd>
+                </dl>
+              </div>
             </div>
           </div>
         </div>
@@ -118,100 +237,158 @@
 
       <section id="pricing" class="section section-alt">
         <div class="container">
-          <h2>Pricing</h2>
-          <p class="section-lead">
-            Usage-based, with a simple platform fee. Pricing exists to fund governance and keep incentives aligned as you
-            scale.
-          </p>
+          <div class="section-card">
+            <h2>Pricing</h2>
+            <p class="section-lead">
+              SELF is an SDK. Pricing separates the Core license (MAU-tiered) from optional Assurance Proof and optional
+              managed add-ons.
+            </p>
 
-          <div class="pricing-grid">
-            <div class="price-card">
-              <div class="price-top">
-                <h3>Standard Production</h3>
-                <p class="price">$300<span>/month</span></p>
-                <p class="muted">Non-exclusive commercial license</p>
+            <div class="pricing-grid">
+              <div class="price-card">
+                <div class="price-top">
+                  <h3>SELF Core (MAU-tiered)</h3>
+                  <p class="price">$300<span>/month</span></p>
+                  <p class="muted">Starter (≤ 5,000 MAU) · Non-exclusive license</p>
+                </div>
+                <div class="tier-table" role="table" aria-label="SELF Core pricing tiers">
+                  <div class="tier-row tier-head" role="row">
+                    <div class="tier-cell" role="columnheader">Tier</div>
+                    <div class="tier-cell" role="columnheader">MAU</div>
+                    <div class="tier-cell" role="columnheader">Price</div>
+                  </div>
+                  <div class="tier-row" role="row">
+                    <div class="tier-cell" role="cell">Starter</div>
+                    <div class="tier-cell" role="cell">≤ 5,000</div>
+                    <div class="tier-cell" role="cell">$300/mo</div>
+                  </div>
+                  <div class="tier-row" role="row">
+                    <div class="tier-cell" role="cell">Growth</div>
+                    <div class="tier-cell" role="cell">≤ 25,000</div>
+                    <div class="tier-cell" role="cell">$750/mo</div>
+                  </div>
+                  <div class="tier-row" role="row">
+                    <div class="tier-cell" role="cell">Scale</div>
+                    <div class="tier-cell" role="cell">≤ 100,000</div>
+                    <div class="tier-cell" role="cell">$2,000/mo</div>
+                  </div>
+                  <div class="tier-row" role="row">
+                    <div class="tier-cell" role="cell">Enterprise</div>
+                    <div class="tier-cell" role="cell">&gt; 100,000</div>
+                    <div class="tier-cell" role="cell">Annual (from $36k/yr)</div>
+                  </div>
+                </div>
+                <p class="fineprint">Support: 48h email (Starter), faster on higher tiers.</p>
+                <a class="btn btn-primary" id="requestStandard" href="#request">Request a license</a>
               </div>
-              <ul>
-                <li>25,000 conversations/month included</li>
-                <li>$1.00 per 1,000 additional conversations</li>
-                <li>Email support (48-hour SLA)</li>
-              </ul>
-              <a class="btn btn-primary" id="requestStandard" href="#request">Request Standard</a>
+
+              <div class="price-card featured">
+                <div class="badge">Recommended</div>
+                <div class="price-top">
+                  <h3>Assurance Proof</h3>
+                  <p class="price">$7,500<span>/year</span></p>
+                  <p class="muted">Procurement-ready evidence (optional add-on)</p>
+                </div>
+                <ul>
+                  <li>Lite: $7,500/year (baseline review + mapping)</li>
+                  <li>Standard: $25,000/year (deeper integration audit + cadence)</li>
+                  <li>Enterprise: $75,000/year (security/procurement support)</li>
+                  <li>Proof is withheld until required properties pass</li>
+                </ul>
+                <a class="btn btn-primary" id="requestPro" href="#request">Request assurance</a>
+              </div>
             </div>
 
-            <div class="price-card featured">
-              <div class="badge">Recommended</div>
-              <div class="price-top">
-                <h3>Pro Production</h3>
-                <p class="price">$500<span>/month</span></p>
-                <p class="muted">Non-exclusive commercial license</p>
-              </div>
-              <ul>
-                <li>100,000 conversations/month included</li>
-                <li>$0.75 per 1,000 additional conversations</li>
-                <li>Priority email support (24-hour SLA)</li>
+            <div class="finebox">
+              <h3>Notes</h3>
+              <ul class="bullets">
+                <li>Production use requires Values‑First evaluation and ongoing compliance.</li>
+                <li>Self-hosted deployment; you control infrastructure and model provider costs.</li>
+                <li>Optional managed add-ons are usage-billed (e.g., managed evaluation runs, hosted telemetry).</li>
               </ul>
-              <a class="btn btn-primary" id="requestPro" href="#request">Request Pro</a>
             </div>
-          </div>
-
-          <div class="finebox">
-            <h3>Notes</h3>
-            <ul class="bullets">
-              <li>Production use requires Values‑First evaluation and ongoing compliance.</li>
-              <li>Self-hosted deployment; you control infrastructure and model provider costs.</li>
-              <li>Usage is measured in “conversations” as defined by your integration contract.</li>
-            </ul>
           </div>
         </div>
       </section>
 
       <section id="trust" class="section">
         <div class="container">
-          <h2>Trust & safety posture</h2>
-          <p class="section-lead">
-            SELF is not “safety marketing.” It is safety engineering: enforceable constraints, observable decisions, and
-            integrity controls designed to resist quiet weakening over time.
-          </p>
-          <div class="grid2">
-            <div class="panel">
-              <h3>No silent downgrades</h3>
-              <p>Override prevention and immutable governance boundaries help protect the system’s integrity.</p>
+          <div class="section-card">
+            <h2>Trust & safety posture</h2>
+            <p class="section-lead">
+              SELF is not “safety marketing.” It is safety engineering: enforceable constraints, observable decisions,
+              and integrity controls designed to hold up under emotional load and resist quiet weakening over time.
+            </p>
+            <div class="grid2">
+              <div class="panel">
+                <h3>No silent downgrades</h3>
+                <p>Override prevention and immutable governance boundaries help protect the system’s integrity.</p>
+              </div>
+              <div class="panel">
+                <h3>Operational accountability</h3>
+                <p>Pre/post logging hooks support monitoring, incident response, and periodic audits.</p>
+              </div>
             </div>
-            <div class="panel">
-              <h3>Operational accountability</h3>
-              <p>Pre/post logging hooks support monitoring, incident response, and periodic audits.</p>
+            <div class="disclaimer">
+              <strong>Disclaimer:</strong> SELF is a governance layer for AI behavior. It is not a medical device, does not
+              provide professional diagnosis, and does not replace clinical or emergency services.
             </div>
-          </div>
-          <div class="disclaimer">
-            <strong>Disclaimer:</strong> SELF is a governance layer for AI behavior. It is not a medical device, does not
-            provide professional diagnosis, and does not replace clinical or emergency services.
           </div>
         </div>
       </section>
 
       <section id="http" class="section section-alt">
         <div class="container">
-          <h2>HTTP API mode</h2>
-          <p class="section-lead">Run SELF as a small HTTP service and call it from any stack.</p>
+          <div class="section-card">
+            <h2>HTTP API mode</h2>
+            <p class="section-lead">Run SELF as a small HTTP service and call it from any stack.</p>
 
-          <div class="codeblock">
-            <pre><code>npm run build
-SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
-          </div>
+            <div class="codeblock">
+              <pre><code>npm run build
+SELF_HTTP_PORT=8787 SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
+            </div>
 
-          <div class="grid3">
-            <div class="panel">
-              <h3>Pre</h3>
-              <p><code>POST /v1/pre</code> returns detection, policy, variant, and clarifier requirements.</p>
+            <div class="grid3">
+              <div class="panel">
+                <h3>Pre</h3>
+                <p><code>POST /v1/pre</code> returns detection, policy, variant, and clarifier requirements.</p>
+              </div>
+              <div class="panel">
+                <h3>Post</h3>
+                <p><code>POST /v1/post</code> validates and repairs a drafted response to match the policy.</p>
+              </div>
+              <div class="panel">
+                <h3>Health</h3>
+                <p><code>GET /health</code> returns service + doctrine metadata for monitoring.</p>
+              </div>
             </div>
-            <div class="panel">
-              <h3>Post</h3>
-              <p><code>POST /v1/post</code> validates and repairs a drafted response to match the policy.</p>
-            </div>
-            <div class="panel">
-              <h3>Health</h3>
-              <p><code>GET /health</code> returns service + doctrine metadata for monitoring.</p>
+
+            <div class="codegrid" aria-label="HTTP API examples">
+              <div>
+                <div class="codeblock-title">Example: preflight</div>
+                <div class="codeblock">
+                  <pre><code>curl -sS http://localhost:8787/v1/pre \\
+	  -H "Authorization: Bearer $SELF_HTTP_API_KEY" \\
+	  -H "Content-Type: application/json" \\
+	  -d '{
+	    "message": "I feel like I can\\u2019t do this anymore.",
+	    "history": []
+	  }'</code></pre>
+                </div>
+              </div>
+              <div>
+                <div class="codeblock-title">Example: validate/repair</div>
+                <div class="codeblock">
+                  <pre><code>curl -sS http://localhost:8787/v1/post \\
+	  -H "Authorization: Bearer $SELF_HTTP_API_KEY" \\
+	  -H "Content-Type: application/json" \\
+	  -d '{
+	    "userMessage": "I feel like I can\\u2019t do this anymore.",
+	    "output": "I\\u2019m here with you. You\\u2019re not alone...",
+	    "policy": { }
+	  }'</code></pre>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -219,20 +396,54 @@ SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
 
       <section id="faq" class="section">
         <div class="container">
-          <h2>FAQ</h2>
-          <div class="faq">
-            <details>
-              <summary>Is this a chatbot?</summary>
-              <p>No. SELF is the governance layer around your chatbot (or support workflow): detection, constraints, validation, and enforcement.</p>
-            </details>
-            <details>
-              <summary>Do you sell exclusive ownership?</summary>
-              <p>No. SELF is licensed for production use with usage-based pricing and compliance requirements.</p>
-            </details>
-            <details>
-              <summary>Can we negotiate pricing?</summary>
-              <p>Published rates are uniform. The goal is to prevent “discount pressure” from weakening safety requirements.</p>
-            </details>
+          <div class="section-card">
+            <h2>FAQ</h2>
+            <div class="faq">
+              <details>
+                <summary>Is this a chatbot?</summary>
+                <p>
+                  No. SELF is the governance layer around your chatbot (or support workflow): detection, constraints,
+                  validation, and enforcement.
+                </p>
+              </details>
+              <details>
+                <summary>Do you sell exclusive ownership?</summary>
+                <p>No. SELF is licensed for production use with MAU-tiered pricing and compliance requirements.</p>
+              </details>
+              <details>
+                <summary>Can we negotiate pricing?</summary>
+                <p>
+                  Core pricing is published. Enterprise contracts can vary in terms (SLA/procurement/review cadence), but
+                  we won’t weaken safety requirements to win deals.
+                </p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="getting-started" class="section section-alt">
+        <div class="container">
+          <div class="section-card">
+            <h2>Getting started</h2>
+            <p class="section-lead">A simple path from “interested” to “running in production.”</p>
+            <div class="steps">
+              <div class="panel step">
+                <div class="step-num">1</div>
+                <h3>Contact</h3>
+                <p>Share your use case, user population, and the support surfaces you’re protecting.</p>
+              </div>
+              <div class="panel step">
+                <div class="step-num">2</div>
+                <h3>Values‑First evaluation</h3>
+                <p>We map required constraints, escalation paths, and evidence you’ll need for stakeholders.</p>
+              </div>
+              <div class="panel step">
+                <div class="step-num">3</div>
+                <h3>Integrate + monitor</h3>
+                <p>Deploy SDK or HTTP mode, wire logging hooks, and lock safety boundaries against drift.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -240,24 +451,47 @@ SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
       <section id="request" class="section section-alt">
         <div class="container request">
           <div>
-            <h2>Request access</h2>
-            <p class="section-lead">
-              Tell us your use case, risk profile, and expected usage volume. We’ll share next steps for evaluation and
-              onboarding.
-            </p>
-            <ul class="bullets">
-              <li>Company + product overview</li>
-              <li>Intended user population and support scope</li>
-              <li>Expected monthly conversations</li>
-              <li>Escalation path (human support / crisis resources)</li>
-            </ul>
+            <div class="section-card">
+              <h2>Request access</h2>
+              <p class="section-lead">
+                Tell us your use case, risk profile, and expected usage volume. We’ll share next steps for evaluation and
+                onboarding.
+              </p>
+              <ul class="bullets">
+                <li>Company + product overview</li>
+                <li>Intended user population and support scope</li>
+                <li>Expected MAU and protected surfaces</li>
+                <li>Escalation path (human support / crisis resources)</li>
+              </ul>
+            </div>
           </div>
           <div class="request-card">
             <div class="card">
               <h3>Contact</h3>
               <p class="muted">Email is the fastest path right now.</p>
-              <a class="btn btn-primary" id="emailLink" href="mailto:licensing@soulsynqai.com">Email licensing@soulsynqai.com</a>
-              <p class="fineprint">Subject suggestion: “SELF licensing — &lt;company&gt; — &lt;use case&gt;”</p>
+              <div class="cta-stack">
+                <a
+                  class="btn btn-primary"
+                  id="emailLicenseLink"
+                  href="mailto:Kevin@GovernedBySELF.com?subject=SELF%20licensing%20%E2%80%94%20%3Ccompany%3E%20%E2%80%94%20%3Cuse%20case%3E"
+                  >Request a license</a
+                >
+                <a
+                  class="btn btn-secondary"
+                  id="emailAssuranceLink"
+                  href="mailto:Kevin@GovernedBySELF.com?subject=Assurance%20Proof%20%E2%80%94%20%3Ccompany%3E%20%E2%80%94%20%3Cuse%20case%3E"
+                  >Request assurance</a
+                >
+                <a
+                  class="btn btn-ghost"
+                  id="emailGeneralLink"
+                  href="mailto:Kevin@GovernedBySELF.com?subject=SELF%20question%20%E2%80%94%20%3Ccompany%3E"
+                  >General question</a
+                >
+              </div>
+              <p class="fineprint">
+                Include: product overview · user population · support scope · expected MAU · escalation path.
+              </p>
             </div>
           </div>
         </div>
@@ -282,4 +516,3 @@ SELF_HTTP_API_KEY=your_key npm run start:http</code></pre>
     <script src="./site.js"></script>
   </body>
 </html>
-

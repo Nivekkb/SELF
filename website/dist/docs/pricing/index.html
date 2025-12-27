@@ -183,6 +183,29 @@ h1 {
   letter-spacing: -0.04em;
 }
 
+.hero-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 12px;
+}
+
+.hero-title h1 {
+  margin: 0;
+}
+
+.hero-logo {
+  width: min(220px, 56vw);
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: 26px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 10%);
+  box-shadow: var(--shadow);
+  flex: 0 0 auto;
+}
+
 .lead {
   margin: 0 0 18px;
   color: var(--muted);
@@ -202,6 +225,58 @@ h1 {
   font-size: 13px;
   line-height: 1.5;
   margin: 0;
+}
+
+.tldr {
+  margin: 16px 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 16px;
+  background: color-mix(in srgb, var(--card), transparent 8%);
+}
+
+.tldr-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tldr-kicker {
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tldr-sub {
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--subtle);
+}
+
+.tldr-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.tldr-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.checklist.checklist-compact {
+  gap: 8px;
+  font-size: 13px;
+}
+
+.checklist.checklist-compact li::before {
+  margin-top: 2px;
 }
 
 .card {
@@ -272,6 +347,17 @@ h1 {
   padding: 48px 0;
 }
 
+.section-card {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card), transparent 8%);
+  border-radius: var(--radius2);
+  padding: 20px;
+}
+
+.section-alt .section-card {
+  background: color-mix(in srgb, var(--card), transparent 2%);
+}
+
 .section-alt {
   background: color-mix(in srgb, var(--bg2), transparent 18%);
   border-top: 1px solid var(--border);
@@ -300,6 +386,132 @@ h1 {
   display: grid;
   gap: 14px;
   grid-template-columns: 1fr;
+}
+
+.diagram-grid {
+  margin-top: 16px;
+}
+
+.diagram-card h3 {
+  margin-bottom: 10px;
+}
+
+.diagram-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.diagram-box {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card2), transparent 8%);
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.diagram-box-accent {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  color: #0b0f17;
+}
+
+.diagram-logo {
+  padding: 8px 10px;
+}
+
+.diagram-logo-img {
+  width: 46px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, #0b0f17, transparent 70%);
+  background: color-mix(in srgb, rgba(255, 255, 255, 0.08), transparent 10%);
+}
+
+.diagram-arrow {
+  color: var(--subtle);
+  font-weight: 900;
+}
+
+.diagram-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--subtle);
+  line-height: 1.5;
+}
+
+.state-flow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.state {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.state-k {
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.state-v {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--text);
+}
+
+.state-s0 {
+  background: color-mix(in srgb, rgba(38, 208, 124, 0.14), var(--card) 70%);
+}
+
+.state-s1 {
+  background: color-mix(in srgb, rgba(55, 198, 255, 0.14), var(--card) 70%);
+}
+
+.state-s2 {
+  background: color-mix(in srgb, rgba(124, 92, 255, 0.16), var(--card) 70%);
+}
+
+.state-s3 {
+  background: color-mix(in srgb, rgba(255, 133, 82, 0.16), var(--card) 70%);
+}
+
+.kv {
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.kv dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+.kv dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+  font-weight: 650;
 }
 
 .panel {
@@ -411,6 +623,63 @@ h1 {
   line-height: 1.6;
 }
 
+.tier-table {
+  margin: 14px 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--card2), transparent 6%);
+}
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 0.95fr 0.85fr 1.2fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tier-row:first-child {
+  border-top: 0;
+}
+
+.tier-head {
+  background: color-mix(in srgb, var(--card), transparent 6%);
+}
+
+.tier-head .tier-cell {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.tier-cell {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text);
+}
+
+.tier-row:not(.tier-head) .tier-cell {
+  color: var(--muted);
+}
+
+.tier-row:not(.tier-head) .tier-cell:first-child {
+  color: var(--text);
+  font-weight: 850;
+}
+
+.tier-row:not(.tier-head) .tier-cell:last-child {
+  text-align: right;
+  color: var(--text);
+  font-weight: 850;
+}
+
+.tier-head .tier-cell:last-child {
+  text-align: right;
+}
+
 .finebox {
   margin-top: 18px;
   border: 1px solid var(--border);
@@ -448,6 +717,49 @@ h1 {
   padding: 14px;
   overflow: auto;
   margin: 12px 0 18px;
+}
+
+.codegrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+
+.codeblock-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.steps {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  border: 1px solid var(--border);
+  color: #0b0f17;
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
+  margin-bottom: 10px;
+}
+
+.cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 10px;
 }
 
 .codeblock code {
@@ -571,6 +883,19 @@ details p {
   position: relative;
 }
 
+.doc-nav .doc-group + .doc-group {
+  margin-top: 14px;
+}
+
+.doc-nav h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 @media (min-width: 980px) {
   .doc-layout {
     grid-template-columns: 0.38fr 0.62fr;
@@ -589,6 +914,10 @@ details p {
   .hero-inner {
     grid-template-columns: 1.15fr 0.85fr;
   }
+  .hero-logo {
+    width: 240px;
+    border-radius: 30px;
+  }
   .grid3 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -606,6 +935,41 @@ details p {
     align-items: center;
     justify-content: space-between;
   }
+  .tldr-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .codegrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-logo {
+    width: min(200px, 68vw);
+  }
+  .section-card {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 720px) {
+  .state-flow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .kv {
+    grid-template-columns: 120px 1fr;
+    gap: 10px 12px;
+  }
+  .kv dt {
+    margin-top: 0;
+  }
 }
 
     </style>
@@ -619,7 +983,7 @@ details p {
         </a>
         <div class="header-cta">
           <a class="btn btn-ghost" href="/docs/">Docs index</a>
-          <a class="btn btn-primary" href="mailto:Kevin@governedbyself.com">Contact</a>
+          <a class="btn btn-primary" href="mailto:Kevin@GovernedBySELF.com">Contact</a>
         </div>
       </div>
     </header>
@@ -629,17 +993,35 @@ details p {
           <aside class="doc-nav">
             <div class="panel">
               <h3>Docs</h3>
-              <ul class="bullets">
+              <div class="doc-group"><h4>Overview</h4><ul class="bullets">
+<li><a href="/docs/product-overview/">Product Overview</a></li>
 <li><a href="/docs/executive-brief/">Executive Brief</a></li>
+<li><a href="/docs/case-studies/">Case Studies</a></li>
+</ul></div>
+<div class="doc-group"><h4>Developers</h4><ul class="bullets">
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/integration-guide/">Integration Guide</a></li>
+<li><a href="/docs/api-reference/">HTTP API Reference</a></li>
+</ul></div>
+<div class="doc-group"><h4>Security &amp; Safety</h4><ul class="bullets">
+<li><a href="/docs/threat-model/">Threat Model &amp; Safety Posture</a></li>
+<li><a href="/docs/security-overview/">Security Overview</a></li>
+</ul></div>
+<div class="doc-group"><h4>Governance &amp; Assurance</h4><ul class="bullets">
+<li><a href="/docs/governance-doctrine/">Governance Doctrine</a></li>
+<li><a href="/docs/assurance-program/">Assurance Program</a></li>
+</ul></div>
+<div class="doc-group"><h4>Commercial &amp; Legal</h4><ul class="bullets">
 <li><a href="/docs/pricing/">Pricing</a></li>
+<li><a href="/docs/legal-docs/">Legal Docs</a></li>
 <li><a href="/docs/buy-sell-agreement/">Commercial Licensing Agreement (Escrow)</a></li>
-</ul>
+</ul></div>
             </div>
           </aside>
           <article class="doc">
             <h1>Pricing</h1>
 <div class="doc-body">
-<h1>SELF™ Pricing: Realistic Costs for Responsible Implementation</h1>
+<h1>SELF™ Pricing: MAU Tiers + Assurance + Enterprise (Draft)</h1>
 <h2>🎯 Our Pricing Philosophy</h2>
 <p><strong>SELF is priced to ensure responsible use, not to maximize revenue.</strong></p>
 <p>We structure costs to:</p>
@@ -651,7 +1033,18 @@ details p {
 </ol>
 <p><strong>No hidden fees. No surprise charges. No safety compromises.</strong></p>
 <hr />
-<h2>📋 Pricing (Usage‑Based)</h2>
+<h2>📋 Pricing Model (How It Actually Works)</h2>
+<p>SELF is an SDK. Most customers will <strong>self-host</strong> and pay for:</p>
+<p>1) <strong>SELF Core SDK license</strong> (priced by <strong>MAU</strong> tiers)</p>
+<p>2) optional <strong>Assurance Proof</strong> (priced by risk level + review cadence)</p>
+<p>3) optional <strong>Enterprise</strong> contract terms (SLA, security review, procurement needs)</p>
+<p>4) optional <strong>Usage billing</strong> only when you choose a <strong>managed</strong> service component (e.g., managed evaluation runs, hosted assurance telemetry, or other add-ons)</p>
+<h3>Definitions</h3>
+<ul>
+<li><strong>MAU (Monthly Active Users):</strong> unique end users interacting with an experience protected by SELF within a calendar month.</li>
+<li><strong>Protected surface:</strong> a user-facing feature where SELF is applied (chat, support, group facilitation, etc.).</li>
+<li><strong>Assurance Proof:</strong> evidence + review outputs that support procurement, compliance, and defensible safety claims.</li>
+</ul>
 <h3>1. Evaluation Tier</h3>
 <p><strong>For:</strong> Non-production testing and internal evaluation</p>
 <p><strong>Cost:</strong> $0 (Free)</p>
@@ -671,40 +1064,90 @@ details p {
 </ul>
 <p><strong>Best for:</strong> Teams assessing SELF&#39;s fit before commitment</p>
 <hr />
-<h3>2. Standard Production (Non‑Exclusive)</h3>
-<p><strong>For:</strong> Production deployments that want a simple, predictable baseline with pay‑as‑you‑go scaling</p>
-<p><strong>Cost:</strong> $300/month platform fee + usage</p>
-<p><strong>Includes:</strong></p>
+<h3>2. SELF Core — Production (Non‑Exclusive, MAU‑Tiered)</h3>
+<p><strong>For:</strong> Production deployments that want predictable licensing aligned to adoption (users), not message volume.</p>
+<p><strong>Cost:</strong> MAU-tier license (monthly or annual). Public list pricing (USD):</p>
 <ul>
-<li>Production deployment rights</li>
-<li>Up to 25,000 conversations/month included</li>
-<li>Doctrine updates and compatibility notices</li>
-<li>Email support (48-hour SLA)</li>
+<li><strong>Starter:</strong> up to <strong>5,000 MAU</strong> — <strong>$300 / month</strong></li>
+<li><strong>Growth:</strong> up to <strong>25,000 MAU</strong> — <strong>$750 / month</strong></li>
+<li><strong>Scale:</strong> up to <strong>100,000 MAU</strong> — <strong>$2,000 / month</strong></li>
+<li><strong>Enterprise:</strong> <strong>&gt;100,000 MAU</strong> — annual contract (<strong>starts at $36,000 / year</strong>)</li>
 </ul>
-<p><strong>Overage:</strong> $1.00 per 1,000 additional conversations</p>
+<p><strong>Includes (all MAU tiers):</strong></p>
+<ul>
+<li>production deployment rights (non-exclusive)</li>
+<li>SELF updates (policy + enforcement improvements)</li>
+<li>compatibility notes and migration guidance</li>
+<li>standard support channel</li>
+</ul>
+<p><strong>Included support (typical):</strong></p>
+<ul>
+<li>Starter: email support (48h)</li>
+<li>Growth: priority email (24–48h)</li>
+<li>Scale: priority + scheduled office hours</li>
+</ul>
+<p><strong>Overages:</strong> if you exceed your MAU tier for <strong>2 consecutive months</strong>, you move up a tier (no punitive per-message bills).</p>
 <p><strong>Best for:</strong> Most production launches</p>
 <hr />
-<h3>3. Pro Production (Non‑Exclusive, Higher Limits)</h3>
-<p><strong>For:</strong> Higher‑volume deployments that need more included usage and faster support</p>
-<p><strong>Cost:</strong> $500/month platform fee + usage</p>
-<p><strong>Includes:</strong></p>
+<h3>3. Assurance Proof (Add‑On)</h3>
+<p><strong>For:</strong> Teams that need evidence (procurement, safety committees, partners, regulators) beyond “we use a safety prompt.”</p>
+<p>Assurance Proof is priced by <strong>risk level</strong> and <strong>review cadence</strong>, not MAU alone.</p>
+<p>Example packages:</p>
 <ul>
-<li>Production deployment rights</li>
-<li>Up to 100,000 conversations/month included</li>
-<li>Doctrine updates and compatibility notices</li>
-<li>Priority email support (24-hour SLA)</li>
-<li>Incident response coordination channel (as needed)</li>
+<li><strong>Assurance Lite (annual):</strong> <strong>$7,500 / year</strong></li>
 </ul>
-<p><strong>Overage:</strong> $0.75 per 1,000 additional conversations</p>
-<p><strong>Best for:</strong> Teams scaling to large volumes</p>
+<p>Includes: baseline integration review, guarantee-matrix mapping, release-note monitoring, and a quarterly check-in.</p>
+<ul>
+<li><strong>Assurance Standard (annual):</strong> <strong>$25,000 / year</strong></li>
+</ul>
+<p>Includes: deeper integration audit, regression pack aligned to your use case, incident-response playbook review, and monthly review cadence.</p>
+<ul>
+<li><strong>Assurance Enterprise (annual):</strong> <strong>$75,000 / year</strong></li>
+</ul>
+<p>Includes: security questionnaire support, audit exports alignment, executive briefings, and defined response windows for critical safety regressions.</p>
+<p><strong>Assurance deliverables are “proof,” not a rubber stamp:</strong> if the integration fails required properties, the proof deliverable is withheld until corrected.</p>
+<p><strong>Best for:</strong> enterprise procurement, high-liability products, and anyone making public safety claims</p>
 <hr />
-<h3>4. Academic/Non‑Profit Tier</h3>
+<h3>4. Enterprise Contracting (Terms, Not Just Price)</h3>
+<p><strong>For:</strong> orgs needing SLAs, security/compliance reviews, or procurement support.</p>
+<p>Enterprise contracting may include:</p>
+<ul>
+<li>annual invoicing and procurement terms</li>
+<li>security + privacy review support</li>
+<li>designated technical contact + defined response windows</li>
+<li>optional on-site / workshop deliverables</li>
+<li>optional custom policy profile constraints (within doctrine)</li>
+</ul>
+<p>Pricing is typically:</p>
+<ul>
+<li><strong>Annual license</strong> (MAU band) + <strong>Assurance Proof</strong> + optional services.</li>
+</ul>
+<hr />
+<h3>5. Optional Usage Billing (Only for Managed Add‑Ons)</h3>
+<p>SELF Core is an SDK and is MAU-tiered. Usage billing applies only if you elect managed add-ons, for example:</p>
+<ul>
+<li>managed evaluation runs / continuous regression execution</li>
+<li>hosted assurance telemetry ingestion and dashboards</li>
+</ul>
+<p>Example metering units:</p>
+<ul>
+<li>per evaluation run (or per 1,000 evaluated turns)</li>
+<li>per GB of audit logs processed</li>
+</ul>
+<p>If you don’t use managed add-ons, you don’t get usage billing.</p>
+<p>Public list pricing for managed add-ons (USD, optional):</p>
+<ul>
+<li><strong>Managed Evaluation Runner:</strong> $500 / month includes 100,000 evaluated turns; $3.00 per 1,000 evaluated turns overage</li>
+<li><strong>Hosted Assurance Telemetry:</strong> $500 / month includes 10,000,000 audit events; $0.05 per 1,000 events overage</li>
+</ul>
+<hr />
+<h3>6. Academic/Non‑Profit Tier</h3>
 <p><strong>For:</strong> Verified academic institutions and 501(c)(3) non-profits</p>
 <p><strong>Cost:</strong> $0 (Free)</p>
 <p><strong>Includes:</strong></p>
 <ul>
 <li>Full SELF engine access</li>
-<li>Up to 5,000 conversations/month</li>
+<li>Up to <strong>10,000 MAU</strong> (or equivalent usage for research)</li>
 <li>Basic support (72-hour SLA)</li>
 <li>Research collaboration opportunities</li>
 </ul>
@@ -717,25 +1160,24 @@ details p {
 <p><strong>Best for:</strong> Research and public benefit applications</p>
 <hr />
 <h2>💰 Realistic Cost Examples</h2>
-<h3>Example 1: Mental Health Chatbot Startup</h3>
+<h3>Example 1: Startup Launch</h3>
 <ul>
-<li><strong>Tier:</strong> Standard Production</li>
-<li><strong>Conversations:</strong> 15,000/month</li>
-<li><strong>Total:</strong> $300/month ($3,600/year)</li>
+<li><strong>Tier:</strong> Starter (≤ 5,000 MAU)</li>
+<li><strong>License:</strong> $300 / month</li>
+<li><strong>Assurance:</strong> optional</li>
+<li><strong>Total:</strong> $300 / month (+ any selected add-ons)</li>
 </ul>
 <h3>Example 2: Crisis Support Non-Profit</h3>
 <ul>
 <li><strong>Tier:</strong> Academic/Non-Profit</li>
-<li><strong>Conversations:</strong> 3,000/month</li>
+<li><strong>MAU:</strong> 3,000 / month</li>
 <li><strong>Total:</strong> $0/year</li>
 </ul>
-<h3>Example 3: Enterprise Mental Health Platform</h3>
+<h3>Example 3: Enterprise Procurement</h3>
 <ul>
-<li><strong>Tier:</strong> Pro Production</li>
-<li><strong>Conversations:</strong> 1,500,000/month</li>
-<li><strong>Base:</strong> $500/month (includes 100,000)</li>
-<li><strong>Usage:</strong> 1,400,000 ÷ 1,000 × $0.75 = $1,050/month</li>
-<li><strong>Total:</strong> $1,550/month ($18,600/year)</li>
+<li><strong>Tier:</strong> Enterprise (annual MAU band)</li>
+<li><strong>Assurance Proof:</strong> Standard or Enterprise</li>
+<li><strong>Total:</strong> annual contract (license + assurance + any services)</li>
 </ul>
 <hr />
 <h2>🔍 What You&#39;re Actually Paying For</h2>
@@ -767,87 +1209,17 @@ details p {
 <li>Ethical review processes</li>
 <li>Continuous improvement</li>
 </ul>
-<p><strong>Usage pricing exists to keep incentives aligned: you pay more when you scale, and governance stays funded as real usage grows.</strong></p>
-<hr />
-<h2>⚠️ Important Cost Considerations</h2>
-<h3>1. Implementation Costs</h3>
-<p><strong>SELF licensing is only part of your total cost:</strong></p>
-<ul>
-<li>Integration development: $50,000-$200,000</li>
-<li>Safety protocol training: $10,000-$50,000</li>
-<li>Compliance audit preparation: $5,000-$20,000</li>
-<li>Ongoing safety monitoring: $20,000-$100,000/year</li>
-</ul>
-<h3>2. Hidden Costs of Not Using SELF</h3>
-<p><strong>If you build your own:</strong></p>
-<ul>
-<li>Safety protocol development: $200,000-$1M</li>
-<li>Legal liability exposure: Unquantifiable</li>
-<li>Reputation risk: Priceless</li>
-<li>Incident response costs: $50,000-$500,000 per event</li>
-</ul>
-<h3>3. Cost of Safety Failures</h3>
-<p><strong>One preventable incident can cost:</strong></p>
-<ul>
-<li>Legal settlements: $1M-$10M+</li>
-<li>Regulatory fines: $100,000-$10M</li>
-<li>Reputation damage: 30-50% revenue loss</li>
-<li>User trust: Impossible to quantify</li>
-</ul>
-<p><strong>SELF&#39;s cost is insignificant compared to the cost of failure.</strong></p>
+<p><strong>MAU-tier pricing exists to keep incentives aligned: you pay more as your user impact grows, and governance stays funded as adoption increases.</strong></p>
 <hr />
 <h2>📝 Pricing FAQ</h2>
 <p><strong>Q: Why isn&#39;t there a free tier for production use?</strong></p>
 <p>A: Emotional safety requires professional discipline. Free tiers encourage experimentation without accountability. We provide free evaluation and academic tiers instead.</p>
 <p><strong>Q: Can we negotiate custom pricing?</strong></p>
-<p>A: No. Uniform rates prevent safety dilution. Everyone pays the same published rates for the same tier and usage.</p>
-<p><strong>Q: What happens if we exceed our conversation limit?</strong></p>
-<p>A: You’ll be billed for overage at your tier’s per‑1,000 rate. We’ll notify you at 80% and 100% of your included usage.</p>
+<p>A: Enterprise contracts can vary in terms (procurement, SLA, review cadence). The core principle remains: pricing cannot be reduced in ways that undermine safety operations or assurance integrity.</p>
+<p><strong>Q: What happens if we exceed our MAU tier?</strong></p>
+<p>A: If you exceed your MAU tier for 2 consecutive months, you move to the next tier. We’ll notify you when you approach your tier boundary.</p>
 <p><strong>Q: Are there discounts for long-term commitments?</strong></p>
-<p>A: No. Safety isn’t discounted. Pricing is already usage-based; longer commitments don’t change rates.</p>
-<p><strong>Q: What&#39;s your refund policy?</strong></p>
-<p>A: No refunds for the current billing period. If you cancel, service ends at the end of the paid period.</p>
-<p><strong>Q: Can we get a discount for referring other customers?</strong></p>
-<p>A: No. We don&#39;t incentivize safety adoption through financial rewards. The value of SELF should speak for itself.</p>
-<hr />
-<h2>🎯 The Real Value Proposition</h2>
-<h3>What You Get</h3>
-<ul>
-<li><strong>Defensive infrastructure</strong> that protects you legally</li>
-<li><strong>Uniform safety standards</strong> that prevent race-to-bottom</li>
-<li><strong>Ongoing evolution</strong> of safety protocols</li>
-<li><strong>Community of responsible implementers</strong></li>
-<li><strong>Peace of mind</strong> from knowing you&#39;re doing it right</li>
-</ul>
-<h3>What You Avoid</h3>
-<ul>
-<li><strong>False safety claims</strong> that create liability</li>
-<li><strong>Fragmented protocols</strong> that miss edge cases</li>
-<li><strong>Compliance gaps</strong> that expose you to risk</li>
-<li><strong>Safety failures</strong> that harm users and reputation</li>
-<li><strong>Legal exposure</strong> from preventable incidents</li>
-</ul>
-<p><strong>SELF should be affordable—but still accountable.</strong></p>
-<hr />
-<h2>🚀 Getting Started</h2>
-<ol>
-<li><strong>Evaluate for free</strong> with the Evaluation Tier</li>
-<li><strong>Review the Doctrine</strong> to understand requirements</li>
-<li><strong>Complete the Safety Packet</strong> exercise</li>
-<li><strong>Choose your tier</strong> based on honest usage estimates</li>
-<li><strong>Sign the Commercial License</strong> without modification</li>
-<li><strong>Implement with discipline</strong> or face termination</li>
-</ol>
-<p><strong>Pricing isn&#39;t the barrier—safety discipline is.</strong></p>
-<p><strong>If you can&#39;t afford responsible implementation, you can&#39;t afford to work in emotional safety.</strong></p>
-<hr />
-<h2>📞 Contact Us</h2>
-<p>For pricing questions or to discuss your specific needs:</p>
-<p><strong>Email:</strong> licensing@soulsynqai.com</p>
-<p><strong>Response Time:</strong> 3-5 business days</p>
-<p><strong>Note:</strong> We don&#39;t negotiate on pricing or safety standards</p>
-<p><strong>Remember:</strong> The cost of SELF is an investment in preventing the next emotional safety failure.</p>
-<p><strong>The cost of not using SELF could be catastrophic.</strong></p>
+<p>A: No. Safety isn’t discounted. Pricing is tiered to real-world impact (MAU) and assurance scope; longer commitments don’t change rates.</p>
 </div>
           </article>
         </div>

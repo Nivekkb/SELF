@@ -5,7 +5,7 @@
 **Version**: SF-AGLv1.0
 **Effective Date**: December 22, 2025
 **Framework Status**: Active and Binding
-**Governance Authority**: SoulsynqAI Constitutional Framework
+**Governance Authority**: SerenixAI Constitutional Framework
 
 ---
 
@@ -17,7 +17,7 @@
 
 **WHEREAS**, this governance framework establishes the constitutional foundation for all AI development, deployment, and governance activities;
 
-**NOW THEREFORE**, this Support-First AI Governance Layer (SF-AGLv1.0) is hereby established as the supreme governing document for all SoulsynqAI activities.
+**NOW THEREFORE**, this Support-First AI Governance Layer (SF-AGLv1.0) is hereby established as the supreme governing document for all SerenixAI activities.
 
 ---
 
@@ -185,7 +185,7 @@ This framework includes mechanisms for evolution while maintaining core ethical 
 ## Article VIII: Ratification and Implementation
 
 ### Section 8.1: Formal Ratification
-This Support-First AI Governance Layer (SF-AGLv1.0) is hereby ratified and adopted as the constitutional framework for all SoulsynqAI activities.
+This Support-First AI Governance Layer (SF-AGLv1.0) is hereby ratified and adopted as the constitutional framework for all SerenixAI activities.
 
 ### Section 8.2: Implementation Timeline
 - **Immediate**: All referenced documents incorporated by reference
@@ -194,13 +194,13 @@ This Support-First AI Governance Layer (SF-AGLv1.0) is hereby ratified and adopt
 - **6 Months**: Independent ethical review conducted
 
 ### Section 8.3: Binding Authority
-All SoulsynqAI personnel, contractors, partners, and systems are bound by this governance framework. Violation constitutes grounds for termination of relationship and potential legal action.
+All SerenixAI personnel, contractors, partners, and systems are bound by this governance framework. Violation constitutes grounds for termination of relationship and potential legal action.
 
 ---
 
 ## Constitutional Signatories
 
-**SoulsynqAI Constitutional Council**  
+**SerenixAI Constitutional Council**  
 Kevin Boutilier - Founder and Chief Ethicist  
 Date: December 22, 2025  
 
@@ -228,7 +228,7 @@ Structured approach for resolving ethical dilemmas in AI development.
 
 ---
 
-**This Support-First AI Governance Layer (SF-AGLv1.0) establishes the constitutional foundation for ethical, compassionate, and human-centered AI development. It serves as the supreme governing document, anchoring all SoulsynqAI activities in the principles of human dignity, emotional safety, and compassionate technology.**
+**This Support-First AI Governance Layer (SF-AGLv1.0) establishes the constitutional foundation for ethical, compassionate, and human-centered AI development. It serves as the supreme governing document, anchoring all SerenixAI activities in the principles of human dignity, emotional safety, and compassionate technology.**
 
-**© 2025 SoulsynqAI. All rights reserved.**  
+**© 2025 SerenixAI. All rights reserved.**  
 *Constitutionally binding and ethically imperative.*

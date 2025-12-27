@@ -5,7 +5,7 @@
 
 ## 1. Introduction
 
-SoulsynqAI Inc. ("we", "us", "our") operates the SELF™ (Self-Enforcing Limitless Framework) platform and related services. We are committed to protecting your privacy and handling your personal information responsibly.
+SerenixAI Inc. ("we", "us", "our") operates the SELF™ (Self-Enforcing Limitless Framework) platform and related services. We are committed to protecting your privacy and handling your personal information responsibly.
 
 This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our SELF™ platform, including our website, API services, and any related products or services.
 
@@ -147,12 +147,12 @@ Our services are not intended for individuals under 18 years of age. We do not k
 ## 9. Privacy Officer and Contact Information
 
 **Privacy Officer Contact:**
-- Email: privacy@SoulsynqAI.com
-- Address: SoulsynqAI Inc., [Company Address]
+- Email: privacy@SerenixAI.com
+- Address: SerenixAI Inc., [Company Address]
 - Phone: [Company Phone Number]
 
 **Data Protection Officer (where applicable):**
-- Email: dpo@SoulsynqAI.com
+- Email: dpo@SerenixAI.com
 
 ## 10. Your Rights by Jurisdiction
 
@@ -262,15 +262,15 @@ If any provision of this Privacy Policy is found to be invalid, the remaining pr
 
 If you have questions about this Privacy Policy or our privacy practices, please contact us:
 
-**SoulsynqAI Inc.**
+**SerenixAI Inc.**
 Privacy Officer
-Email: privacy@SoulsynqAI.com
+Email: privacy@SerenixAI.com
 Website: [Company Website]
 Address: [Company Address]
 
 **For Data Protection Inquiries:**
 Data Protection Officer
-Email: dpo@SoulsynqAI.com
+Email: dpo@SerenixAI.com
 
 We are committed to resolving privacy concerns promptly and fairly. If you believe your privacy rights have been violated, we encourage you to contact us first. You also have the right to lodge a complaint with your local data protection authority.
 
