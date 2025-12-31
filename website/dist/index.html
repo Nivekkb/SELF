@@ -3,16 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SELF — Support‑First AI Governance Engine</title>
-  <meta name="description" content="SELF is a governance-first logic engine that prevents emotional-harm failures in AI systems. Enforceable constraints, audit-ready outputs, and measurable safety." />
+  <title>SELF — AI Safety That Actually Enforces Itself</title>
+  <meta name="description" content="SELF is a runtime governance engine that prevents emotional-harm failures in AI systems with enforceable constraints, state-aware governance, and audit-ready operations." />
   <meta name="color-scheme" content="dark light" />
-  <meta property="og:title" content="SELF — Support‑First AI Governance Engine" />
-  <meta property="og:description" content="SELF is a governance-first logic engine that prevents emotional-harm failures in AI systems. Enforceable constraints, audit-ready outputs, and measurable safety." />
+  <meta property="og:title" content="SELF — AI Safety That Actually Enforces Itself" />
+  <meta property="og:description" content="SELF is a runtime governance engine that prevents emotional-harm failures in AI systems with enforceable constraints, state-aware governance, and audit-ready operations." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://governedbyself.com" />
+  <meta property="og:image" content="https://governedbyself.com/images/og-image.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SELF — Support‑First AI Governance Engine" />
-  <meta name="twitter:description" content="SELF is a governance-first logic engine that prevents emotional-harm failures in AI systems. Enforceable constraints, audit-ready outputs, and measurable safety." />
+  <meta name="twitter:title" content="SELF — AI Safety That Actually Enforces Itself" />
+  <meta name="twitter:description" content="SELF is a runtime governance engine that prevents emotional-harm failures in AI systems with enforceable constraints, state-aware governance, and audit-ready operations." />
+  <meta name="twitter:image" content="https://governedbyself.com/images/twitter-image.jpg" />
+  <link rel="canonical" href="https://governedbyself.com" />
   <style>
 :root {
   --bg: #0b0f17;
@@ -36,6 +39,12 @@
   --dialog-bg: #070b12;
   --dialog-surface: #050812;
   --dialog-border: rgba(255, 255, 255, 0.18);
+
+  /* Conversion-focused colors */
+  --cta-bg: #7c5cff;
+  --cta-hover: #6a4ae2;
+  --highlight: rgba(124, 92, 255, 0.12);
+  --gradient: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(55, 198, 255, 0.75));
 }
 
 @media (prefers-color-scheme: light) {
@@ -1587,6 +1596,143 @@ h1 {
   animation: fadeIn 0.6s ease-out;
 }
 
+/* Conversion-focused enhancements */
+.cta-highlight {
+  background: var(--highlight);
+  border: 1px solid color-mix(in srgb, var(--accent), var(--border) 50%);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.benefit-highlight {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--highlight);
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent), var(--border) 60%);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px;
+}
+
+.feature-highlight {
+  position: relative;
+  padding-left: 16px;
+}
+
+.feature-highlight::before {
+  content: "✨";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+}
+
+/* Hero section enhancements */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(124, 92, 255, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(55, 198, 255, 0.06), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Enhanced CTA buttons */
+.btn-primary {
+  background: var(--gradient);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+
+.btn-primary:hover::after {
+  transform: translateX(100%);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.3);
+}
+
+/* Trust indicators enhancement */
+.trust-indicators {
+  display: flex;
+  gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.indicator {
+  text-align: center;
+  padding: 12px 16px;
+  background: var(--highlight);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--accent), var(--border) 60%);
+  min-width: 120px;
+}
+
+/* Value proposition enhancement */
+.value-item {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.value-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.15);
+  border-color: color-mix(in srgb, var(--accent), var(--border) 40%);
+}
+
+/* Pricing section enhancements */
+.price-card.featured {
+  transform: scale(1.05);
+  border: 2px solid var(--accent);
+  box-shadow: 0 12px 30px rgba(124, 92, 255, 0.2);
+}
+
+.price-badge {
+  background: var(--gradient);
+  color: #0b0f17;
+  font-weight: 900;
+}
+
+/* Mobile menu improvements */
+.nav.mobile-open {
+  animation: fadeIn 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
 /* Utility Classes */
 .text-center {
   text-align: center;
@@ -1604,10 +1750,189 @@ h1 {
 .p-4 { padding: 16px; }
 .p-8 { padding: 32px; }
 
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .header, .footer, .nav, .hero-actions, .cta-section {
+    display: none;
+  }
+
+  .section {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+}
+
+/* Final polish - smooth scrolling and enhanced animations */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply enhanced animations to key elements */
+.hero {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.value-item, .product-feature, .use-case-card {
+  animation: fadeInUp 0.6s ease-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.price-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.price-card.featured {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Enhanced focus states for accessibility */
+.btn:focus, .chip:focus, a:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Improved typography */
+h1, h2, h3, h4 {
+  font-variant-ligatures: common-ligatures;
+  letter-spacing: -0.02em;
+}
+
+/* Enhanced code blocks */
+code {
+  background: color-mix(in srgb, var(--card), transparent 20%);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+/* Final performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  h1 {
+    font-size: clamp(32px, 6vw, 48px);
+  }
+
+  h2 {
+    font-size: clamp(28px, 5vw, 40px);
+  }
+
+  .lead, .section-subtitle {
+    font-size: 16px;
+  }
+}
+
+/* Dark mode transitions */
+@media (prefers-color-scheme: dark) {
+  body {
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+}
+
 </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Preload critical assets -->
+  <link rel="preload" href="./styles.css" as="style" />
+  <link rel="preload" href="./site.js" as="script" />
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "GovernedBySELF",
+    "url": "https://governedbyself.com",
+    "logo": "https://governedbyself.com/images/logo.png",
+    "description": "AI safety governance engine that prevents emotional-harm failures in AI systems with enforceable constraints and audit-ready operations.",
+    "founder": {
+      "@type": "Person",
+      "name": "Kevin"
+    },
+    "sameAs": [
+      "https://twitter.com/GovernedBySELF",
+      "https://linkedin.com/company/governedbyself"
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SELF - Support-First Logic Engine",
+    "operatingSystem": "Cross-platform",
+    "applicationCategory": "AI Governance",
+    "offers": {
+      "@type": "Offer",
+      "price": "300",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "price": "300",
+        "priceCurrency": "USD",
+        "billingDuration": "P1M"
+      }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "128"
+    }
+  }
+  </script>
+
+  <!-- Additional Meta Tags -->
+  <meta name="keywords" content="AI safety, AI governance, runtime governance, AI constraints, audit-ready AI, AI compliance, AI risk management">
+  <meta name="author" content="GovernedBySELF">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 </head>
 <body>
   <header class="header">
@@ -1618,17 +1943,13 @@ h1 {
       </a>
 
       <nav class="nav">
+        <a href="#demo">Demo</a>
         <a href="#product">Product</a>
-        <a href="/audit-readiness/">Audit Readiness</a>
-        <a href="/enterprise-compliance/">Enterprise</a>
-        <a href="#examples">Use Cases</a>
         <a href="#pricing">Pricing</a>
         <a href="#trust">Trust</a>
-        <a href="#faq">FAQ</a>
       </nav>
 
       <div class="header-cta">
-        <a class="btn btn-ghost" id="docsLink" href="#docs">Docs</a>
         <a class="btn btn-primary" id="requestLink" href="#request">Get Started</a>
       </div>
 
