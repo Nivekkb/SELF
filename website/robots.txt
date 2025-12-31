@@ -1,0 +1,10 @@
+# robots.txt for governedbyself.com
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /admin/
+
+Sitemap: https://governedbyself.com/sitemap.xml
+
+# Crawl delay for polite crawling
+Crawl-delay: 2

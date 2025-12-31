@@ -1,5 +1,40 @@
-node_modules
-*.log
-.env*
-.DS_Store
+# Dependencies
+node_modules/
 
+# Environment variables (keep a template version)
+.env
+.env.*
+!.env.example
+
+# Logs & runtime artifacts
+logs/
+*.log
+*.pid
+*.pid.lock
+
+# Test/build output & caches
+coverage/
+.nyc_output/
+*.tsbuildinfo
+.eslintcache
+.cache/
+.turbo/
+.parcel-cache/
+.vite/
+.next/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Common secret formats (avoid committing keys/certs)
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.kdbx

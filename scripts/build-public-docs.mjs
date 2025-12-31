@@ -58,7 +58,7 @@ const docs = [
   },
   {
     slug: "suicide-self-harm-standard",
-    title: "Suicide & Self‑Harm Governance Standard",
+    title: "Crisis & Self‑Harm Governance Standard",
     category: "Security & Safety",
     source: path.join(root, "SELF_DOCS", "public", "technical", "SELF_SUICIDE_SELFHARM_GOVERNANCE_STANDARD.md"),
   },
@@ -303,7 +303,7 @@ function writeFileSafe(fp, text) {
   fs.writeFileSync(fp, text, "utf8");
 }
 
-const categoryOrder = ["Overview", "Developers", "Security & Safety", "Governance & Assurance", "Commercial & Legal"];
+const categoryOrder = ["Developers", "Overview", "Security & Safety", "Governance & Assurance", "Commercial & Legal"];
 const docsByCategory = new Map();
 for (const doc of docs) {
   const category = typeof doc.category === "string" ? doc.category : "Docs";

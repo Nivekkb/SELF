@@ -24,7 +24,8 @@ const contentTypes = new Map([
 function safePath(urlPath) {
   const decoded = decodeURIComponent(urlPath.split("?")[0]);
   const cleaned = decoded.replace(/\0/g, "");
-  const rel = cleaned === "/" ? "/index.html" : cleaned;
+  let rel = cleaned === "/" ? "/index.html" : cleaned;
+  if (rel.endsWith("/")) rel = rel + "index.html";
   const resolved = path.resolve(root, "." + rel);
   if (!resolved.startsWith(root)) return null;
   return resolved;
@@ -32,12 +33,19 @@ function safePath(urlPath) {
 
 const server = createServer((req, res) => {
   try {
-    const filePath = safePath(req.url || "/");
+    const urlPath = req.url || "/";
+    let filePath = safePath(urlPath);
     if (!filePath) {
       res.writeHead(400, { "content-type": "text/plain; charset=utf-8" });
       res.end("bad request");
       return;
     }
+
+    if (!existsSync(filePath) && !path.extname(filePath)) {
+      const tryIndex = safePath(`${urlPath.replace(/\/+$/, "")}/`);
+      if (tryIndex && existsSync(tryIndex)) filePath = tryIndex;
+    }
+
     if (!existsSync(filePath) || !statSync(filePath).isFile()) {
       res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
       res.end("not found");

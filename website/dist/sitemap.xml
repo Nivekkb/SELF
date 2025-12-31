@@ -4,6 +4,9 @@
     <loc>https://governedbyself.com/</loc>
   </url>
   <url>
+    <loc>https://governedbyself.com/audit-readiness/</loc>
+  </url>
+  <url>
     <loc>https://governedbyself.com/docs/</loc>
   </url>
   <url>
@@ -50,5 +53,8 @@
   </url>
   <url>
     <loc>https://governedbyself.com/docs/threat-model/</loc>
+  </url>
+  <url>
+    <loc>https://governedbyself.com/enterprise-compliance/</loc>
   </url>
 </urlset>
