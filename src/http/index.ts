@@ -28,6 +28,9 @@ import {
   type Policy,
   type SelfVariant,
 } from "../index";
+import { governanceRouter } from "../api/v1/governance";
+import express from "express";
+import bodyParser from "body-parser";
 
 export type SelfHttpAuthMode = "optional" | "required";
 

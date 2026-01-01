@@ -42,11 +42,23 @@ export type {
   SelfHistoryMessage
 } from '../types';
 
-// Re-export types from other modules that exist
+// Re-export governance API types
 export type {
-  GovernanceConfig,
-  GovernanceResponse
-} from '../governance-api';
+  GovernanceRequest,
+  GovernanceResponse as GovernanceApiResponse,
+  GovernanceStatusResponse,
+  GovernanceError
+} from './v1/governance';
+
+// Re-export governance config types
+export type {
+  GovernanceConfig
+} from './v1/governance-config';
+
+// Re-export builder integration types
+export type {
+  BuilderIntegrationConfig
+} from './v1/builder-integration';
 
 export type {
   EmotionalState,
