@@ -22,28 +22,30 @@ Output:
 - `website/dist/sitemap.xml`
 - `website/dist/robots.txt`
 
-## Nginx (simple static host)
+## Firebase Hosting (recommended)
 
-Recommended config for a static site with assets:
+The static site is served directly from `website/dist/` with no SPA rewrites.
 
-```nginx
-root /var/www/html;
-index index.html;
+One-time setup (when the Firebase project is ready; target project will be `roleos` once available):
 
-location / {
-  # Serve real files/directories; fall back to homepage for unknown paths.
-  try_files $uri $uri/ /index.html;
-}
+```bash
+firebase login
+firebase use --add
 ```
 
-Important: deploy the entire `website/dist/` folder (not just `index.html`), or routes like
-`/audit-readiness/` and `/enterprise-compliance/` will fall back to the homepage.
+Deploy:
 
-If your Nginx config is currently hard-wired to a single file (like `try_files /get-support-first.html =404;`), deploy the single-file build and point Nginx at `index.html` (or rename it).
-
-If `https://governedbyself.com/sitemap.xml` or `https://governedbyself.com/robots.txt` are returning HTML, you are likely serving `index.html` for every path. Make sure you deploy the entire `website/dist/` folder (not just `index.html`), and consider pinning these files:
-
-```nginx
-location = /sitemap.xml { try_files $uri =404; }
-location = /robots.txt { try_files $uri =404; }
+```bash
+npm run build:website
+firebase deploy --only hosting
 ```
+
+Custom domain:
+
+- Hosting sites:
+  - `self-engine.web.app` (default)
+  - `self-engine.firebaseapp.com` (default)
+  - `governedbyself.com` (custom, verified)
+- Point DNS at Firebase via the records provided in the Hosting UI.
+
+Note: `sitemap.xml` and `robots.txt` are built into `website/dist/` and will be served as static files.

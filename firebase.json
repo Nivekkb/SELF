@@ -1,0 +1,22 @@
+{
+  "functions": {
+    "source": "functions",
+    "predeploy": [
+      "npm --prefix functions run build"
+    ]
+  },
+  "hosting": {
+    "public": "website/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "selfApi"
+      }
+    ]
+  }
+}
