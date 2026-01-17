@@ -43,17 +43,19 @@
   setHref("requestStandard", requestUrl);
   setHref("requestPro", requestUrl);
 
-  const messagesEl = document.getElementById("selfChatMessages");
+  const baselineOutputEl = document.getElementById("selfBaselineOutput");
+  const governedOutputEl = document.getElementById("selfGovernedOutput");
+  const baselineMetaEl = document.getElementById("selfBaselineMeta");
+  const governedMetaEl = document.getElementById("selfGovernedMeta");
   const formEl = document.getElementById("selfChatForm");
   const inputEl = document.getElementById("selfChatInput");
   const sendEl = document.getElementById("selfChatSend");
   const resetEl = document.getElementById("selfChatReset");
-  const compareEl = document.getElementById("selfCompareToggle");
   const whyEl = document.getElementById("selfWhyDetails");
   const auditEl = document.getElementById("selfAudit");
-  const statePillEl = document.getElementById("selfStatePill");
-  const stateCodeEl = document.getElementById("selfStateCode");
-  const stateLabelEl = document.getElementById("selfStateLabel");
+  const statePillEl = document.getElementById("selfStatePill2");
+  const stateCodeEl = document.getElementById("selfStateCode2");
+  const stateLabelEl = document.getElementById("selfStateLabel2");
   const flagBtnEl = document.getElementById("selfFlagBtn");
   const flagReasonEl = document.getElementById("selfFlagReason");
   const flagPublicEl = document.getElementById("selfFlagPublicToggle");
@@ -86,10 +88,12 @@
   const heroesUpdatedEl = document.getElementById("selfHeroesUpdated");
   const heroesListEl = document.getElementById("selfHeroesList");
 
-  if (!messagesEl || !formEl || !inputEl || !sendEl || !auditEl || !statePillEl || !stateCodeEl || !stateLabelEl) return;
+  if (!baselineOutputEl || !governedOutputEl || !formEl || !inputEl || !sendEl || !auditEl || !statePillEl || !stateCodeEl || !stateLabelEl) return;
   if (!demoApiUrl) {
-    messagesEl.innerHTML =
-      '<div class="msg msg-assistant"><div class="msg-label">Demo offline</div><div class="msg-bubble">Demo endpoint is not configured.</div></div>';
+    baselineOutputEl.textContent = "Demo endpoint is not configured.";
+    governedOutputEl.textContent = "Demo endpoint is not configured.";
+    if (baselineMetaEl) baselineMetaEl.textContent = "Demo offline";
+    if (governedMetaEl) governedMetaEl.textContent = "Demo offline";
     return;
   }
 
@@ -293,29 +297,22 @@
     return new Blob([pdf], { type: "application/pdf" });
   };
 
-  const scrollToBottom = () => {
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  const setPanelText = (el, text) => {
+    if (!el) return;
+    el.textContent = safeText(text);
   };
 
-  const appendMessage = ({ role, label, content }) => {
-    const wrapper = document.createElement("div");
-    wrapper.className = `msg ${role === "user" ? "msg-user" : "msg-assistant"}`;
+  const setPanelMeta = (el, text) => {
+    if (!el) return;
+    el.textContent = safeText(text);
+  };
 
-    if (label) {
-      const labelEl = document.createElement("div");
-      labelEl.className = "msg-label";
-      labelEl.textContent = label;
-      wrapper.appendChild(labelEl);
-    }
-
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    bubble.textContent = safeText(content);
-    wrapper.appendChild(bubble);
-
-    messagesEl.appendChild(wrapper);
-    scrollToBottom();
-    return wrapper;
+  const resetPanels = () => {
+    setPanelText(baselineOutputEl, "Awaiting input.");
+    setPanelText(governedOutputEl, "Awaiting input.");
+    setPanelMeta(baselineMetaEl, "—");
+    setPanelMeta(governedMetaEl, "—");
+    auditEl.textContent = "Audit log will appear here.";
   };
 
   const setState = (state) => {
@@ -663,15 +660,7 @@
     }
   };
 
-  const seedIntro = () => {
-    appendMessage({
-      role: "assistant",
-      label: "Governed by SELF",
-      content: "Try one of the scenario chips above, or ask anything. I’ll show the SELF state + audit trail for each turn (and a baseline model response for comparison).",
-    });
-  };
-
-  seedIntro();
+  resetPanels();
 
   formEl.addEventListener("submit", async (ev) => {
     ev.preventDefault();
@@ -680,14 +669,14 @@
 
     inputEl.value = "";
     lastUserMessage = message;
-    appendMessage({ role: "user", label: "You", content: message });
-
     sendEl.disabled = true;
-    const pending = appendMessage({ role: "assistant", label: "Working…", content: "…" });
+    setPanelText(baselineOutputEl, "Working…");
+    setPanelText(governedOutputEl, "Working…");
+    setPanelMeta(baselineMetaEl, "Running");
+    setPanelMeta(governedMetaEl, "Running");
 
     try {
       const data = await callDemo(message);
-      const compareOn = !!(compareEl && compareEl.checked);
 
       const outputs = data && data.outputs ? data.outputs : {};
       const baseline = outputs.baseline && outputs.baseline.output ? outputs.baseline.output : "";
@@ -695,13 +684,12 @@
       const provider = data && data.provider ? data.provider : null;
       const providerLabel =
         provider && provider.name === "groq" ? `Groq${provider.model ? `: ${provider.model}` : ""}` : "offline";
+      const state = data && data.policy && data.policy.state ? data.policy.state : "S0";
 
-      pending.remove();
-
-      if (compareOn) {
-        appendMessage({ role: "assistant", label: `Baseline (${providerLabel})`, content: baseline || "(no baseline)" });
-      }
-      appendMessage({ role: "assistant", label: "Governed (SELF)", content: governed || "(no response)" });
+      setPanelText(baselineOutputEl, baseline || "(no baseline)");
+      setPanelText(governedOutputEl, governed || "(no response)");
+      setPanelMeta(baselineMetaEl, providerLabel);
+      setPanelMeta(governedMetaEl, `State ${state}`);
 
       if (data && data.policy && data.policy.state) setState(data.policy.state);
       renderAudit(data);
@@ -712,12 +700,11 @@
       history.push({ role: "assistant", content: governed || "" });
       if (history.length > 24) history.splice(0, history.length - 24);
     } catch (err) {
-      pending.remove();
-      appendMessage({
-        role: "assistant",
-        label: "Error",
-        content: `Demo request failed: ${safeText(err && err.message ? err.message : err)}`,
-      });
+      const errText = `Demo request failed: ${safeText(err && err.message ? err.message : err)}`;
+      setPanelText(baselineOutputEl, errText);
+      setPanelText(governedOutputEl, errText);
+      setPanelMeta(baselineMetaEl, "Error");
+      setPanelMeta(governedMetaEl, "Error");
     } finally {
       sendEl.disabled = false;
       inputEl.focus();
@@ -734,11 +721,11 @@
 
   if (resetEl) {
     resetEl.addEventListener("click", () => {
-      messagesEl.innerHTML = "";
       history.length = 0;
+      lastUserMessage = "";
       // Keep the last audit + event available for flagging, even if the chat is cleared.
       // (Reset should clear the chat view, not "reset flags/metrics".)
-      seedIntro();
+      resetPanels();
     });
   }
 

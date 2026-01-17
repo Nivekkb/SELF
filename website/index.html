@@ -202,8 +202,6 @@
               </button>
             </div>
 
-            <div class="demo-messages" id="selfChatMessages" role="log" aria-live="polite"></div>
-
             <form class="demo-input" id="selfChatForm" autocomplete="off">
               <label class="sr-only" for="selfChatInput">Message</label>
               <input
@@ -215,11 +213,33 @@
               <button class="btn btn-primary" type="submit" id="selfChatSend">Send</button>
             </form>
 
+            <div class="demo-live-grid">
+              <div class="demo-outputs" aria-live="polite">
+                <div class="demo-panel">
+                  <div class="demo-panel-head">
+                    <span>Baseline (No Governance)</span>
+                    <span class="demo-panel-meta" id="selfBaselineMeta">—</span>
+                  </div>
+                  <div class="demo-output" id="selfBaselineOutput">Awaiting input.</div>
+                </div>
+                <div class="demo-panel demo-panel-governed">
+                  <div class="demo-panel-head">
+                    <span>Governed by SELF</span>
+                    <span class="demo-panel-meta" id="selfGovernedMeta">—</span>
+                  </div>
+                  <div class="demo-output" id="selfGovernedOutput">Awaiting input.</div>
+                </div>
+              </div>
+              <div class="demo-panel demo-panel-audit" aria-live="polite">
+                <div class="demo-panel-head">
+                  <span>Audit Log</span>
+                  <span class="demo-panel-meta">Latest</span>
+                </div>
+                <div class="demo-audit" id="selfAudit">Audit log will appear here.</div>
+              </div>
+            </div>
+
             <div class="demo-controls">
-              <label class="toggle">
-                <input type="checkbox" id="selfCompareToggle" checked />
-                <span>Show baseline comparison</span>
-              </label>
               <div class="demo-actions">
                 <button class="btn btn-secondary btn-small" type="button" id="selfReportBtn">Report Issue</button>
                 <button class="btn btn-ghost btn-small" type="button" id="selfHeroesBtn">Governance Heroes</button>
@@ -227,14 +247,6 @@
               </div>
             </div>
 
-            <div class="demo-audit" id="selfAuditContainer">
-              <details class="demo-why" id="selfWhyDetails">
-                <summary>🔍 Why this response happened</summary>
-                <div class="demo-why-body">
-                  <div class="demo-audit" id="selfAudit"></div>
-                </div>
-              </details>
-            </div>
           </div>
         </div>
       </div>
@@ -832,19 +844,7 @@
       });
     });
 
-    // Update state pill in hero to match demo
-    function updateHeroState() {
-      const demoStatePill = document.getElementById('selfStatePill');
-      const heroStatePill = document.getElementById('selfStatePill2');
-      if (demoStatePill && heroStatePill) {
-        heroStatePill.dataset.state = demoStatePill.dataset.state;
-        document.getElementById('selfStateCode2').textContent = document.getElementById('selfStateCode').textContent;
-        document.getElementById('selfStateLabel2').textContent = document.getElementById('selfStateLabel').textContent;
-      }
-    }
-
-    // Check for state updates periodically
-    setInterval(updateHeroState, 1000);
+    // State pill now lives in the demo header only.
   </script>
 </body>
 </html>

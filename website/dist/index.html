@@ -461,7 +461,7 @@ h1 {
 }
 
 .demo-container {
-  max-width: 800px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -600,6 +600,105 @@ h1 {
   border-color: color-mix(in srgb, var(--accent2), var(--border) 50%);
 }
 
+.demo-live-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 18px 0 8px;
+}
+
+.demo-outputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.demo-panel {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg), transparent 30%);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  min-height: 240px;
+}
+
+.demo-panel-governed {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 50%);
+  background: color-mix(in srgb, var(--card), transparent 10%);
+}
+
+.demo-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.demo-panel-meta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--subtle);
+  letter-spacing: 0.04em;
+}
+
+.demo-output {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--card), transparent 5%);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+.demo-panel-governed .demo-output {
+  border-color: color-mix(in srgb, var(--accent), var(--border) 55%);
+  background: color-mix(in srgb, var(--accent), transparent 88%);
+}
+
+.demo-panel-audit {
+  min-height: 240px;
+}
+
+.demo-panel-audit .demo-audit {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card), transparent 5%);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.demo-panel-audit .audit-grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-panel-audit .audit-item {
+  background: color-mix(in srgb, var(--bg), transparent 30%);
+  border-radius: 10px;
+  padding: 6px 8px;
+}
+
+.demo-panel-audit code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  word-break: break-word;
+}
+
 .demo-controls {
   display: flex;
   align-items: center;
@@ -628,6 +727,15 @@ h1 {
   display: inline-flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .demo-live-grid {
+    grid-template-columns: 1fr;
+  }
+  .demo-outputs {
+    grid-template-columns: 1fr;
+  }
 }
 
 .demo-audit {
@@ -2058,8 +2166,6 @@ code {
               </button>
             </div>
 
-            <div class="demo-messages" id="selfChatMessages" role="log" aria-live="polite"></div>
-
             <form class="demo-input" id="selfChatForm" autocomplete="off">
               <label class="sr-only" for="selfChatInput">Message</label>
               <input
@@ -2071,11 +2177,33 @@ code {
               <button class="btn btn-primary" type="submit" id="selfChatSend">Send</button>
             </form>
 
+            <div class="demo-live-grid">
+              <div class="demo-outputs" aria-live="polite">
+                <div class="demo-panel">
+                  <div class="demo-panel-head">
+                    <span>Baseline (No Governance)</span>
+                    <span class="demo-panel-meta" id="selfBaselineMeta">—</span>
+                  </div>
+                  <div class="demo-output" id="selfBaselineOutput">Awaiting input.</div>
+                </div>
+                <div class="demo-panel demo-panel-governed">
+                  <div class="demo-panel-head">
+                    <span>Governed by SELF</span>
+                    <span class="demo-panel-meta" id="selfGovernedMeta">—</span>
+                  </div>
+                  <div class="demo-output" id="selfGovernedOutput">Awaiting input.</div>
+                </div>
+              </div>
+              <div class="demo-panel demo-panel-audit" aria-live="polite">
+                <div class="demo-panel-head">
+                  <span>Audit Log</span>
+                  <span class="demo-panel-meta">Latest</span>
+                </div>
+                <div class="demo-audit" id="selfAudit">Audit log will appear here.</div>
+              </div>
+            </div>
+
             <div class="demo-controls">
-              <label class="toggle">
-                <input type="checkbox" id="selfCompareToggle" checked />
-                <span>Show baseline comparison</span>
-              </label>
               <div class="demo-actions">
                 <button class="btn btn-secondary btn-small" type="button" id="selfReportBtn">Report Issue</button>
                 <button class="btn btn-ghost btn-small" type="button" id="selfHeroesBtn">Governance Heroes</button>
@@ -2083,14 +2211,6 @@ code {
               </div>
             </div>
 
-            <div class="demo-audit" id="selfAuditContainer">
-              <details class="demo-why" id="selfWhyDetails">
-                <summary>🔍 Why this response happened</summary>
-                <div class="demo-why-body">
-                  <div class="demo-audit" id="selfAudit"></div>
-                </div>
-              </details>
-            </div>
           </div>
         </div>
       </div>
@@ -2729,17 +2849,19 @@ window.SELF_SITE = {
   setHref("requestStandard", requestUrl);
   setHref("requestPro", requestUrl);
 
-  const messagesEl = document.getElementById("selfChatMessages");
+  const baselineOutputEl = document.getElementById("selfBaselineOutput");
+  const governedOutputEl = document.getElementById("selfGovernedOutput");
+  const baselineMetaEl = document.getElementById("selfBaselineMeta");
+  const governedMetaEl = document.getElementById("selfGovernedMeta");
   const formEl = document.getElementById("selfChatForm");
   const inputEl = document.getElementById("selfChatInput");
   const sendEl = document.getElementById("selfChatSend");
   const resetEl = document.getElementById("selfChatReset");
-  const compareEl = document.getElementById("selfCompareToggle");
   const whyEl = document.getElementById("selfWhyDetails");
   const auditEl = document.getElementById("selfAudit");
-  const statePillEl = document.getElementById("selfStatePill");
-  const stateCodeEl = document.getElementById("selfStateCode");
-  const stateLabelEl = document.getElementById("selfStateLabel");
+  const statePillEl = document.getElementById("selfStatePill2");
+  const stateCodeEl = document.getElementById("selfStateCode2");
+  const stateLabelEl = document.getElementById("selfStateLabel2");
   const flagBtnEl = document.getElementById("selfFlagBtn");
   const flagReasonEl = document.getElementById("selfFlagReason");
   const flagPublicEl = document.getElementById("selfFlagPublicToggle");
@@ -2772,10 +2894,12 @@ window.SELF_SITE = {
   const heroesUpdatedEl = document.getElementById("selfHeroesUpdated");
   const heroesListEl = document.getElementById("selfHeroesList");
 
-  if (!messagesEl || !formEl || !inputEl || !sendEl || !auditEl || !statePillEl || !stateCodeEl || !stateLabelEl) return;
+  if (!baselineOutputEl || !governedOutputEl || !formEl || !inputEl || !sendEl || !auditEl || !statePillEl || !stateCodeEl || !stateLabelEl) return;
   if (!demoApiUrl) {
-    messagesEl.innerHTML =
-      '<div class="msg msg-assistant"><div class="msg-label">Demo offline</div><div class="msg-bubble">Demo endpoint is not configured.</div></div>';
+    baselineOutputEl.textContent = "Demo endpoint is not configured.";
+    governedOutputEl.textContent = "Demo endpoint is not configured.";
+    if (baselineMetaEl) baselineMetaEl.textContent = "Demo offline";
+    if (governedMetaEl) governedMetaEl.textContent = "Demo offline";
     return;
   }
 
@@ -2979,29 +3103,22 @@ window.SELF_SITE = {
     return new Blob([pdf], { type: "application/pdf" });
   };
 
-  const scrollToBottom = () => {
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  const setPanelText = (el, text) => {
+    if (!el) return;
+    el.textContent = safeText(text);
   };
 
-  const appendMessage = ({ role, label, content }) => {
-    const wrapper = document.createElement("div");
-    wrapper.className = `msg ${role === "user" ? "msg-user" : "msg-assistant"}`;
+  const setPanelMeta = (el, text) => {
+    if (!el) return;
+    el.textContent = safeText(text);
+  };
 
-    if (label) {
-      const labelEl = document.createElement("div");
-      labelEl.className = "msg-label";
-      labelEl.textContent = label;
-      wrapper.appendChild(labelEl);
-    }
-
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    bubble.textContent = safeText(content);
-    wrapper.appendChild(bubble);
-
-    messagesEl.appendChild(wrapper);
-    scrollToBottom();
-    return wrapper;
+  const resetPanels = () => {
+    setPanelText(baselineOutputEl, "Awaiting input.");
+    setPanelText(governedOutputEl, "Awaiting input.");
+    setPanelMeta(baselineMetaEl, "—");
+    setPanelMeta(governedMetaEl, "—");
+    auditEl.textContent = "Audit log will appear here.";
   };
 
   const setState = (state) => {
@@ -3349,15 +3466,7 @@ window.SELF_SITE = {
     }
   };
 
-  const seedIntro = () => {
-    appendMessage({
-      role: "assistant",
-      label: "Governed by SELF",
-      content: "Try one of the scenario chips above, or ask anything. I’ll show the SELF state + audit trail for each turn (and a baseline model response for comparison).",
-    });
-  };
-
-  seedIntro();
+  resetPanels();
 
   formEl.addEventListener("submit", async (ev) => {
     ev.preventDefault();
@@ -3366,14 +3475,14 @@ window.SELF_SITE = {
 
     inputEl.value = "";
     lastUserMessage = message;
-    appendMessage({ role: "user", label: "You", content: message });
-
     sendEl.disabled = true;
-    const pending = appendMessage({ role: "assistant", label: "Working…", content: "…" });
+    setPanelText(baselineOutputEl, "Working…");
+    setPanelText(governedOutputEl, "Working…");
+    setPanelMeta(baselineMetaEl, "Running");
+    setPanelMeta(governedMetaEl, "Running");
 
     try {
       const data = await callDemo(message);
-      const compareOn = !!(compareEl && compareEl.checked);
 
       const outputs = data && data.outputs ? data.outputs : {};
       const baseline = outputs.baseline && outputs.baseline.output ? outputs.baseline.output : "";
@@ -3381,13 +3490,12 @@ window.SELF_SITE = {
       const provider = data && data.provider ? data.provider : null;
       const providerLabel =
         provider && provider.name === "groq" ? `Groq${provider.model ? `: ${provider.model}` : ""}` : "offline";
+      const state = data && data.policy && data.policy.state ? data.policy.state : "S0";
 
-      pending.remove();
-
-      if (compareOn) {
-        appendMessage({ role: "assistant", label: `Baseline (${providerLabel})`, content: baseline || "(no baseline)" });
-      }
-      appendMessage({ role: "assistant", label: "Governed (SELF)", content: governed || "(no response)" });
+      setPanelText(baselineOutputEl, baseline || "(no baseline)");
+      setPanelText(governedOutputEl, governed || "(no response)");
+      setPanelMeta(baselineMetaEl, providerLabel);
+      setPanelMeta(governedMetaEl, `State ${state}`);
 
       if (data && data.policy && data.policy.state) setState(data.policy.state);
       renderAudit(data);
@@ -3398,12 +3506,11 @@ window.SELF_SITE = {
       history.push({ role: "assistant", content: governed || "" });
       if (history.length > 24) history.splice(0, history.length - 24);
     } catch (err) {
-      pending.remove();
-      appendMessage({
-        role: "assistant",
-        label: "Error",
-        content: `Demo request failed: ${safeText(err && err.message ? err.message : err)}`,
-      });
+      const errText = `Demo request failed: ${safeText(err && err.message ? err.message : err)}`;
+      setPanelText(baselineOutputEl, errText);
+      setPanelText(governedOutputEl, errText);
+      setPanelMeta(baselineMetaEl, "Error");
+      setPanelMeta(governedMetaEl, "Error");
     } finally {
       sendEl.disabled = false;
       inputEl.focus();
@@ -3420,11 +3527,11 @@ window.SELF_SITE = {
 
   if (resetEl) {
     resetEl.addEventListener("click", () => {
-      messagesEl.innerHTML = "";
       history.length = 0;
+      lastUserMessage = "";
       // Keep the last audit + event available for flagging, even if the chat is cleared.
       // (Reset should clear the chat view, not "reset flags/metrics".)
-      seedIntro();
+      resetPanels();
     });
   }
 
@@ -3532,19 +3639,7 @@ window.SELF_SITE = {
       });
     });
 
-    // Update state pill in hero to match demo
-    function updateHeroState() {
-      const demoStatePill = document.getElementById('selfStatePill');
-      const heroStatePill = document.getElementById('selfStatePill2');
-      if (demoStatePill && heroStatePill) {
-        heroStatePill.dataset.state = demoStatePill.dataset.state;
-        document.getElementById('selfStateCode2').textContent = document.getElementById('selfStateCode').textContent;
-        document.getElementById('selfStateLabel2').textContent = document.getElementById('selfStateLabel').textContent;
-      }
-    }
-
-    // Check for state updates periodically
-    setInterval(updateHeroState, 1000);
+    // State pill now lives in the demo header only.
   </script>
 </body>
 </html>
