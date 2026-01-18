@@ -1,37 +1,19 @@
-# SELF (Support‑First Logic Engine)
+# SELF — Support-First Governance Engine
 
-SELF is the internal library used by SerenixAI to enforce support-first, safety-oriented behavioral constraints.
+SELF is a support-first governance engine that enforces state-aware safety, refusal with dignity, and audit-ready accountability. This project exists to ensure that powerful systems remain bounded, humane, and non-deceptive under distress conditions.
 
-- Source: `src/`
-- Build output: `dist/` (committed; `npm run build` regenerates and patches ESM import specifiers for Node ESM)
-- Docs: `SELF_DOCS/`
+## What this repo contains
 
-## Development
+- Core engine source in `src/`
+- Demo website in `website/`
+- Build tooling in `scripts/`
+- Public documentation in `SELF_DOCS/public/`
 
-```bash
-npm install
-npm test
-npm run build
-```
+## Stewardship license (summary)
 
-## HTTP API
+Use, study, and deploy SELF freely while preserving its governance integrity. See `STEWARDHIP_LICENSE.md` for the full terms.
 
-Run SELF as a small HTTP service (no external deps):
+## Notes
 
-```bash
-npm run build
-SELF_HTTP_PORT=8787 SELF_HTTP_API_KEY=your_key npm run start:http
-```
-
-Endpoints:
-- `GET /health`
-- `POST /v1/pre` (detect state + return policy)
-- `POST /v1/post` (validate/repair a drafted response against a policy)
-
-## Website (Sales Landing)
-
-This repo includes a simple sales-focused landing page in `website/`.
-
-```bash
-npm run dev:website
-```
+- Secrets are not included. Use `.env.example` as a template.
+- This repo intentionally omits non-public documentation and internal materials.

@@ -1,1 +1,0 @@
-{"version":3,"file":"policy-profiles.d.ts","sourceRoot":"","sources":["../src/policy-profiles.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;GAWG;AAEH,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AACtC,OAAO,EAAE,cAAc,EAAc,MAAM,UAAU,CAAC;AAGtD,MAAM,MAAM,sBAAsB,GAAG;IACnC,KAAK,EAAE,cAAc,CAAC;CACvB,CAAC;AA0PF;;;;;;GAMG;AACH,wBAAgB,kBAAkB,CAAC,OAAO,EAAE,sBAAsB,GAAG,MAAM,CAwB1E"}
