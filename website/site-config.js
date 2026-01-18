@@ -8,8 +8,5 @@ window.SELF_SITE = {
   // Example: "/self-api/v1/demo/chat" -> http://127.0.0.1:8787/v1/demo/chat
   demoApiUrl: "https://governedbyself.com/api/v1/demo/chat",
   // Optional endpoints (default to demoApiUrl with /chat -> /flag and /metrics).
-  demoFlagUrl: "/self-api/v1/demo/flag",
-  demoMetricsUrl: "/self-api/v1/demo/metrics",
-  demoReportUrl: "/self-api/v1/demo/report",
-  demoHeroesUrl: "/self-api/v1/demo/heroes",
+  // Leave undefined to derive from demoApiUrl.
 };

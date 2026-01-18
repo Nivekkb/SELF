@@ -23,6 +23,16 @@ function inlineAssets(html) {
   );
 
   out = out.replace(
+    /<link\s+rel=["']preload["']\s+href=["']\.\/styles\.css["']\s+as=["']style["']\s*\/?>/i,
+    "",
+  );
+
+  out = out.replace(
+    /<link\s+rel=["']preload["']\s+href=["']\.\/site\.js["']\s+as=["']script["']\s*\/?>/i,
+    "",
+  );
+
+  out = out.replace(
     /<script\s+src=["']\.\/site-config\.js["']>\s*<\/script>\s*<script\s+src=["']\.\/site\.js["']>\s*<\/script>/i,
     `<script>\n${configJs}\n</script>\n<script>\n${siteJs}\n</script>`,
   );

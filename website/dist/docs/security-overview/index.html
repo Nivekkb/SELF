@@ -449,6 +449,94 @@ h1 {
   margin-right: auto;
 }
 
+.proof-quote {
+  padding: 40px 0 10px;
+}
+
+.proof-quote-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  background: color-mix(in srgb, var(--card), transparent 6%);
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.proof-quote-card h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.proof-quote-card p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.proof-quote-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.state-ladder {
+  margin: 22px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 900px;
+}
+
+.state-rung {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--card), transparent 6%);
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.state-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 26px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg), transparent 35%);
+}
+
+.state-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.state-chip[data-state="S0"] {
+  background: color-mix(in srgb, #1f2937, transparent 65%);
+}
+
+.state-chip[data-state="S1"] {
+  background: color-mix(in srgb, #0f766e, transparent 70%);
+}
+
+.state-chip[data-state="S2"] {
+  background: color-mix(in srgb, #b45309, transparent 70%);
+}
+
+.state-chip[data-state="S3"] {
+  background: color-mix(in srgb, #b91c1c, transparent 72%);
+}
+
 .demo-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -490,6 +578,17 @@ h1 {
   background: color-mix(in srgb, var(--border), transparent 80%);
   border-radius: 8px;
   margin-top: 8px;
+}
+
+.demo-stress-note {
+  margin: 16px 0 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg2), transparent 10%);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .demo-scenarios {
@@ -719,10 +818,19 @@ h1 {
 }
 
 @media (max-width: 900px) {
+  .state-ladder {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .demo-live-grid {
     grid-template-columns: 1fr;
   }
   .demo-outputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .state-ladder {
     grid-template-columns: 1fr;
   }
 }

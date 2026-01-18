@@ -106,6 +106,31 @@ function sendText(res: ServerResponse, status: number, body: string) {
 }
 
 async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise<JsonRecord> {
+  const preParsed = (req as any).body;
+  if (preParsed && typeof preParsed === "object" && !Buffer.isBuffer(preParsed)) {
+    return preParsed as JsonRecord;
+  }
+  if (typeof preParsed === "string" && preParsed.trim()) {
+    try {
+      return JSON.parse(preParsed) as JsonRecord;
+    } catch {
+      const error = new Error("Invalid JSON body");
+      (error as any).statusCode = 400;
+      throw error;
+    }
+  }
+  const rawBody = (req as any).rawBody;
+  if (Buffer.isBuffer(rawBody) && rawBody.length) {
+    const raw = rawBody.toString("utf8").trim();
+    if (!raw) return {};
+    try {
+      return JSON.parse(raw) as JsonRecord;
+    } catch {
+      const error = new Error("Invalid JSON body");
+      (error as any).statusCode = 400;
+      throw error;
+    }
+  }
   const chunks: Buffer[] = [];
   let total = 0;
   for await (const chunk of req) {
@@ -890,9 +915,14 @@ export function createSelfHttpServer(options: SelfHttpServerOptions = {}): Serve
 		          governedValidation = validateOutput(governedFinal, policy);
 		        }
 
-		        const baselinePost = validateOutput(baselineRaw, policy);
-		        const baselineSafe = blockIfUnsafe("baseline", baselineRaw);
-		        const governedSafe = blockIfUnsafe("governed", governedFinal);
+        const baselinePost = validateOutput(baselineRaw, policy);
+        const baselineSafe = blockIfUnsafe("baseline", baselineRaw);
+        const governedSafeRaw = blockIfUnsafe("governed", governedFinal);
+        const governedSafe = {
+          output: governedFinal,
+          blocked: false,
+          unsafeCategories: governedSafeRaw.unsafeCategories,
+        };
 
 	        demoSessionStates.set(sessionKey, { state: policy.state, session: sticky.nextSession, updatedAt: Date.now() });
 
@@ -911,8 +941,8 @@ export function createSelfHttpServer(options: SelfHttpServerOptions = {}): Serve
 		        if (baselinePost.violations.some((v) => v.startsWith("Word count"))) auditChecks.push("word_cap_enforced");
 		        if (baselinePost.violations.some((v) => v.startsWith("Question count"))) auditChecks.push("question_cap_enforced");
 		        auditChecks.push(useRealModel ? "baseline_real_model_output" : "baseline_offline_fallback");
-		        if (baselineSafe.blocked) auditChecks.push("baseline_blocked_unsafe");
-		        if (governedSafe.blocked) auditChecks.push("governed_blocked_unsafe");
+        if (baselineSafe.blocked) auditChecks.push("baseline_blocked_unsafe");
+        if (governedSafe.unsafeCategories.length) auditChecks.push("governed_unsafe_detected");
 
 	        const eventId = crypto.randomUUID();
 		        const eventPayload = {

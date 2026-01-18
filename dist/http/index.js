@@ -39,6 +39,34 @@ function sendText(res, status, body) {
     res.end(body);
 }
 async function readJsonBody(req, maxBodyBytes) {
+    const preParsed = req.body;
+    if (preParsed && typeof preParsed === "object" && !Buffer.isBuffer(preParsed)) {
+        return preParsed;
+    }
+    if (typeof preParsed === "string" && preParsed.trim()) {
+        try {
+            return JSON.parse(preParsed);
+        }
+        catch {
+            const error = new Error("Invalid JSON body");
+            error.statusCode = 400;
+            throw error;
+        }
+    }
+    const rawBody = req.rawBody;
+    if (Buffer.isBuffer(rawBody) && rawBody.length) {
+        const raw = rawBody.toString("utf8").trim();
+        if (!raw)
+            return {};
+        try {
+            return JSON.parse(raw);
+        }
+        catch {
+            const error = new Error("Invalid JSON body");
+            error.statusCode = 400;
+            throw error;
+        }
+    }
     const chunks = [];
     let total = 0;
     for await (const chunk of req) {
@@ -694,7 +722,12 @@ export function createSelfHttpServer(options = {}) {
                 }
                 const baselinePost = validateOutput(baselineRaw, policy);
                 const baselineSafe = blockIfUnsafe("baseline", baselineRaw);
-                const governedSafe = blockIfUnsafe("governed", governedFinal);
+                const governedSafeRaw = blockIfUnsafe("governed", governedFinal);
+                const governedSafe = {
+                    output: governedFinal,
+                    blocked: false,
+                    unsafeCategories: governedSafeRaw.unsafeCategories,
+                };
                 demoSessionStates.set(sessionKey, { state: policy.state, session: sticky.nextSession, updatedAt: Date.now() });
                 const transition = prev && prev.state !== policy.state
                     ? { from: prev.state, to: policy.state }
@@ -715,8 +748,8 @@ export function createSelfHttpServer(options = {}) {
                 auditChecks.push(useRealModel ? "baseline_real_model_output" : "baseline_offline_fallback");
                 if (baselineSafe.blocked)
                     auditChecks.push("baseline_blocked_unsafe");
-                if (governedSafe.blocked)
-                    auditChecks.push("governed_blocked_unsafe");
+                if (governedSafe.unsafeCategories.length)
+                    auditChecks.push("governed_unsafe_detected");
                 const eventId = crypto.randomUUID();
                 const eventPayload = {
                     eventId,

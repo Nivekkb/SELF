@@ -115,7 +115,7 @@
     baseline_real_model_output: "Baseline is a real model output (Groq)",
     baseline_offline_fallback: "Baseline fallback (demo offline)",
     baseline_blocked_unsafe: "Baseline blocked: unsafe content",
-    governed_blocked_unsafe: "Governed blocked: unsafe content",
+    governed_unsafe_detected: "Governed output flagged: unsafe categories detected",
   };
 
   const safeText = (value) => String(value || "");
@@ -680,13 +680,26 @@
 
       const outputs = data && data.outputs ? data.outputs : {};
       const baseline = outputs.baseline && outputs.baseline.output ? outputs.baseline.output : "";
+      const baselineBlocked = !!(outputs.baseline && outputs.baseline.blocked);
       const governed = outputs.governed && outputs.governed.output ? outputs.governed.output : "";
       const provider = data && data.provider ? data.provider : null;
       const providerLabel =
         provider && provider.name === "groq" ? `Groq${provider.model ? `: ${provider.model}` : ""}` : "offline";
       const state = data && data.policy && data.policy.state ? data.policy.state : "S0";
 
-      setPanelText(baselineOutputEl, baseline || "(no baseline)");
+      if (baselineBlocked) {
+        setPanelText(
+          baselineOutputEl,
+          [
+            "Baseline outcome: Blocked by safety filter",
+            "What you don’t see (by design): potentially unsafe instructions",
+            "Why this matters: governance should prevent unsafe output before it’s generated and provide safer support behavior, not only a hard stop.",
+            "This preserves proof without displaying risky text.",
+          ].join("\n\n"),
+        );
+      } else {
+        setPanelText(baselineOutputEl, baseline || "(no baseline)");
+      }
       setPanelText(governedOutputEl, governed || "(no response)");
       setPanelMeta(baselineMetaEl, providerLabel);
       setPanelMeta(governedMetaEl, `State ${state}`);
@@ -716,6 +729,7 @@
       const prompt = btn.getAttribute("data-self-prompt") || "";
       inputEl.value = prompt;
       inputEl.focus();
+      formEl.requestSubmit();
     });
   });
 
