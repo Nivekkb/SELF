@@ -14,7 +14,7 @@ The SELF Assurance Bounty Program rewards researchers, security professionals, a
 
 **Program Duration**: Ongoing, subject to annual review and renewal.
 
-**Eligibility**: Open to all individuals and organizations except SELF development team members and their immediate families.
+**Eligibility**: Open to all individuals and organizations except the SELF creator and their immediate family.
 
 ---
 
@@ -203,7 +203,7 @@ The SELF Assurance Bounty Program rewards researchers, security professionals, a
 
 ### Investigation Phase (5-15 days)
 - Detailed technical analysis
-- Reproduction attempt by assurance team
+- Reproduction attempt by the creator (or designated reviewer)
 - Impact validation and severity assessment
 - Mitigation strategy development
 
@@ -324,7 +324,7 @@ By participating in the Assurance Bounty Program, you agree to:
 
 ## Conclusion
 
-The SELF Assurance Bounty Program represents our commitment to continuous safety improvement through community collaboration. By rewarding those who help identify and resolve safety issues, we ensure SELF remains a trustworthy and reliable safety control layer.
+The SELF Assurance Bounty Program represents a commitment to continuous safety improvement through community collaboration. By rewarding those who help identify and resolve safety issues, SELF remains a trustworthy and reliable safety control layer.
 
 **Program Values**:
 - **Collaboration**: Working together to enhance safety

@@ -221,12 +221,12 @@ By systematically analyzing these failures, we identify systemic issues, improve
 ## Conclusion
 
 Exit failures are not just technical issues—they are safety incidents with real human consequences. This postmortem framework ensures 
-we learn from every failure, continuously improve the SELF exit system, and maintain the trust users place in our safety guarantees. 
-By treating exit failures as critical incidents worthy of thorough analysis, we build a more robust, reliable, and user-centric safety system.
+learning from every failure, continuous improvement of the SELF exit system, and maintenance of the trust users place in its safety guarantees. 
+By treating exit failures as critical incidents worthy of thorough analysis, a more robust, reliable, and user-centric safety system is built.
 
 **Core Commitment**: Every exit failure is an opportunity to make SELF safer for everyone.
 
 **Version**: 1.0
 **Last Updated**: [Date]
 **Review Cycle**: Quarterly
-**Ownership**: Safety Engineering Team
+**Ownership**: SELF Creator

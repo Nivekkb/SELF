@@ -9,7 +9,7 @@
 
 ### Report Overview
 This transparency report provides comprehensive information about SELF's operations, safety performance, compliance status, and 
-impact on users and society. The report demonstrates our commitment to transparency, accountability, and continuous improvement.
+impact on users and society. The report demonstrates a commitment to transparency, accountability, and continuous improvement.
 
 ### Key Highlights
 - **Safety Performance**: [Summary of safety metrics and improvements]
@@ -259,8 +259,8 @@ impact on users and society. The report demonstrates our commitment to transpare
 
 ## Acknowledgments
 
-We acknowledge the contributions of our team members, external advisors, stakeholders, and users who help make 
-SELF a safer and more transparent AI system. This report represents our ongoing commitment to accountability and continuous improvement.
+Acknowledgment is given to the external advisors, stakeholders, and users who help make 
+SELF a safer and more transparent AI system. This report represents an ongoing commitment to accountability and continuous improvement.
 
 ---
 

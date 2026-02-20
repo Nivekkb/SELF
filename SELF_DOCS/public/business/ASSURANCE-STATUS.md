@@ -1,58 +1,58 @@
-# Why We're Not Activating the Assurance Bounty Program Yet
-**This page exists to document our intent and future direction, not to invite participation before conditions are met**
+# Why the Assurance Bounty Program Isn't Active Yet
+**This page exists to document intent and future direction, not to invite participation before conditions are met**
 
 ## A Simple Explanation
 
 Imagine you're building a house. You've got all the blueprints, the materials are ready, and you're excited to start construction. 
 But before you break ground, you need to make sure you have enough money saved up to finish the job completely and safely.
 
-That's exactly where we are with SELF's Assurance Bounty Program.
+That's exactly where SELF is with its Assurance Bounty Program.
 
-## The Program We Want to Launch
+## The Program to Be Launched
 
-We designed an amazing program that would pay people to find and fix safety issues in our AI system. People could earn anywhere 
-from $50 to $25,000 for discovering problems and helping us make SELF safer. It would be like having a community of expert detectives constantly checking our work.
+An amazing program has been designed that would pay people to find and fix safety issues in the AI system. People could earn anywhere 
+from $50 to $25,000 for discovering problems and helping make SELF safer. It would be like having a community of expert detectives constantly checking the work.
 
-## Why We're Waiting
+## Why It's Being Delayed
 
 ### 1. **Money Matters**
-Running a bounty program costs real money. We need to make sure we have enough saved up to pay everyone who finds legitimate issues. 
-We don't want to promise rewards and then not be able to deliver on them.
+Running a bounty program costs real money. There needs to be enough saved up to pay everyone who finds legitimate issues. 
+Rewards shouldn't be promised if they can't be delivered.
 
 ### 2. **Building a Strong Foundation First**
-Before we open the doors to external testing, we want to make sure our own house is in good order. We've been working hard on the core safety systems, 
-but we need to prove they work reliably before inviting others to test them.
+Before opening the doors to external testing, the house needs to be in good order. The core safety systems have been worked on extensively, 
+but they need to prove reliable before inviting others to test them.
 
 ### 3. **Learning as We Go**
-Every new project has growing pains. We're learning a lot about what it takes to run an AI safety system responsibly. We want to make sure our processes are solid before we scale up testing.
+Every new project has growing pains. There's a lot being learned about what it takes to run an AI safety system responsibly. Processes need to be solid before scaling up testing.
 
 ## What This Means for You
 
-- **We're Still Committed**: We believe strongly in community-driven safety testing
-- **The Program Will Launch**: When the time is right, we'll activate it with full funding
-- **Safety First**: We're not cutting corners on safety - we're being extra careful
-- **Transparency**: We're telling you this because we want you to understand our reasoning
+- **Still Committed**: Community-driven safety testing remains a strong belief
+- **The Program Will Launch**: When the time is right, it will be activated with full funding
+- **Safety First**: No cutting corners on safety - being extra careful
+- **Transparency**: This is being shared so you understand the reasoning
 
-## Our Current Focus
+## Current Focus
 
-Right now, we're concentrating on:
+Right now, the focus is on:
 - Making sure SELF works reliably for real users
-- Building up our financial reserves
-- Testing our systems internally
+- Building up financial reserves
+- Testing systems internally
 - Learning from early users and feedback
 
-## When Will We Launch?
+## When Will It Launch?
 
-We don't have an exact date yet. We're watching our progress and will activate the program when we can confidently say:
-- ✅ We have enough money saved to pay all legitimate bounties
-- ✅ Our core safety systems are stable and well-tested
-- ✅ We have processes in place to handle the program responsibly
+There's no exact date yet. The program will be activated when these conditions are met:
+- ✅ Enough money saved to pay all legitimate bounties
+- ✅ Core safety systems are stable and well-tested
+- ✅ Processes are in place to handle the program responsibly
 
 ## Stay Tuned
 
-We're excited about the Assurance Bounty Program and believe it will make AI safer for everyone. We just want to do it right, not rush it.
+There's excitement about the Assurance Bounty Program and belief it will make AI safer for everyone. It just needs to be done right, not rushed.
 
-If you're interested in AI safety or want to help us test things in the future, keep an eye on our updates. Your patience and understanding mean a lot to us as we build something important carefully.
+If you're interested in AI safety or want to help test things in the future, keep an eye on updates. Your patience and understanding mean a lot as something important is being built carefully.
 
 ---
 

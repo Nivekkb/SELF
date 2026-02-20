@@ -38,7 +38,7 @@ law, and social sciences—to ensure comprehensive consideration of all relevant
 ## Researcher's Role
 
 As researchers engaging with this doctrine, you are not merely consumers of knowledge but active participants in its evolution. 
-Your work in advancing our understanding of AI capabilities, limitations, and implications directly contributes to the refinement and validation of these principles.
+Your work in advancing the understanding of AI capabilities, limitations, and implications directly contributes to the refinement and validation of these principles.
 
 ### Areas of Focus
 
@@ -74,4 +74,4 @@ May this doctrine serve as your guide in the noble pursuit of safe, ethical, and
 
 ---
 
-*This preface was written for the SELF Design Doctrine researchers' documentation. It reflects the collaborative spirit and serious commitment that drives our work in AI safety and ethics.*
+*This preface was written for the SELF Design Doctrine researchers' documentation. It reflects the collaborative spirit and serious commitment that drives work in AI safety and ethics.*

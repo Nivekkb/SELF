@@ -215,7 +215,7 @@ This changelog documents the development of SELF-Engine, the constitutional AI s
 ### Project Initialization
 - **Safety Vision**: Establishment of core safety philosophy and goals
 - **Technical Foundation**: Initial architecture and technology selection
-- **Team Structure**: Safety-focused development team organization
+- **Development Structure**: Solo developer with safety-focused approach
 - **Research Direction**: Initial AI safety research integration plan
 
 ### Core Components
@@ -284,6 +284,6 @@ This changelog documents the development of SELF-Engine, the constitutional AI s
 
 **This changelog represents the development journey of SELF-Engine, prioritizing safety above all other considerations. Every version represents a step toward more reliable, transparent, and human-centered AI safety.**
 
-*Maintained by: Safety Engineering Team*
+*Maintained by: Kevin Boutilier (SELF Creator)*
 *Version Control: Semantic versioning with safety-first priorities*
 *Last Updated: December 21, 2025*

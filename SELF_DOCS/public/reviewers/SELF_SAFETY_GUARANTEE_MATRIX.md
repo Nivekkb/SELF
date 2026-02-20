@@ -319,7 +319,7 @@ This matrix provides a comprehensive, structured overview of all SELF (Support-F
 **The following conditions completely void all SELF safety guarantees**:
 
 #### Condition AV-1: Unauthorized Modification
-**Trigger**: Any modification to SELF's core safety algorithms, decision logic, or safety boundaries without explicit written authorization from the original development team.
+**Trigger**: Any modification to SELF's core safety algorithms, decision logic, or safety boundaries without explicit written authorization from the creator.
 - **Voided Guarantees**: All safety, performance, and quality guarantees
 - **Rationale**: Core safety mechanisms must remain unaltered to maintain guarantee validity
 - **Restoration**: Requires complete reversion to authorized codebase and re-validation

@@ -35,7 +35,7 @@ SELF has multiple crisis intervention protocols:
 - **Data preservation**: Appropriate information sharing with emergency services when legally required
 
 ### How does SELF handle user data?
-- **Data minimization**: We collect only what we need for service provision
+- **Data minimization**: Only what is needed for service provision is collected
 - **No data sharing**: User data is never sold, traded, or shared with third parties
 - **Encryption**: All data is encrypted in transit and at rest
 - **User control**: Complete user control over data retention and deletion
@@ -210,7 +210,7 @@ Multiple support channels are available:
 ### How does SELF handle feedback and suggestions?
 User feedback is integral to SELF's development:
 - **Feedback collection**: Multiple channels for user input
-- **Review process**: All feedback reviewed by safety and product teams
+- **Review process**: All feedback reviewed thoroughly
 - **Implementation tracking**: User suggestions tracked and prioritized
 - **Transparency**: Updates on how feedback influences development
 
@@ -248,7 +248,7 @@ When appropriate and legal:
 
 ---
 
-**This FAQ is regularly updated based on user questions and feedback. If you have additional questions not covered here, please contact our support team.**
+**This FAQ is regularly updated based on user questions and feedback. If you have additional questions not covered here, please contact the support team.**
 
-*FAQ maintained by: User Experience Team*
+*FAQ maintained by: SELF Creator*
 *Last Updated: December 21, 2025*

@@ -21,7 +21,7 @@
 
 ## Purpose Statement
 
-This form provides a structured, accountable process for documenting and responding to incidents in the SELF system. We believe that transparent, thorough incident documentation protects both users and the development team by ensuring no issue is overlooked or minimized. Every incident is treated with the seriousness it deserves, while maintaining compassion for all involved parties.
+This form provides a structured, accountable process for documenting and responding to incidents in the SELF system. Transparent, thorough incident documentation protects both users and the project by ensuring no issue is overlooked or minimized. Every incident is treated with the seriousness it deserves, while maintaining compassion for all involved parties.
 
 ## Incident Response Philosophy
 
@@ -120,7 +120,7 @@ Avoid speculation about causes at this stage.]
 
 **Investigation Methodology**:
 ```
-[Tools, techniques, and team members involved in investigation]
+[Tools, techniques, and personnel involved in investigation]
 ```
 
 **Root Cause Determination**:
@@ -257,7 +257,7 @@ and reasoning. If multiple contributing factors, list them all.]
 - [ ] Incident ID assigned
 - [ ] Initial severity assessment completed
 - [ ] Immediate containment actions identified
-- [ ] Relevant team members notified
+- [ ] Relevant personnel notified
 - [ ] Incident response form initiated
 
 ### Investigation Phase (First 4 hours)
@@ -286,17 +286,17 @@ and reasoning. If multiple contributing factors, list them all.]
 
 ## Accountability Commitments
 
-### Our Promises to Users
-1. **Transparency**: We will clearly communicate what happened, why it happened, and what we're doing to prevent it.
-2. **Speed**: We will respond quickly and work continuously until the issue is resolved.
-3. **Prevention**: We will learn from every incident and strengthen our systems accordingly.
-4. **Compassion**: We recognize that incidents can be stressful and will respond with understanding.
+### Promises to Users
+1. **Transparency**: Clear communication about what happened, why it happened, and what's being done to prevent it.
+2. **Speed**: Quick response and continuous work until the issue is resolved.
+3. **Prevention**: Learning from every incident and strengthening systems accordingly.
+4. **Compassion**: Recognition that incidents can be stressful, with understanding responses.
 
-### Our Promises to Each Other
-1. **Blame-Free Culture**: We focus on solving problems, not assigning fault.
+### Commitments
+1. **Blame-Free Culture**: Focus on solving problems, not assigning fault.
 2. **Thorough Documentation**: Every incident receives comprehensive analysis and documentation.
-3. **Continuous Improvement**: We use incidents as opportunities to become better.
-4. **Support**: Team members receive support when handling challenging incidents.
+3. **Continuous Improvement**: Incidents are used as opportunities to become better.
+4. **Support**: Support is available when handling challenging incidents.
 5. **Good Faith Protection**: Reports made in good faith will never result in retaliation or dismissal.
 6. **Immediate Action Containment Principle**: When safety is at risk, containment takes precedence over all other considerations.
 

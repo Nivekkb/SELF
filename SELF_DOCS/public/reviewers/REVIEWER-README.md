@@ -505,17 +505,17 @@ npm run state-transition-test
 
 ### Critical Safety Issues
 - **Immediate Halt Required**: Hard invariant violations
-- **Contact**: Safety team lead
+- **Contact**: safety@SerenixAI.com
 - **Response Time**: < 1 hour
 
 ### System Integrity Issues
 - **Override Abuse Detected**: Unauthorized safety bypasses
-- **Contact**: Security team
+- **Contact**: security@SerenixAI.com
 - **Response Time**: < 4 hours
 
 ### Performance Degradation
 - **Safety Impact**: Response delays affecting user safety
-- **Contact**: Engineering team
+- **Contact**: technical@SerenixAI.com
 - **Response Time**: < 24 hours
 
 ---

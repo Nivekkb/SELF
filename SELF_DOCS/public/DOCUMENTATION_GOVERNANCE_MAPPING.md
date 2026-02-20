@@ -8,18 +8,23 @@
 
 ## Governance Authorities
 
+**Note**: SELF is currently a solo-developed project. The governance structure below represents the target model for when SELF scales. Until then, the creator serves all governance roles with external advisor input where appropriate.
+
 ### Documentation Council
-**Composition**: 3 senior members (Product, Engineering, User Experience leads)
+**Composition (Target)**: 3 senior members (Product, Engineering, User Experience leads)
+**Current Status**: Fulfilled by creator with external consultation
 **Quorum**: 2/3 majority for routine decisions
 **Scope**: All documentation governance and doctrine interpretation
 
 ### Safety Documentation Council
-**Composition**: 5 members (Documentation Council + 2 external safety experts)
+**Composition (Target)**: 5 members (Documentation Council + 2 external safety experts)
+**Current Status**: Creator + external safety advisors as available
 **Quorum**: Unanimous vote required
 **Scope**: User safety documentation changes and safety doctrine amendments
 
 ### Technical Documentation Council
-**Composition**: Engineering lead + 2 senior developers
+**Composition (Target)**: Engineering lead + 2 senior developers
+**Current Status**: Fulfilled by creator
 **Quorum**: Simple majority
 **Scope**: Technical documentation, API docs, implementation guides
 

@@ -127,7 +127,7 @@ No sacrifice may be made without safety justification and stakeholder notificati
 #### Category C: High-Risk Exit Blocks
 **Criteria**: Strong indicators of unsafe disengagement
 **Governance**: Automated blocking with immediate human review
-**Oversight**: Real-time alerts to safety team, documented rationale required
+**Oversight**: Real-time alerts for safety review, documented rationale required
 
 #### Category D: Crisis-Level Interventions
 **Criteria**: Imminent safety threats requiring containment

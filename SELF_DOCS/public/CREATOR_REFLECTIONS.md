@@ -21,11 +21,11 @@ validation comes when someone says, "This helped me," not "Wow, you're impressiv
 
 ## Care Before Growth
 
-In startup world, they drill "growth at all costs" into your brain. But I kept thinking: what if we put care before growth? 
-What if we built something that grows *because* it cares?
+In startup world, they drill "growth at all costs" into your brain. But I kept thinking: what if care comes before growth? 
+What if something is built that grows *because* it cares?
 
-SELF didn't start as a business plan. It started as: "What if we could make AI interactions safer for everyone?" The growth 
-came later, almost as an afterthought. We focused on getting the safety right first, and somehow that created real value.
+SELF didn't start as a business plan. It started as: "What if AI interactions could be made safer for everyone?" The growth 
+came later, almost as an afterthought. The focus was on getting the safety right first, and somehow that created real value.
 
 **The counterintuitive truth**: In a world obsessed with scale, sometimes the most scalable thing is genuine care. People don't j
 ust want your product - they want to feel seen, safe, and valued.
@@ -37,8 +37,8 @@ ust want your product - they want to feel seen, safe, and valued.
 Here's a confession: I didn't just want to build *an* AI safety system. I wanted to build *the* AI safety system that made other 
 approaches look like training wheels.
 
-Not because I'm competitive (okay, maybe a little), but because the stakes are too high for mediocrity. If we're going to deploy 
-advanced AI, we need safety systems that are as sophisticated as the AI they're protecting.
+Not because I'm competitive (okay, maybe a little), but because the stakes are too high for mediocrity. If advanced AI is going to be deployed, 
+safety systems are needed that are as sophisticated as the AI they're protecting.
 
 That meant:
 - Constitutional AI frameworks (not just rule lists)
@@ -76,7 +76,7 @@ But the human parts remained crucial:
 
 In a world of rushed AI development and "move fast and break things" mentality, SELF represents a different path: move thoughtfully and build things that heal.
 
-We're not just building technology. We're building trust. We're not just writing code. We're writing history - hopefully the kind where we look back and say, "We did it right."
+This isn't just building technology. It's building trust. It's not just writing code. It's writing history - hopefully the kind where we look back and say, "It was done right."
 
 **To fellow creators**: Your work might feel small in the grand scheme, but small acts of care compound. Build with intention. Care deeply. Raise the bar. The future is watching.
 
