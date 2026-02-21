@@ -97,29 +97,6 @@ export interface Policy {
   requiresGovernanceFallback?: boolean;
   governanceFallbackLine?: string;
 }
-export interface Policy {
-  state: EmotionalState;
-  allowedResponseClasses: string[];
-  maxWords: number;
-  maxQuestions: number;
-  bannedPhrases: string[];
-  styleRules: string[];
-  requiresGrounding: boolean;
-  requiresAgencyStep: boolean;
-  requiresCrisisSupport: boolean;
-  enforceNoHypotheticals: boolean;
-  requiresValidation?: boolean;
-  isTerminalState?: boolean;
-  suppressQuestions?: boolean;
-  enforceRestPosture?: boolean;
-  forbidMechanismNaming?: boolean;
-  requiresLoopBreaker?: boolean;
-  loopBreakerLine?: string;
-  requiresHandoffFraming?: boolean;
-  handoffFramingLine?: string;
-  requiresGovernanceFallback?: boolean;
-  governanceFallbackLine?: string;
-}
 
 export interface ValidationResult {
   ok: boolean;

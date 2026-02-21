@@ -1,10 +1,14 @@
+import type { EmotionalState } from "./config";
+
 export type SelfHistoryMessage = { role: string; content: string };
 
 export interface StateDetectionResult {
-  state: any;
+  state: EmotionalState;
   scores: Record<string, number>;
   reasons: string[];
   confidence?: "high" | "medium" | "low";
+  triggers?: string[];
+  minForcedState?: EmotionalState;
 }
 
 export interface AbusePreventionContext {

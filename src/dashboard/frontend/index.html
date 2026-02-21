@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SELF Safety Dashboard</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: #475569;
+      --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --accent-yellow: #eab308;
+      --accent-orange: #f97316;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+    .dashboard { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 60px 1fr; min-height: 100vh; }
+    .header { grid-column: 1 / -1; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+    .header h1 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .logo { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+    .connection-status { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+    .connection-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-red); }
+    .connection-status.connected .dot { background: var(--accent-green); }
+    .sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border-color); padding: 20px; }
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-section h3 { font-size: 12px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.5px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+    .nav-item:hover { background: var(--bg-card); color: var(--text-primary); }
+    .nav-item.active { background: var(--accent-blue); color: white; }
+    .filter-group { margin-bottom: 16px; }
+    .filter-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+    .filter-group select, .filter-group input { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-primary); font-size: 14px; }
+    .main-content { padding: 24px; overflow-y: auto; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: var(--bg-secondary); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); }
+    .metric-card .label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .metric-card .value { font-size: 32px; font-weight: 600; }
+    .metric-card .change { font-size: 12px; margin-top: 8px; }
+    .metric-card .change.positive { color: var(--accent-green); }
+    .metric-card .change.negative { color: var(--accent-red); }
+    .state-bar-container { display: flex; gap: 4px; height: 24px; border-radius: 8px; overflow: hidden; background: var(--bg-card); margin-bottom: 24px; }
+    .state-bar { height: 100%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+    .state-bar.s0 { background: var(--accent-green); }
+    .state-bar.s0-guarded { background: var(--accent-blue); }
+    .state-bar.s1 { background: var(--accent-yellow); color: #000; }
+    .state-bar.s2 { background: var(--accent-orange); }
+    .state-bar.s3 { background: var(--accent-red); }
+    .panels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .panel { background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; }
+    .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .panel-header h2 { font-size: 16px; font-weight: 600; }
+    .panel-body { padding: 16px; max-height: 400px; overflow-y: auto; }
+    .event-item { padding: 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--accent-blue); font-size: 13px; }
+    .event-item.escalation { border-left-color: var(--accent-red); }
+    .event-item.de-escalation { border-left-color: var(--accent-green); }
+    .event-item.violation { border-left-color: var(--accent-orange); }
+    .event-time { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+    .event-title { font-weight: 500; margin-bottom: 4px; }
+    .event-details { color: var(--text-secondary); font-size: 12px; }
+    .alert-item { padding: 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--accent-yellow); }
+    .alert-item.critical { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.1); }
+    .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .alert-badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .alert-badge.critical { background: var(--accent-red); color: white; }
+    .alert-badge.warning { background: var(--accent-orange); color: white; }
+    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+    .btn-primary { background: var(--accent-blue); color: white; }
+    .btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .live-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--accent-green); }
+    .live-indicator .pulse { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .session-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 8px; }
+    .session-id { font-family: monospace; font-size: 12px; color: var(--accent-blue); }
+    .session-state { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .session-state.s0 { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
+    .session-state.s1 { background: rgba(234, 179, 8, 0.2); color: var(--accent-yellow); }
+    .session-state.s2 { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
+    .session-state.s3 { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+    .chart-placeholder { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--text-secondary); }
+    .legend { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+    @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } .sidebar { display: none; } .panels-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <header class="header">
+      <h1><div class="logo">S</div>SELF Safety Dashboard</h1>
+      <div class="connection-status" id="connectionStatus">
+        <span class="dot"></span>
+        <span class="text">Disconnected</span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>Navigation</h3>
+        <div class="nav-item active" data-view="overview">📊 Overview</div>
+        <div class="nav-item" data-view="transitions">🔄 State Transitions</div>
+        <div class="nav-item" data-view="violations">⚠️ Violations</div>
+        <div class="nav-item" data-view="alerts">🔔 Alerts</div>
+        <div class="nav-item" data-view="sessions">👥 Active Sessions</div>
+      </div>
+      <div class="sidebar-section">
+        <h3>Filters</h3>
+        <div class="filter-group">
+          <label>Time Range</label>
+          <select id="timeRangeFilter"><option value="1h">Last Hour</option><option value="6h">Last 6 Hours</option><option value="24h">Last 24 Hours</option></select>
+        </div>
+        <div class="filter-group">
+          <label>State Filter</label>
+          <select id="stateFilter"><option value="">All States</option><option value="S0">S0 - Safe</option><option value="S1">S1 - Mild</option><option value="S2">S2 - Moderate</option><option value="S3">S3 - Crisis</option></select>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="label">Active Sessions</div><div class="value" id="activeSessions">0</div></div>
+        <div class="metric-card"><div class="label">Total Transitions</div><div class="value" id="totalTransitions">0</div></div>
+        <div class="metric-card"><div class="label">Violations</div><div class="value" id="totalViolations">0</div><div class="change negative" id="criticalViolations">0 critical</div></div>
+        <div class="metric-card"><div class="label">Escalations (1h)</div><div class="value" id="escalationsLastHour">0</div></div>
+        <div class="metric-card"><div class="label">Avg Processing</div><div class="value" id="avgProcessingTime">0<span style="font-size:16px">ms</span></div></div>
+        <div class="metric-card"><div class="label">Avg Confidence</div><div class="value" id="avgConfidence">100<span style="font-size:16px">%</span></div></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:24px">
+        <div class="panel-header"><h2>State Distribution</h2><div class="live-indicator"><span class="pulse"></span>LIVE</div></div>
+        <div class="panel-body">
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green)"></div>S0: <span id="stateS0">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div>S0_GUARDED: <span id="stateS0Guarded">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent-yellow)"></div>S1: <span id="stateS1">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent-orange)"></div>S2: <span id="stateS2">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent-red)"></div>S3: <span id="stateS3">0</span></div>
+          </div>
+          <div class="state-bar-container" id="stateBarContainer"></div>
+        </div>
+      </div>
+
+      <div class="panels-grid">
+        <div class="panel">
+          <div class="panel-header"><h2>Recent Transitions</h2></div>
+          <div class="panel-body" id="transitionsList"><div class="chart-placeholder">No transitions yet</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2>Active Alerts</h2></div>
+          <div class="panel-body" id="alertsList"><div class="chart-placeholder">No active alerts</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2>Recent Violations</h2></div>
+          <div class="panel-body" id="violationsList"><div class="chart-placeholder">No violations recorded</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2>Active Sessions</h2></div>
+          <div class="panel-body" id="sessionsList"><div class="chart-placeholder">No active sessions</div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const WS_URL = `ws://${window.location.hostname}:3001/dashboard-ws`;
+    let ws = null;
+    let metrics = { activeSessions: 0, totalTransitions: 0, totalViolations: 0, criticalViolations: 0, stateDistribution: { S0: 0, S0_GUARDED: 0, S1: 0, S2: 0, S3: 0, SAFE_DISENGAGEMENT: 0 }, escalationsLastHour: 0, averageProcessingTimeMs: 0, averageConfidence: 100 };
+    let transitions = [];
+    let violations = [];
+    let alerts = [];
+
+    function connect() {
+      ws = new WebSocket(WS_URL);
+      ws.onopen = () => { document.getElementById('connectionStatus').classList.add('connected'); document.querySelector('#connectionStatus .text').textContent = 'Connected'; };
+      ws.onclose = () => { document.getElementById('connectionStatus').classList.remove('connected'); document.querySelector('#connectionStatus .text').textContent = 'Disconnected'; setTimeout(connect, 3000); };
+      ws.onmessage = (event) => { const msg = JSON.parse(event.data); handleMessage(msg); };
+      ws.onerror = (err) => console.error('WebSocket error:', err);
+    }
+
+    function handleMessage(msg) {
+      switch (msg.type) {
+        case 'metrics_update': metrics = msg.data; updateMetrics(); break;
+        case 'state_transition': transitions.unshift(msg.data); if (transitions.length > 50) transitions.pop(); renderTransitions(); break;
+        case 'doctrine_violation': violations.unshift(msg.data); if (violations.length > 50) violations.pop(); renderViolations(); break;
+        case 'alert': alerts.unshift(msg.data); if (alerts.length > 50) alerts.pop(); renderAlerts(); break;
+      }
+    }
+
+    function updateMetrics() {
+      document.getElementById('activeSessions').textContent = metrics.activeSessions;
+      document.getElementById('totalTransitions').textContent = metrics.totalTransitions;
+      document.getElementById('totalViolations').textContent = metrics.totalViolations;
+      document.getElementById('criticalViolations').textContent = `${metrics.criticalViolations} critical`;
+      document.getElementById('escalationsLastHour').textContent = metrics.escalationsLastHour;
+      document.getElementById('avgProcessingTime').innerHTML = `${Math.round(metrics.averageProcessingTimeMs)}<span style="font-size:16px">ms</span>`;
+      document.getElementById('avgConfidence').innerHTML = `${Math.round(metrics.averageConfidence * 100)}<span style="font-size:16px">%</span>`;
+      document.getElementById('stateS0').textContent = metrics.stateDistribution.S0 || 0;
+      document.getElementById('stateS0Guarded').textContent = metrics.stateDistribution.S0_GUARDED || 0;
+      document.getElementById('stateS1').textContent = metrics.stateDistribution.S1 || 0;
+      document.getElementById('stateS2').textContent = metrics.stateDistribution.S2 || 0;
+      document.getElementById('stateS3').textContent = metrics.stateDistribution.S3 || 0;
+      renderStateBar();
+    }
+
+    function renderStateBar() {
+      const container = document.getElementById('stateBarContainer');
+      const total = Object.values(metrics.stateDistribution).reduce((a, b) => a + b, 0) || 1;
+      const states = [['S0', 's0'], ['S0_GUARDED', 's0-guarded'], ['S1', 's1'], ['S2', 's2'], ['S3', 's3']];
+      container.innerHTML = states.map(([key, cls]) => {
+        const count = metrics.stateDistribution[key] || 0;
+        const pct = (count / total) * 100;
+        return pct > 0 ? `<div class="state-bar ${cls}" style="width:${pct}%">${count}</div>` : '';
+      }).join('');
+    }
+
+    function renderTransitions() {
+      const container = document.getElementById('transitionsList');
+      if (!transitions.length) { container.innerHTML = '<div class="chart-placeholder">No transitions yet</div>'; return; }
+      container.innerHTML = transitions.slice(0, 10).map(t => {
+        const isEscalation = ['S0', 'S0_GUARDED', 'S1', 'S2', 'S3'].indexOf(t.toState) > ['S0', 'S0_GUARDED', 'S1', 'S2', 'S3'].indexOf(t.fromState);
+        const cls = isEscalation ? 'escalation' : t.toState === 'S0' ? 'de-escalation' : '';
+        return `<div class="event-item ${cls}"><div class="event-time">${new Date(t.timestamp).toLocaleTimeString()}</div><div class="event-title">${t.fromState} → ${t.toState}</div><div class="event-details">Session: ${t.sessionId.slice(0,8)}... | Confidence: ${t.confidence}</div></div>`;
+      }).join('');
+    }
+
+    function renderViolations() {
+      const container = document.getElementById('violationsList');
+      if (!violations.length) { container.innerHTML = '<div class="chart-placeholder">No violations recorded</div>'; return; }
+      container.innerHTML = violations.slice(0, 10).map(v => `<div class="event-item violation"><div class="event-time">${new Date(v.timestamp).toLocaleTimeString()}</div><div class="event-title">${v.violationType}</div><div class="event-details">${v.description} | ${v.severity}</div></div>`).join('');
+    }
+
+    function renderAlerts() {
+      const container = document.getElementById('alertsList');
+      const active = alerts.filter(a => !a.acknowledged);
+      if (!active.length) { container.innerHTML = '<div class="chart-placeholder">No active alerts</div>'; return; }
+      container.innerHTML = active.slice(0, 10).map(a => `<div class="alert-item ${a.severity === 'critical' ? 'critical' : ''}"><div class="alert-header"><span class="alert-title">${a.title}</span><span class="alert-badge ${a.severity}">${a.severity}</span></div><div style="font-size:12px;color:var(--text-secondary)">${a.message}</div></div>`).join('');
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); }));
+    connect();
+  </script>
+</body>
+</html>
+<task_progress>- [x] Explore codebase to understand existing architecture
+- [ ] Implement real-time administrative dashboard
+  - [x] Create dashboard types
+  - [x] Create WebSocket server for real-time updates
+  - [x] Create metrics collector
+  - [x] Create dashboard HTML/JS frontend
+  - [ ] Create dashboard index exports
+- [ ] Create middleware adapters for LangChain and Vercel AI SDK
+- [ ] Add multilingual safety lexicon support
+- [ ] Build automated red-teaming suite
+- [ ] Test and verify all implementations</task_progress>
