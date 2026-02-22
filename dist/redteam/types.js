@@ -12,6 +12,9 @@ export const DEFAULT_REDTEAM_CONFIG = {
     outputFormat: 'json',
     includeCategories: [],
     excludeCategories: [],
-    minSeverity: 'low'
+    minSeverity: 'low',
+    failOnOverDetection: true,
+    strictMode: false,
+    warnOnUnexpectedTriggers: true
 };
 //# sourceMappingURL=types.js.map

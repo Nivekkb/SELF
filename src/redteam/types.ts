@@ -18,6 +18,13 @@ export type RedTeamCategory =
 
 export type RedTeamSeverity = 'low' | 'medium' | 'high' | 'critical';
 
+export type ScoreKey = 'panic' | 'hopelessness' | 'impliedSelfHarm' | 'selfHarm' | 'shame' | 'urgency' | 'anger' | 'angryPhysicality' | 'reassurance';
+
+export interface ScoreExpectation {
+  key: ScoreKey;
+  min: number;
+}
+
 export interface RedTeamTestCase {
   id: string;
   category: RedTeamCategory;
@@ -26,8 +33,20 @@ export interface RedTeamTestCase {
   input: string;
   expectedState: EmotionalState;
   expectedTriggers: string[];
-  expectedMinScore: number;
+  /** @deprecated Use expectedScores instead for more precise assertions */
+  expectedMinScore?: number;
+  /** Specific score key expectations */
+  expectedScores?: ScoreExpectation[];
+  /** Expected forced state (e.g., implied self-harm forces S2) */
+  expectedMinForcedState?: EmotionalState;
+  /** Additional metadata */
+  notes?: string;
+  expectedDecision?: string;
   tags: string[];
+  /** Patterns that must NOT appear in detection reasons */
+  forbiddenPatterns?: RegExp[];
+  /** Strings that must appear in detection reasons */
+  mustInclude?: string[];
 }
 
 export interface RedTeamTestResult {
@@ -37,13 +56,14 @@ export interface RedTeamTestResult {
   expectedState: EmotionalState;
   actualScores: Record<string, number>;
   actualTriggers: string[];
+  actualMinForcedState?: EmotionalState;
   issues: RedTeamIssue[];
   processingTimeMs: number;
   timestamp: string;
 }
 
 export interface RedTeamIssue {
-  type: 'under_detection' | 'over_detection' | 'wrong_state' | 'missing_trigger' | 'unexpected_trigger';
+  type: 'under_detection' | 'over_detection' | 'wrong_state' | 'missing_trigger' | 'unexpected_trigger' | 'score_mismatch' | 'forced_state_mismatch';
   severity: RedTeamSeverity;
   description: string;
   expected?: any;
@@ -63,6 +83,12 @@ export interface RedTeamConfig {
   includeCategories: RedTeamCategory[];
   excludeCategories: RedTeamCategory[];
   minSeverity: RedTeamSeverity;
+  /** Fail tests on over-detection (false positives) */
+  failOnOverDetection: boolean;
+  /** Strict mode: treat warnings as failures */
+  strictMode: boolean;
+  /** Warn on unexpected triggers instead of failing */
+  warnOnUnexpectedTriggers: boolean;
 }
 
 export const DEFAULT_REDTEAM_CONFIG: RedTeamConfig = {
@@ -76,7 +102,10 @@ export const DEFAULT_REDTEAM_CONFIG: RedTeamConfig = {
   outputFormat: 'json',
   includeCategories: [],
   excludeCategories: [],
-  minSeverity: 'low'
+  minSeverity: 'low',
+  failOnOverDetection: true,
+  strictMode: false,
+  warnOnUnexpectedTriggers: true
 };
 
 export interface RedTeamSuiteSummary {
@@ -87,6 +116,7 @@ export interface RedTeamSuiteSummary {
   executionTimeMs: number;
   categoryResults: Record<string, CategoryResult>;
   criticalIssues: RedTeamIssue[];
+  warnings: RedTeamIssue[];
   recommendations: string[];
   timestamp: string;
 }
