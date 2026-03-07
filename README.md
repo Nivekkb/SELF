@@ -4,7 +4,20 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Nivekkb/SELF)
 ![Repo Stars](https://img.shields.io/github/stars/Nivekkb/SELF)
 ![Purpose](https://img.shields.io/badge/purpose-AI%20governance-blue)
+# SELF — Support-First Governance Engine
 
+![License](https://img.shields.io/github/license/Nivekkb/SELF)
+![Last Commit](https://img.shields.io/github/last-commit/Nivekkb/SELF)
+![Stars](https://img.shields.io/github/stars/Nivekkb/SELF)
+![Purpose](https://img.shields.io/badge/purpose-AI%20governance-blue)
+
+🔗 **Project Links**
+
+- Live Demo: https://governedbyself.com
+- Hosted API: https://governedbyself.com/api
+- Documentation: /SELF_DOCS/public
+- GitHub Issues: https://github.com/Nivekkb/SELF/issues
+  
 SELF is a support-first governance engine that enforces state-aware safety, refusal with dignity, and audit-ready accountability. This project exists to ensure that powerful systems remain bounded, humane, and non-deceptive under distress conditions.
 ## Quick Start
 
