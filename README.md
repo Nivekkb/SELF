@@ -2,12 +2,6 @@
 
 ![License](https://img.shields.io/github/license/Nivekkb/SELF)
 ![Last Commit](https://img.shields.io/github/last-commit/Nivekkb/SELF)
-![Repo Stars](https://img.shields.io/github/stars/Nivekkb/SELF)
-![Purpose](https://img.shields.io/badge/purpose-AI%20governance-blue)
-# SELF — Support-First Governance Engine
-
-![License](https://img.shields.io/github/license/Nivekkb/SELF)
-![Last Commit](https://img.shields.io/github/last-commit/Nivekkb/SELF)
 ![Stars](https://img.shields.io/github/stars/Nivekkb/SELF)
 ![Purpose](https://img.shields.io/badge/purpose-AI%20governance-blue)
 
