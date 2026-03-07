@@ -6,6 +6,45 @@
 ![Purpose](https://img.shields.io/badge/purpose-AI%20governance-blue)
 
 SELF is a support-first governance engine that enforces state-aware safety, refusal with dignity, and audit-ready accountability. This project exists to ensure that powerful systems remain bounded, humane, and non-deceptive under distress conditions.
+## Quick Start
+
+### Option 1 — Use the hosted API
+
+SELF provides a public governance endpoint for testing.
+
+Base URL:
+https://governedbyself.com/api
+
+Endpoints:
+
+POST /v1/pre
+POST /v1/post
+
+These allow developers to run prompts through SELF's governance layer before and after model generation.
+
+---
+
+### Option 2 — Run locally
+
+Clone the repository:
+
+git clone https://github.com/Nivekkb/SELF.git
+
+Install dependencies:
+
+npm install
+
+Run the development server:
+
+npm run dev
+
+---
+
+### Documentation
+
+Full documentation is available in:
+
+SELF_DOCS/public/
 
 ## What this repo contains
 
